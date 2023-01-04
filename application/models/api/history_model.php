@@ -46,32 +46,32 @@ class history_model extends CI_Model
         return $sql ? true : false;
     }
 
-    public function getData($apt_id, $pat_id)
+    public function getData($C_id, $pat_id)
     {
         $data = array();
         $data['history_visit'] =
-            $this->db->select("*")->from('history_visit')->where("pat_id = '$pat_id' AND apt_id = '$apt_id'")->get()->result();
+            $this->db->select("*")->from('history_visit')->where("pat_id = '$pat_id' AND C_id = '$C_id'")->get()->result();
 
         $data['history_chief_complaints'] =
-            $this->db->select("*")->from('history_chief_complaints')->where("pat_id = '$pat_id' AND apt_id = '$apt_id'")->get()->result();
+            $this->db->select("*")->from('history_chief_complaints')->where("pat_id = '$pat_id' AND C_id = '$C_id'")->get()->result();
 
         $data['history_systemic_history'] =
-            $this->db->select("*")->from('history_systemic_history')->where("pat_id = '$pat_id' AND apt_id = '$apt_id'")->get()->result();
+            $this->db->select("*")->from('history_systemic_history')->where("pat_id = '$pat_id' AND C_id = '$C_id'")->get()->result();
 
         $data['history_drug_allergies'] =
-            $this->db->select("*")->from('history_drug_allergies')->where("pat_id = '$pat_id' AND apt_id = '$apt_id'")->get()->result();
+            $this->db->select("*")->from('history_drug_allergies')->where("pat_id = '$pat_id' AND C_id = '$C_id'")->get()->result();
 
         $data['history_contact_allergies'] =
-            $this->db->select("*")->from('history_contact_allergies')->where("pat_id = '$pat_id' AND apt_id = '$apt_id'")->get()->result();
+            $this->db->select("*")->from('history_contact_allergies')->where("pat_id = '$pat_id' AND C_id = '$C_id'")->get()->result();
 
         $data['history_food_allergies'] =
-            $this->db->select("*")->from('history_food_allergies')->where("pat_id = '$pat_id' AND apt_id = '$apt_id'")->get()->result();
+            $this->db->select("*")->from('history_food_allergies')->where("pat_id = '$pat_id' AND C_id = '$C_id'")->get()->result();
 
         $data['history_vital_signs'] =
-            $this->db->select("*")->from('history_vital_signs')->where("pat_id = '$pat_id' AND apt_id = '$apt_id'")->get()->result();
+            $this->db->select("*")->from('history_vital_signs')->where("pat_id = '$pat_id' AND C_id = '$C_id'")->get()->result();
 
         $data['history_anthropometry'] =
-            $this->db->select("*")->from('history_anthropometry')->where("pat_id = '$pat_id' AND apt_id = '$apt_id'")->get()->result();
+            $this->db->select("*")->from('history_anthropometry')->where("pat_id = '$pat_id' AND C_id = '$C_id'")->get()->result();
 
 
         if (!empty($data['history_visit'])) {
@@ -94,7 +94,7 @@ class history_model extends CI_Model
         $this->db->delete("history_anthropometry", array('id' => $id));
 
         if ($deleteData) {
-            return 'Data Deleted Successfully';
+            return $deleteData ? true : false;
         } else {
             return 'Unable to Delete';
         }

@@ -25,7 +25,7 @@ class History extends REST_Controller
 
         // PATIENT DATA
         // $id = $this->input->post('id');
-        $apt_id = $this->input->post('apt_id');
+        $C_id = $this->input->post('C_id');
         $pat_id = $this->input->post('pat_id');
         // $dt = strtotime($this->input->post('dt'));
 
@@ -36,7 +36,7 @@ class History extends REST_Controller
         // VISIT HISTORY
         $data1 = array(
             // 'id' => $id,
-            'apt_id' => $apt_id,
+            'C_id' => $C_id,
             'pat_id' => $pat_id,
 
             'visit_type' => $visit_type ?? '',
@@ -59,7 +59,7 @@ class History extends REST_Controller
         // CHIEF COMPLAINTS
         $data2 = array(
             // 'id' => $id,
-            'apt_id' => $apt_id,
+            'C_id' => $C_id,
             'pat_id' => $pat_id,
 
             'chief_complaint_type' => $chief_complaint_type ?? '',
@@ -88,7 +88,7 @@ class History extends REST_Controller
         // SYSTEMIC HISTORY
         $data3 = array(
             // 'id' => $id,
-            'apt_id' => $apt_id,
+            'C_id' => $C_id,
             'pat_id' => $pat_id,
 
             'systemic_history_type' => $systemic_history_type ?? '',
@@ -116,7 +116,7 @@ class History extends REST_Controller
         // DRUG ALLERGIES
         $data4 = array(
             // 'id' => $id,
-            'apt_id' => $apt_id,
+            'C_id' => $C_id,
             'pat_id' => $pat_id,
 
             'drug_allergies_type' => $drug_allergies_type ?? '',
@@ -141,7 +141,7 @@ class History extends REST_Controller
         // CONTACT ALLERGIES
         $data5 = array(
             // 'id' => $id,
-            'apt_id' => $apt_id,
+            'C_id' => $C_id,
             'pat_id' => $pat_id,
 
             'contact_allergies_type' => $contact_allergies_type ?? '',
@@ -167,7 +167,7 @@ class History extends REST_Controller
         // FOOD ALLERGIES
         $data6 = array(
             // 'id' => $id,
-            'apt_id' => $apt_id,
+            'C_id' => $C_id,
             'pat_id' => $pat_id,
 
             'food_allergies_type' => $food_allergies_type ?? '',
@@ -192,7 +192,7 @@ class History extends REST_Controller
         // VITAL SIGNS
         $data7 = array(
             // 'id' => $id,
-            'apt_id' => $apt_id,
+            'C_id' => $C_id,
             'pat_id' => $pat_id,
 
             'temperature' => $temperature ?? '',
@@ -215,7 +215,7 @@ class History extends REST_Controller
         // ANTHROPOMETRY HISTORY
         $data8 = array(
             // 'id' => $id,
-            'apt_id' => $apt_id,
+            'C_id' => $C_id,
             'pat_id' => $pat_id,
 
             'height' => $height ?? '',
@@ -312,10 +312,10 @@ class History extends REST_Controller
     public function history_get()
     {
         // $id = $this->input->get('id');
-        $apt_id = $this->input->get('apt_id');
+        $C_id = $this->input->get('C_id');
         $pat_id = $this->input->get('pat_id');
-        if ($apt_id && $pat_id) {
-            $data = $this->history_model->getData($apt_id, $pat_id);
+        if ($C_id && $pat_id) {
+            $data = $this->history_model->getData($C_id, $pat_id);
             if (!empty($data)) {
                 $this->response([
                     'status' => true,
@@ -339,7 +339,7 @@ class History extends REST_Controller
     {
         // PATIENT DATA
         $id = $this->post('id');
-        $apt_id = $this->input->post('apt_id');
+        $C_id = $this->input->post('C_id');
         $pat_id = $this->input->post('pat_id');
 
         // VISIT HISTORY
@@ -349,7 +349,7 @@ class History extends REST_Controller
         // VISIT HISTORY
         $data1 = array(
             // 'id' => $id,
-            'apt_id' => $apt_id,
+            'C_id' => $C_id,
             'pat_id' => $pat_id,
 
             'visit_type' => $visit_type ?? '',
@@ -369,7 +369,7 @@ class History extends REST_Controller
         // CHIEF COMPLAINTS
         $data2 = array(
             // 'id' => $id,
-            'apt_id' => $apt_id,
+            'C_id' => $C_id,
             'pat_id' => $pat_id,
 
             'chief_complaint_type' => $chief_complaint_type ?? '',
@@ -397,7 +397,7 @@ class History extends REST_Controller
         // SYSTEMIC HISTORY
         $data3 = array(
             // 'id' => $id,
-            'apt_id' => $apt_id,
+            'C_id' => $C_id,
             'pat_id' => $pat_id,
 
             'systemic_history_type' => $systemic_history_type ?? '',
@@ -423,7 +423,7 @@ class History extends REST_Controller
         // DRUG ALLERGIES
         $data4 = array(
             // 'id' => $id,
-            'apt_id' => $apt_id,
+            'C_id' => $C_id,
             'pat_id' => $pat_id,
 
             'drug_allergies_type' => $drug_allergies_type ?? '',
@@ -446,7 +446,7 @@ class History extends REST_Controller
         // CONTACT ALLERGIES
         $data5 = array(
             // 'id' => $id,
-            'apt_id' => $apt_id,
+            'C_id' => $C_id,
             'pat_id' => $pat_id,
 
             'contact_allergies_type' => $contact_allergies_type ?? '',
@@ -470,7 +470,7 @@ class History extends REST_Controller
         // FOOD ALLERGIES
         $data6 = array(
             // 'id' => $id,
-            'apt_id' => $apt_id,
+            'C_id' => $C_id,
             'pat_id' => $pat_id,
 
             'food_allergies_type' => $food_allergies_type ?? '',
@@ -493,7 +493,7 @@ class History extends REST_Controller
         // VITAL SIGNS
         $data7 = array(
             // 'id' => $id,
-            'apt_id' => $apt_id,
+            'C_id' => $C_id,
             'pat_id' => $pat_id,
 
             'temperature' => $temperature ?? '',
@@ -513,7 +513,7 @@ class History extends REST_Controller
         // ANTHROPOMETRY HISTORY
         $data8 = array(
             // 'id' => $id,
-            'apt_id' => $apt_id,
+            'C_id' => $C_id,
             'pat_id' => $pat_id,
 
             'height' => $height ?? '',
@@ -535,7 +535,7 @@ class History extends REST_Controller
                 $data7,
                 $data8
             );
-            $given_data = $this->history_model->getdata($apt_id, $pat_id);
+            $given_data = $this->history_model->getdata($C_id, $pat_id);
         }
 
         if ($data) {
@@ -554,20 +554,34 @@ class History extends REST_Controller
 
     public function history_delete()
     {
-        $id = $this->post('id');
+        $id = $this->delete('id');
 
         $data = $this->history_model->deletedata($id);
 
-        if ($data == true) {
-            $this->response([
-                'status' => true,
-                'message' => 'History Deleted Successfully.',
-            ], REST_Controller::HTTP_OK);
-        } else {
-            $this->response([
-                'status' => false,
-                'message' => 'Unable to Delete.'
-            ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
-        }
+            if ($data == null) {
+                $this->response([
+                    "status" => FALSE,
+                    "message" => "Data not found"
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            } elseif (!empty($data)) {
+                if ($data) {
+                    $this->response([
+                        "status" => TRUE,
+                        "id" => $id,
+                        "message" => "Data Deleted "
+                    ], REST_Controller::HTTP_OK);
+                } else {
+                    $this->response([
+                        "status" => FALSE,
+                        "message" => "Unable to Delete"
+                    ], REST_Controller::HTTP_BAD_REQUEST);
+                }
+            } else {
+                $this->response([
+                    "status" => FALSE,
+                    "message" => "Data not found"
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+       
     }
 }
