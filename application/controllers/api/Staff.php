@@ -16,10 +16,52 @@ class Staff extends REST_Controller
         $this->load->model('api/Staffregister_model', 'staff');
         $this->role = 'role';
         $this->staff = 'staff';
+        $this->org = 'admin_org';
+        $this->organization = 'organization';
     }
 
-    public function staff_profile_get()
-    {
+    public function staff_profile_get(){
+        $u_id = $this->security->xss_clean($this->input->get('u_id'));
+        $role_id = $this->db->select('role_id')->from($this->staff)->where("u_id = '$u_id'")->get()->row()->id ?? '';
+        $role = $this->db->select('role')->from($this->staff)->join($this->role,"$this->staff.role_id = $this->role.id")->where('id',$role_id)->get()->row()->role ?? '';
+        $data = [];
+        if(!empty($role)){
+            if($role == 'Super Admin'){
+                $data['user_data']= $this->db->select('*')->from($this->staff)->where("u_id = '$u_id'")->get()->row();
+                $staff_id = $this->db->select('DISTINCT(u_id)')->from($this->staff)->join($this->role,"$this->staff.role_id = $this->role.id")->where("admin = '$u_id' AND $this->role.role = 'Admin'")->get()->result();
+                if(count($staff_id) > 0){
+                    for($i = 0; $i < count($staff_id); ++$i){
+                        $data['staff'][$i] = $this->db->select('*')->from($this->staff)->where("admin = '$u_id' AND u_id = '$staff_id'")->get()->row();
+                        $org = $this->db->select('org_id')->from($this->org)->where("admin_id = '$u_id'")->get()->result();
+                        for($j = 0; $j < count($org); ++$j){
+                            $org_id = $org[$j]->org_id;
+                            $data['admin'][$i]->org[$j] = $this->db->select('*')->from($this->organization)->where("org_id = '$org_id'")->get()->row();
+                            $data['admin'][$i]->org[$j]->staff = $this->db->select('*')->from($this->staff)->where("org_id = '$org_id'")->get()->result();
+                        }
+                    }
+                }
+            }else if($role == 'Admin'){
+                $data['user_data']= $this->db->select('*')->from($this->staff)->where("u_id = '$u_id'")->get()->row();
+                $org = $this->db->select('org_id')->from($this->org)->where("admin_id = '$u_id'")->get()->result();
+                for($j = 0; $j < count($org); ++$j){
+                    $org_id = $org[$j]->org_id;
+                    $data['org'][$j]= $this->db->select('*')->from($this->organization)->where("org_id = '$org_id'")->get()->row();
+                    $data['org'][$j]->staff = $this->db->select('*')->from($this->staff)->where("org_id = '$org_id'")->get()->result();
+                }
+            }else{
+                $org_id = $this->db->select('org_id')->from($this->org)->where("admin_id = '$u_id'")->get()->row()->org_id ?? '';
+
+                $data['user_data']= $this->db->select('*')->from($this->staff)->join($this->role,"$this->staff.role_id = $this->role.id")->where("u_id = '$u_id'")->get()->row();
+
+                $data['org'] = $this->db->select('*')->from($this->organization)->where("org_id = '$org_id'")->get()->row();
+            }
+            // $data['Clinic'] = $this->db->select('*')->from($this->org)->;
+        }else{
+            $this->response([
+                'status'=>false,
+                'message'=>'Role is not Assigned',
+            ],REST_Controller::HTTP_BAD_REQUEST); 
+        }
     }
 
     public function staff_register_post()

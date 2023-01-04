@@ -56,10 +56,11 @@ class Clinic extends REST_Controller
         $org_No = $this->security->xss_clean($this->input->post("org_No"));
         $org_addedby = $this->security->xss_clean($this->input->post("org_addedby"));
 
+        $org = $this->db->select('org_id')->from($this->org)->order_by('id', 'DESC')->get()->row() ?? '_0';
         $org_logo = $this->input->post("img");
 
-        $org_id = $this->input->post('org_id');
-
+        $org_id =  substr($org_name, 0, 3) . '_0' . explode('_', $org)[1] + 1;
+     
         if (!empty($_FILES['img'])) {
             $fileName = $_FILES['img']['name'];
 
@@ -75,7 +76,6 @@ class Clinic extends REST_Controller
             if (!$this->upload->do_upload('img')) {
                 echo $this->upload->display_errors();
                 $img = '';
-                #redirect("employee/view?I=" .base64_encode($eid));
             } else {
                 $path = $this->upload->data();
                 $img = $path['file_name'];
@@ -84,31 +84,8 @@ class Clinic extends REST_Controller
             $img = '';
         }
 
-        // $this->form_validation->set_rules(
-        //     "mobileNo",
-        //     "Mobile No",
-        //     "required|numeric|is_unique[clinics.mobile_no]|min_length[10]|max_length[15]",
-        //     array(
-        //         'max_length' => 'Mobile no. should be maximum 15 digits',
-        //         'min_length' => 'Mobile no. should be minimum 10 digits',
-        //         'is_unique' => 'Mobile no. already used',
-        //         'required' => 'This Field must be filled',
-        //         'numeric' => 'Please Enter only Numbers'
-        //     )
-        // );
-
-        // if ($this->form_validation->run() == false) {
-
-        //     // very important query "LIFES SAVER"
-        //     $error = strip_tags(validation_errors());
-
-        //     $this->response([
-        //         "status" => False,
-        //         "message" => "Invalid Details",
-        //         "error" => $error
-        //     ], REST_Controller::HTTP_BAD_REQUEST);
-        // } else {
         $data = array(
+            "org_id" => $org_id,
             "org_name" => $org_name ?? '',
             "org_country" => $org_country ?? '',
             "org_state" => $org_state ?? '',
@@ -119,10 +96,7 @@ class Clinic extends REST_Controller
             "org_email" => $org_email ?? '',
             "org_No" => $org_No ?? '',
             "org_addedby" => $org_addedby,
-
             'created_at' => date('Y-m-d H:i:s'),
-
-            "org_id" => $org_id,
         );
 
         $insertData = $this->clinic_model->insertdata($data);
