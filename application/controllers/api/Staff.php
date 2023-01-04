@@ -1,25 +1,29 @@
 <?php
 
-if(!defined('BASEPATH')) exit('No Direct Scripts access are Allowed');
+if (!defined('BASEPATH')) exit('No Direct Scripts access are Allowed');
 
 require APPPATH . '/libraries/REST_Controller.php';
 
 use Restserver\Libraries\REST_Controller;
 
-class Staff extends REST_Controller {
+class Staff extends REST_Controller
+{
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->load->database();
-        $this->load->model('api/Staffregister_model','staff');
+        $this->load->model('api/Staffregister_model', 'staff');
         $this->role = 'role';
         $this->staff = 'staff';
     }
 
-    public function staff_profile_get(){
+    public function staff_profile_get()
+    {
     }
 
-    public function staff_register_post(){
+    public function staff_register_post()
+    {
         $name = $this->security->xss_clean($this->input->post('name'));
         $admin = $this->security->xss_clean($this->input->post('admin'));
         $email = $this->security->xss_clean($this->input->post('email'));
@@ -38,59 +42,57 @@ class Staff extends REST_Controller {
         $join_date = $this->security->xss_clean($this->input->post('join_date'));
         $role_id = $this->security->xss_clean($this->input->post('role_id'));
         $status = $this->security->xss_clean($this->input->post('status'));
-        
+
         //----------------------Getting Role-------------------//
-        
-        $role = $this->db->select('role')->from($this->role)->where('id',$role_id)->get()->row()->role ?? '';
-        if(!empty($role)){
-            $super_id = $this->db->select('u_id')->from($this->staff)->join($this->role,"$this->staff.role_id = $this->role.id")->where("$this->role.role = 'Super Admin'")->order_by("$this->staff.id",'ASC')->get()->row()->u_id ?? '_0';
-            
-            $super_name = $this->db->select('name')->from($this->staff)->join($this->role,"$this->staff.role_id = $this->role.id")->where("$this->role.role = 'Super Admin'")->order_by("$this->staff.id",'ASC')->get()->row()->name ?? '';
-            
-            $user_id = $this->db->select('u_id')->from($this->staff)->join($this->role,"$this->staff.role_id = $this->role.id")->where("$this->role.role = '$role' AND admin = '$admin'")->order_by("staff.id",'DESC')->get()->row()->u_id ?? '_0';
+
+        $role = $this->db->select('role')->from($this->role)->where('id', $role_id)->get()->row()->role ?? '';
+        if (!empty($role)) {
+            $super_id = $this->db->select('u_id')->from($this->staff)->join($this->role, "$this->staff.role_id = $this->role.id")->where("$this->role.role = 'Super Admin'")->order_by("$this->staff.id", 'ASC')->get()->row()->u_id ?? '_0';
+
+            $super_name = $this->db->select('name')->from($this->staff)->join($this->role, "$this->staff.role_id = $this->role.id")->where("$this->role.role = 'Super Admin'")->order_by("$this->staff.id", 'ASC')->get()->row()->name ?? '';
+
+            $user_id = $this->db->select('u_id')->from($this->staff)->join($this->role, "$this->staff.role_id = $this->role.id")->where("$this->role.role = '$role' AND admin = '$admin'")->order_by("staff.id", 'DESC')->get()->row()->u_id ?? '_0';
             $user_id = !empty($user_id) ? $user_id : '_0';
-            
-            $admin_id = $this->db->select('u_id')->from($this->staff)->join($this->role,"$this->staff.role_id = $this->role.id")->where("$this->role.role = '$role' AND admin = '$admin'")->order_by("$this->staff.id",'DESC')->get()->row()->u_id ?? '_0';
-            
-            $admin_name = $this->db->select('name')->from($this->staff)->join($this->role,"$this->staff.role_id = $this->role.id")->where("$this->role.role = '$role' AND u_id = '$admin'")->order_by("$this->staff.id",'DESC')->get()->row()->name ?? '';
-            
-            
-            // print($super_name);die();
-            if($role == 'Super Admin'){
-                $u_id =  explode('_',$super_id)[1]+1;
-                $u_id =  substr($name,0,3).'-S_0'.$u_id;
+
+            $admin_id = $this->db->select('u_id')->from($this->staff)->join($this->role, "$this->staff.role_id = $this->role.id")->where("$this->role.role = '$role' AND admin = '$admin'")->order_by("$this->staff.id", 'DESC')->get()->row()->u_id ?? '_0';
+
+            $admin_name = $this->db->select('name')->from($this->staff)->join($this->role, "$this->staff.role_id = $this->role.id")->where("$this->role.role = '$role' AND u_id = '$admin'")->order_by("$this->staff.id", 'DESC')->get()->row()->name ?? '';
+
+            if ($role == 'Super Admin') {
+                $u_id =  explode('_', $super_id)[1] + 1;
+                $u_id =  substr($name, 0, 3) . '-S_0' . $u_id;
             }
-            if($role == 'Admin'){                
-                if(!empty($super_name) && !empty($admin)){
-                    $u_id =  explode('_',$user_id)[1]+1;
-                    $u_id =  substr($super_name,0,3)."-A_0".$u_id;
-                }else{
+            if ($role == 'Admin') {
+                if (!empty($super_name) && !empty($admin)) {
+                    $u_id =  explode('_', $user_id)[1] + 1;
+                    $u_id =  substr($super_name, 0, 3) . "-A_0" . $u_id;
+                } else {
                     $this->response([
-                        'status'=>false,
-                        'message'=>"Please First Add Super Admin then Add $role",
-                    ],REST_Controller::HTTP_BAD_REQUEST);
+                        'status' => false,
+                        'message' => "Please First Add Super Admin then Add $role",
+                    ], REST_Controller::HTTP_BAD_REQUEST);
                 }
             }
-            if($role == 'Doctor'){
-                if(!empty($user_name) && !empty($admin)){
-                    $u_id =  explode('_',$user_id)[1]+1;
-                    $u_id =  substr($admin_name,0,3)."-D_0".$u_id;
-                }else{
+            if ($role == 'Doctor') {
+                if (!empty($user_name) && !empty($admin)) {
+                    $u_id =  explode('_', $user_id)[1] + 1;
+                    $u_id =  substr($admin_name, 0, 3) . "-D_0" . $u_id;
+                } else {
                     $this->response([
-                        'status'=>false,
-                        'message'=>"Please First Add Admin then Add $role",
-                    ],REST_Controller::HTTP_BAD_REQUEST);
+                        'status' => false,
+                        'message' => "Please First Add Admin then Add $role",
+                    ], REST_Controller::HTTP_BAD_REQUEST);
                 }
             }
-            if($role == 'Clinic Operator'){
-                if(!empty($user_name) && !empty($admin)){
-                    $u_id = explode('_',$user_id)[1]+1;
-                    $u_id =  substr($admin_name,0,3)."-C_0".$u_id;
-                }else{
+            if ($role == 'Clinic Operator') {
+                if (!empty($user_name) && !empty($admin)) {
+                    $u_id = explode('_', $user_id)[1] + 1;
+                    $u_id =  substr($admin_name, 0, 3) . "-C_0" . $u_id;
+                } else {
                     $this->response([
-                        'status'=>false,
-                        'message'=>"Please First Add Admin then Add $role",
-                    ],REST_Controller::HTTP_BAD_REQUEST);
+                        'status' => false,
+                        'message' => "Please First Add Admin then Add $role",
+                    ], REST_Controller::HTTP_BAD_REQUEST);
                 }
             }
             
@@ -99,7 +101,7 @@ class Staff extends REST_Controller {
                 'u_id' => $u_id ?? '',
                 'admin' => $admin ?? '',
                 'email' => $email ?? '',
-                'password' => hash('sha1',$password) ?? '',
+                'password' => hash('sha1', $password) ?? '',
                 'gender' => $gender ?? '',
                 'd_o_b' => $d_o_b ?? '',
                 'age' => $age ?? '',
@@ -115,29 +117,27 @@ class Staff extends REST_Controller {
                 'status' => $status ?? '',
             ];
 
-            // print_r($data);die();
-
-            $result = $this->db->insert($this->staff,$data);
-            if($result){
+            $result = $this->db->insert($this->staff, $data);
+            if ($result) {
                 $this->response([
-                    'status'=>true,
-                    'message'=>'Staff Registered Successfull',
+                    'status' => true,
+                    'message' => 'Staff Registered Successfull',
                 ], REST_Controller::HTTP_OK);
-            }else{            
+            } else {
                 $this->response([
-                    'status'=>false,
-                    'message'=>'Internal Server Error',
+                    'status' => false,
+                    'message' => 'Internal Server Error',
                 ], REST_Controller::HTTP_BAD_REQUEST);
             }
-        }else{
+        } else {
             $this->response([
-                'status'=>false,
-                'message'=>'Role is not Assigned',
-            ],REST_Controller::HTTP_BAD_REQUEST);
+                'status' => false,
+                'message' => 'Role is not Assigned',
+            ], REST_Controller::HTTP_BAD_REQUEST);
         }
     }
 
-    public function staff_update_post(){
+    public function staff_update_post()
+    {
     }
-
 }

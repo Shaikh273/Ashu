@@ -24,10 +24,11 @@ class clinic_model extends CI_Model
         return $sql ? true : false;
     }
 
-    public function getData($id, $org_id)
+    // public function getData($id, $org_id)
+    public function getData($org_id)
     {
         $data['Patient'] =
-            $this->db->select("*")->from('organization')->where("id = '$id' OR org_id = '$org_id'")->get()->result();
+            $this->db->select("*")->from('organization')->where("org_id = '$org_id'")->get()->result();
         if (!empty($data['Patient'])) {
             return $data;
         } else {
