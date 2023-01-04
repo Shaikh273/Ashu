@@ -6,24 +6,24 @@ require(APPPATH . '/libraries/REST_Controller.php');
 
 use Restserver\Libraries\REST_Controller;
 
-class Clinic extends REST_Controller
+class Organization extends REST_Controller
 {
 
     public function __construct()
     {
         parent::__construct();
         $this->load->database();
-
-        $this->load->model('api/clinic_model');
+        $this->load->model('api/organization_model');
+        $this->organization = 'organization';
     }
 
-    public function clinic_get()
+    public function organization_get()
     {
         $id = $this->input->get('id');
         $org_id = $this->input->get('org_id');
 
         if ($id || $org_id) {
-            $data = $this->clinic_model->getData($id, $org_id);
+            $data = $this->organization_model->getData($id, $org_id);
             if (!empty($data)) {
                 $this->response([
                     'status' => true,
@@ -38,12 +38,12 @@ class Clinic extends REST_Controller
         } else {
             $this->response([
                 'status' => false,
-                'data' => 'Check Clinic ID.'
+                'data' => 'Check organization ID.'
             ], REST_Controller::HTTP_NOT_FOUND);
         }
     }
 
-    public function clinic_post()
+    public function organization_post()
     {
         $org_name = $this->security->xss_clean($this->input->post("org_name"));
         $org_country = $this->security->xss_clean($this->input->post("org_country"));
@@ -56,11 +56,11 @@ class Clinic extends REST_Controller
         $org_No = $this->security->xss_clean($this->input->post("org_No"));
         $org_addedby = $this->security->xss_clean($this->input->post("org_addedby"));
         
-        $org = $this->db->select('org_id')->from($this->org)->order_by('id','DESC')->get()->row() ?? '_0';
+        $org = $this->db->select('org_id')->from($this->organization)->order_by('id','DESC')->get()->row() ?? '_0';
         $org_logo = $this->input->post("img");
         
-        $org_id =  substr($org_name,0,3).'_0'.explode('_',$org)[1]+1;
-        // $org_id = $this->input->post('org_id');
+        $org_id =  explode('_',$org)[1]+1;
+        $org_id = substr($org_name,0,3).'_0'.$org_id;
 
         if (!empty($_FILES['img'])) {
             $fileName = $_FILES['img']['name'];
@@ -89,7 +89,7 @@ class Clinic extends REST_Controller
         // $this->form_validation->set_rules(
         //     "mobileNo",
         //     "Mobile No",
-        //     "required|numeric|is_unique[clinics.mobile_no]|min_length[10]|max_length[15]",
+        //     "required|numeric|is_unique[organizations.mobile_no]|min_length[10]|max_length[15]",
         //     array(
         //         'max_length' => 'Mobile no. should be maximum 15 digits',
         //         'min_length' => 'Mobile no. should be minimum 10 digits',
@@ -125,7 +125,7 @@ class Clinic extends REST_Controller
                 'created_at' => date('Y-m-d H:i:s'),
             );
 
-            $insertData = $this->clinic_model->insertdata($data);
+            $insertData = $this->organization_model->insertdata($data);
             if ($insertData) {
                 $this->response([
                     'status' => TRUE,
@@ -141,7 +141,7 @@ class Clinic extends REST_Controller
         // }
     }
 
-    public function clinicupdate_post()
+    public function organizationupdate_post()
     {
         $id = $this->post('id');
 
@@ -186,7 +186,7 @@ class Clinic extends REST_Controller
         // $this->form_validation->set_rules(
         //     "mobileNo",
         //     "Mobile No",
-        //     "required|numeric|is_unique[clinics.mobile_no]|min_length[10]|max_length[15]",
+        //     "required|numeric|is_unique[organizations.mobile_no]|min_length[10]|max_length[15]",
         //     array(
         //         'max_length' => 'Mobile no. should be maximum 15 digits',
         //         'min_length' => 'Mobile no. should be minimum 10 digits',
@@ -228,14 +228,14 @@ class Clinic extends REST_Controller
 
             if ($data == '') {
             } else {
-                $data = $this->clinic_model->updatedata($id, $data);
-                $given_data = $this->clinic_model->getdata($id, $org_id);
+                $data = $this->organization_model->updatedata($id, $data);
+                $given_data = $this->organization_model->getdata($id, $org_id);
             }
 
             if ($data) {
                 $this->response([
                     'status' => true,
-                    'message' => 'Clinic Data Updated Successfully.',
+                    'message' => 'organization Data Updated Successfully.',
                     'data' => $given_data
                 ], REST_Controller::HTTP_OK);
             } else {
@@ -247,11 +247,11 @@ class Clinic extends REST_Controller
         // }
     }
 
-    public function clinic_delete()
+    public function organization_delete()
     {
         $id = $this->delete('id');
 
-        $data = $this->clinic_model->deletedata($id);
+        $data = $this->organization_model->deletedata($id);
 
        if ($data == null) {
                 $this->response([
