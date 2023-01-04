@@ -10,7 +10,6 @@ class history_model extends CI_Model
     }
 
     public function insertdata($data1, $data2, $data3, $data4, $data5, $data6, $data7, $data8)
-    // public function insertdata($data1, $data2)
     {
         $sql =   $this->db->trans_Start();
         // $this->db->insert('history_opthalmic_history', $data1);
@@ -28,7 +27,6 @@ class history_model extends CI_Model
     }
 
     public function updatedata($id, $data1, $data2, $data3, $data4, $data5, $data6, $data7, $data8)
-    // public function insertdata($data1, $data2)
     {
         $sql =   $this->db->trans_Start();
         // $this->db->insert('history_opthalmic_history', $data1);

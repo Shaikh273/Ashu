@@ -10,7 +10,6 @@ class clinic_model extends CI_Model
     }
 
     public function insertdata($data)
-    // public function insertdata($data1, $data2)
     {
         $sql = $this->db->insert('organization', $data);
 
@@ -24,7 +23,6 @@ class clinic_model extends CI_Model
         return $sql ? true : false;
     }
 
-    // public function getData($id, $org_id)
     public function getData($org_id)
     {
         $data['Patient'] =

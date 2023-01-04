@@ -10,7 +10,6 @@ class registerpatient_model extends CI_Model
     }
 
     public function insertdata($data)
-    // public function insertdata($data1, $data2)
     {
         $sql = $this->db->insert('patients', $data);
 
