@@ -313,7 +313,7 @@ class History extends REST_Controller
         $data = array();
         if(!empty($org_id)){
             $data['history_visit'] =
-            $this->db->select("history_visit.*,organization.*,patients.*")->from('history_visit')->join('organization','history_visit.org_id = organization.org_id')->join('patients','history_visit.pat_id = patients.pat_id')->where("history_visit.org_id = '$org_id'")->get()->result();
+            $this->db->select("history_visit.id AS ID,history_visit.visit_type,history_visit.created_at,history_visit.created_at,history_visit.updated_at,organization.*,patients.*")->from('history_visit')->join('organization','history_visit.org_id = organization.org_id')->join('patients','history_visit.pat_id = patients.pat_id')->where("history_visit.org_id = '$org_id'")->get()->result();
 
             $case_id = $this->db->select('C_id')->from('history_visit')->get()->result();
             $length = count($case_id);

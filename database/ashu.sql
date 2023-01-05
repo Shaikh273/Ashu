@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 05, 2023 at 01:46 PM
+-- Generation Time: Jan 05, 2023 at 01:58 PM
 -- Server version: 10.4.20-MariaDB
 -- PHP Version: 7.4.22
 
@@ -1865,7 +1865,8 @@ INSERT INTO `history_chief_complaints` (`id`, `C_id`, `chief_complaint_type`, `n
 (11, '2', '', '', '', '', '', '', '', '2022-12-29 13:03:57', '2022-12-29 17:33:57'),
 (12, '5', '', '', '', '', '', '', '', '2023-01-02 11:56:32', '2023-01-02 16:26:32'),
 (15, '5', '', '', '', '', '', '', '', '2023-01-05 06:38:02', '2023-01-05 11:08:02'),
-(19, 'Case_2022-2023_01', '', 'BILAL', '', '', '', '', '', '2023-01-05 13:44:40', '2023-01-05 18:14:40');
+(19, 'Case_2022-2023_01', '', 'BILAL', '', '', '', '', '', '2023-01-05 13:44:40', '2023-01-05 18:14:40'),
+(20, 'Case_2022-2023_02', '', 'Malaria and Dengue', '', '', '', '', '', '2023-01-05 13:50:48', '2023-01-05 18:20:48');
 
 -- --------------------------------------------------------
 
@@ -2029,9 +2030,9 @@ CREATE TABLE `history_visit` (
   `id` int(10) NOT NULL,
   `C_id` varchar(65) NOT NULL,
   `org_id` varchar(65) NOT NULL,
-  `pat_id` varchar(10) NOT NULL,
-  `visit_type` varchar(5) NOT NULL,
-  `comments` int(100) NOT NULL,
+  `pat_id` varchar(65) NOT NULL,
+  `visit_type` varchar(65) NOT NULL,
+  `comments` varchar(100) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `updated_at` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -2041,7 +2042,8 @@ CREATE TABLE `history_visit` (
 --
 
 INSERT INTO `history_visit` (`id`, `C_id`, `org_id`, `pat_id`, `visit_type`, `comments`, `created_at`, `updated_at`) VALUES
-(1, 'Case_2022-2023_01', 'Ash_01', 'BIL-P_01', 'Cough', 0, '2023-01-05 13:44:40', '2023-01-05 18:14:40');
+(1, 'Case_2022-2023_01', 'Ash_01', 'BIL-P_01', 'Cough', '0', '2023-01-05 13:44:40', '2023-01-05 18:14:40'),
+(2, 'Case_2022-2023_02', 'Ash_01', 'BIL-P_01', 'Malar', '0', '2023-01-05 13:50:48', '2023-01-05 18:20:48');
 
 -- --------------------------------------------------------
 
@@ -2350,7 +2352,7 @@ ALTER TABLE `history_anthropometry`
 -- AUTO_INCREMENT for table `history_chief_complaints`
 --
 ALTER TABLE `history_chief_complaints`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `history_contact_allergies`
@@ -2380,7 +2382,7 @@ ALTER TABLE `history_systemic_history`
 -- AUTO_INCREMENT for table `history_visit`
 --
 ALTER TABLE `history_visit`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `history_vital_signs`
