@@ -134,7 +134,7 @@ class Staff extends REST_Controller {
                 }else{
                     $this->response([
                         'status'=>false,
-                        'message'=>"organization Organization not assigned",
+                        'message'=>"Organization not assigned",
                     ],REST_Controller::HTTP_BAD_REQUEST);
                 }
             }
