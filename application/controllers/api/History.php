@@ -12,8 +12,8 @@ class History extends REST_Controller
     {
         parent::__construct();
         $this->load->database();
-
         $this->load->model('api/history_model');
+        $this->history = 'history_visit';
     }
 
     public function history_post()
@@ -26,7 +26,19 @@ class History extends REST_Controller
         // PATIENT DATA
         // $id = $this->input->post('id');
         $org_id = $this->input->post('org_id');
-        $C_id = $this->input->post('C_id');
+        $c_id = $this->db->select('C_id')->from($this->history)->order_by('id','DESC')->get()->row()->C_id ?? 'c_c_0';
+
+        if(date('m') <= 3){
+            $year = date('Y') - 1;
+            $next_year = date('Y');
+        }else{
+            $year = date('Y');
+            $next_year = date('Y')+1;         
+        }
+
+        $c_id =  explode('_',$c_id)[2]+1;
+        $C_id = "Case_{$year}-{$next_year}_".$c_id;
+        
         $pat_id = $this->input->post('pat_id');
         // $dt = strtotime($this->input->post('dt'));
 
@@ -36,13 +48,11 @@ class History extends REST_Controller
 
         // VISIT HISTORY
         $data1 = array(
-            // 'id' => $id,
-            'C_id' => $C_id,
             'pat_id' => $pat_id,
-
+            'org_id' => $org_id,
+            'C_id' => $C_id,
             'visit_type' => $visit_type ?? '',
             'comments' => $comments ?? '',
-
             'created_at' => date('Y-m-d H:i:s'),
         );
 
