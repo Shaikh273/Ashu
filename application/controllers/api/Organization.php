@@ -6,24 +6,24 @@ require(APPPATH . '/libraries/REST_Controller.php');
 
 use Restserver\Libraries\REST_Controller;
 
-class Clinic extends REST_Controller
+class Organization extends REST_Controller
 {
 
     public function __construct()
     {
         parent::__construct();
         $this->load->database();
-
-        $this->load->model('api/clinic_model');
+        $this->load->model('api/organization_model');
+        $this->organization = 'organization';
     }
 
-    public function clinic_get()
+    public function organization_get()
     {
         $id = $this->input->get('id');
         $org_id = $this->input->get('org_id');
 
         if ($id || $org_id) {
-            $data = $this->clinic_model->getData($id, $org_id);
+            $data = $this->organization_model->getData($id, $org_id);
             if (!empty($data)) {
                 $this->response([
                     'status' => true,
@@ -38,12 +38,12 @@ class Clinic extends REST_Controller
         } else {
             $this->response([
                 'status' => false,
-                'data' => 'Check Clinic ID.'
+                'data' => 'Check organization ID.'
             ], REST_Controller::HTTP_NOT_FOUND);
         }
     }
 
-    public function clinic_post()
+    public function organization_post()
     {
         $org_name = $this->security->xss_clean($this->input->post("org_name"));
         $org_country = $this->security->xss_clean($this->input->post("org_country"));
@@ -55,11 +55,12 @@ class Clinic extends REST_Controller
         $org_email = $this->security->xss_clean($this->input->post("org_email"));
         $org_No = $this->security->xss_clean($this->input->post("org_No"));
         $org_addedby = $this->security->xss_clean($this->input->post("org_addedby"));
-
-        $org = $this->db->select('org_id')->from($this->org)->order_by('id', 'DESC')->get()->row() ?? '_0';
+        
+        $org = $this->db->select('org_id')->from($this->organization)->order_by('id','DESC')->get()->row() ?? '_0';
         $org_logo = $this->input->post("img");
-
-        $org_id =  substr($org_name, 0, 3) . '_0' . explode('_', $org)[1] + 1;
+        
+        $org_id =  explode('_',$org)[1]+1;
+        $org_id = substr($org_name,0,3).'_0'.$org_id;
 
         if (!empty($_FILES['img'])) {
             $fileName = $_FILES['img']['name'];
@@ -84,38 +85,63 @@ class Clinic extends REST_Controller
             $img = '';
         }
 
-        $data = array(
-            "org_id" => $org_id,
-            "org_name" => $org_name ?? '',
-            "org_country" => $org_country ?? '',
-            "org_state" => $org_state ?? '',
-            "org_district" => $org_district ?? '',
-            "org_city" => $org_city ?? '',
-            "org_pincode" => $org_pincode ?? '',
-            "org_address" => $org_address ?? '',
-            "org_email" => $org_email ?? '',
-            "org_No" => $org_No ?? '',
-            "org_addedby" => $org_addedby,
+        // $this->form_validation->set_rules(
+        //     "mobileNo",
+        //     "Mobile No",
+        //     "required|numeric|is_unique[organizations.mobile_no]|min_length[10]|max_length[15]",
+        //     array(
+        //         'max_length' => 'Mobile no. should be maximum 15 digits',
+        //         'min_length' => 'Mobile no. should be minimum 10 digits',
+        //         'is_unique' => 'Mobile no. already used',
+        //         'required' => 'This Field must be filled',
+        //         'numeric' => 'Please Enter only Numbers'
+        //     )
+        // );
 
-            'created_at' => date('Y-m-d H:i:s'),
-        );
+        //     'created_at' => date('Y-m-d H:i:s'),
+        // );
 
-        $insertData = $this->clinic_model->insertdata($data);
-        if ($insertData) {
-            $this->response([
-                'status' => TRUE,
-                'message' => "You're Registered Successfully",
-                'data' => $data
-            ], REST_Controller::HTTP_OK);
-        } else {
-            $this->response([
-                "status" => False,
-                "Message" => "Registration Failed"
-            ], REST_Controller::HTTP_BAD_REQUEST);
-        }
+        //     // very important query "LIFES SAVER"
+        //     $error = strip_tags(validation_errors());
+
+        //     $this->response([
+        //         "status" => False,
+        //         "message" => "Invalid Details",
+        //         "error" => $error
+        //     ], REST_Controller::HTTP_BAD_REQUEST);
+        // } else {
+            $data = array(
+                "org_id" => $org_id,
+                "org_name" => $org_name ?? '',
+                "org_country" => $org_country ?? '',
+                "org_state" => $org_state ?? '',
+                "org_district" => $org_district ?? '',
+                "org_city" => $org_city ?? '',
+                "org_pincode" => $org_pincode ?? '',
+                "org_address" => $org_address ?? '',
+                "org_email" => $org_email ?? '',
+                "org_No" => $org_No ?? '',
+                "org_addedby" => $org_addedby,                
+                'created_at' => date('Y-m-d H:i:s'),
+            );
+
+            $insertData = $this->organization_model->insertdata($data);
+            if ($insertData) {
+                $this->response([
+                    'status' => TRUE,
+                    'message' => "You're Registered Successfully",
+                    'data' => $data
+                ], REST_Controller::HTTP_OK);
+            } else {
+                $this->response([
+                    "status" => False,
+                    "Message" => "Registration Failed"
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        // }
     }
 
-    public function clinicupdate_post()
+    public function organizationupdate_post()
     {
         $id = $this->post('id');
 
@@ -156,9 +182,21 @@ class Clinic extends REST_Controller
             $img = '';
         }
 
-        $data = array(
+        // $this->form_validation->set_rules(
+        //     "mobileNo",
+        //     "Mobile No",
+        //     "required|numeric|is_unique[organizations.mobile_no]|min_length[10]|max_length[15]",
+        //     array(
+        //         'max_length' => 'Mobile no. should be maximum 15 digits',
+        //         'min_length' => 'Mobile no. should be minimum 10 digits',
+        //         'is_unique' => 'Mobile no. already used',
+        //         'required' => 'This Field must be filled',
+        //         'numeric' => 'Please Enter only Numbers'
+        //     )
+        // );
+           $data = array(
             "id" => $id,
-
+            
             "org_name" => $org_name ?? '',
             "org_country" => $org_country ?? '',
             "org_state" => $org_state ?? '',
@@ -179,25 +217,58 @@ class Clinic extends REST_Controller
             $given_data = $this->clinic_model->getdata($id, $org_id);
         }
 
-        if ($data) {
-            $this->response([
-                'status' => true,
-                'message' => 'Clinic Data Updated Successfully.',
-                'data' => $given_data
-            ], REST_Controller::HTTP_OK);
-        } else {
-            $this->response([
-                'status' => false,
-                'message' => 'Unsuccessful.'
-            ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        //     // very important query "LIFES SAVER"
+        //     $error = strip_tags(validation_errors());
+
+        //     $this->response([
+        //         "status" => False,
+        //         "message" => "Invalid Details",
+        //         "error" => $error
+        //     ], REST_Controller::HTTP_BAD_REQUEST);
+        // } else {
+            $data = array(
+                "id" => $id,
+
+                "org_name" => $org_name ?? '',
+                "org_country" => $org_country ?? '',
+                "org_state" => $org_state ?? '',
+                "org_district" => $org_district ?? '',
+                "org_city" => $org_city ?? '',
+                "org_pincode" => $org_pincode ?? '',
+                "org_address" => $org_address ?? '',
+                "org_email" => $org_email ?? '',
+                "org_No" => $org_No ?? '',
+                "org_addedby" => $org_addedby ?? '',
+
+                "org_id" => $org_id,
+            );
+
+            if ($data == '') {
+            } else {
+                $data = $this->organization_model->updatedata($id, $data);
+                $given_data = $this->organization_model->getdata($id, $org_id);
+            }
+
+            if ($data) {
+                $this->response([
+                    'status' => true,
+                    'message' => 'organization Data Updated Successfully.',
+                    'data' => $given_data
+                ], REST_Controller::HTTP_OK);
+            } else {
+                $this->response([
+                    'status' => false,
+                    'message' => 'Unsuccessful.'
+                ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+            }
+        // }
     }
 
-    public function clinic_delete()
+    public function organization_delete()
     {
         $id = $this->delete('id');
 
-        $data = $this->clinic_model->deletedata($id);
+        $data = $this->organization_model->deletedata($id);
 
         if ($data == null) {
             $this->response([

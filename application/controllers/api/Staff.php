@@ -46,9 +46,7 @@ class Staff extends REST_Controller
                 $org = $this->db->select('org_id')->from($this->org)->where("admin_id = '$u_id'")->get()->result();
                 for ($j = 0; $j < count($org); ++$j) {
                     $org_id = $org[$j]->org_id;
-
                     $data['org'][$j] = $this->db->select('*')->from($this->organization)->where("org_id = '$org_id'")->get()->row();
-
                     $data['org'][$j]->staff = $this->db->select('*')->from($this->staff)->where("org_id = '$org_id'")->get()->result();
                 }
             } else {
@@ -58,6 +56,7 @@ class Staff extends REST_Controller
 
                 $data['org'] = $this->db->select('*')->from($this->organization)->where("org_id = '$org_id'")->get()->row();
             }
+            // $data['Clinic'] = $this->db->select('*')->from($this->org)->;
         } else {
             $this->response([
                 'status' => false,
@@ -102,6 +101,8 @@ class Staff extends REST_Controller
 
             $admin_name = $this->db->select('name')->from($this->staff)->join($this->role, "$this->staff.role_id = $this->role.id")->where("$this->role.role = '$role' AND u_id = '$admin'")->order_by("$this->staff.id", 'DESC')->get()->row()->name ?? '';
 
+
+            // print($super_name);die();
             if ($role == 'Super Admin') {
                 $u_id =  explode('_', $super_id)[1] + 1;
                 $u_id =  substr($name, 0, 3) . '-S_0' . $u_id;
@@ -143,6 +144,7 @@ class Staff extends REST_Controller
             $data = [
                 'name' => $name ?? '',
                 'u_id' => $u_id ?? '',
+                'org_id' => $org_id ?? '',
                 'admin' => $admin ?? '',
                 'email' => $email ?? '',
                 'password' => hash('sha1', $password) ?? '',
