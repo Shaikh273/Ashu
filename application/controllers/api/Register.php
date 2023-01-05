@@ -91,7 +91,7 @@ class Register extends REST_Controller
         $pat_id = explode('_', $user_id)[1] + 1;
         $pat_id =  substr($first_name, 0, 3) . "-P_0" . $pat_id;
         // $pat_id = $this->input->post('pat_id');
-        // print_r($pat_id);die();
+        print_r($pat_id);die();
 
         if (!empty($_FILES['img'])) {
             $fileName = $_FILES['img']['name'];
