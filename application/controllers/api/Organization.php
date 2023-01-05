@@ -55,12 +55,12 @@ class Organization extends REST_Controller
         $org_email = $this->security->xss_clean($this->input->post("org_email"));
         $org_No = $this->security->xss_clean($this->input->post("org_No"));
         $org_addedby = $this->security->xss_clean($this->input->post("org_addedby"));
-
-        $org = $this->db->select('org_id')->from($this->organization)->order_by('id', 'DESC')->get()->row() ?? '_0';
+        
+        $org = $this->db->select('org_id')->from($this->organization)->order_by('id','DESC')->get()->row() ?? '_0';
         $org_logo = $this->input->post("img");
-
-        $org_id =  explode('_', $org)[1] + 1;
-        $org_id = substr($org_name, 0, 3) . '_0' . $org_id;
+        
+        $org_id =  explode('_',$org)[1]+1;
+        $org_id = substr($org_name,0,3).'_0'.$org_id;
 
         if (!empty($_FILES['img'])) {
             $fileName = $_FILES['img']['name'];
@@ -77,6 +77,7 @@ class Organization extends REST_Controller
             if (!$this->upload->do_upload('img')) {
                 echo $this->upload->display_errors();
                 $img = '';
+                #redirect("employee/view?I=" .base64_encode($eid));
             } else {
                 $path = $this->upload->data();
                 $img = $path['file_name'];
@@ -98,8 +99,7 @@ class Organization extends REST_Controller
         //     )
         // );
 
-        //     'created_at' => date('Y-m-d H:i:s'),
-        // );
+        // if ($this->form_validation->run() == false) {
 
         //     // very important query "LIFES SAVER"
         //     $error = strip_tags(validation_errors());
@@ -110,34 +110,34 @@ class Organization extends REST_Controller
         //         "error" => $error
         //     ], REST_Controller::HTTP_BAD_REQUEST);
         // } else {
-        $data = array(
-            "org_id" => $org_id,
-            "org_name" => $org_name ?? '',
-            "org_country" => $org_country ?? '',
-            "org_state" => $org_state ?? '',
-            "org_district" => $org_district ?? '',
-            "org_city" => $org_city ?? '',
-            "org_pincode" => $org_pincode ?? '',
-            "org_address" => $org_address ?? '',
-            "org_email" => $org_email ?? '',
-            "org_No" => $org_No ?? '',
-            "org_addedby" => $org_addedby,
-            'created_at' => date('Y-m-d H:i:s'),
-        );
+            $data = array(
+                "org_id" => $org_id,
+                "org_name" => $org_name ?? '',
+                "org_country" => $org_country ?? '',
+                "org_state" => $org_state ?? '',
+                "org_district" => $org_district ?? '',
+                "org_city" => $org_city ?? '',
+                "org_pincode" => $org_pincode ?? '',
+                "org_address" => $org_address ?? '',
+                "org_email" => $org_email ?? '',
+                "org_No" => $org_No ?? '',
+                "org_addedby" => $org_addedby,                
+                'created_at' => date('Y-m-d H:i:s'),
+            );
 
-        $insertData = $this->organization_model->insertdata($data);
-        if ($insertData) {
-            $this->response([
-                'status' => TRUE,
-                'message' => "You're Registered Successfully",
-                'data' => $data
-            ], REST_Controller::HTTP_OK);
-        } else {
-            $this->response([
-                "status" => False,
-                "Message" => "Registration Failed"
-            ], REST_Controller::HTTP_BAD_REQUEST);
-        }
+            $insertData = $this->organization_model->insertdata($data);
+            if ($insertData) {
+                $this->response([
+                    'status' => TRUE,
+                    'message' => "You're Registered Successfully",
+                    'data' => $data
+                ], REST_Controller::HTTP_OK);
+            } else {
+                $this->response([
+                    "status" => False,
+                    "Message" => "Registration Failed"
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
         // }
     }
 
@@ -155,7 +155,7 @@ class Organization extends REST_Controller
         $org_email = $this->security->xss_clean($this->input->post("org_email"));
         $org_No = $this->security->xss_clean($this->input->post("org_No"));
         $addedby = $this->security->xss_clean($this->input->post("addedby"));
-
+        
         $org_logo = $this->input->post("img");
         $org_id = $this->input->post('org_id');
 
@@ -174,6 +174,7 @@ class Organization extends REST_Controller
             if (!$this->upload->do_upload('img')) {
                 echo $this->upload->display_errors();
                 $img = '';
+                #redirect("employee/view?I=" .base64_encode($eid));
             } else {
                 $path = $this->upload->data();
                 $img = $path['file_name'];
@@ -194,28 +195,10 @@ class Organization extends REST_Controller
         //         'numeric' => 'Please Enter only Numbers'
         //     )
         // );
-        $data = array(
-            "id" => $id,
 
-            "org_name" => $org_name ?? '',
-            "org_country" => $org_country ?? '',
-            "org_state" => $org_state ?? '',
-            "org_district" => $org_district ?? '',
-            "org_city" => $org_city ?? '',
-            "org_pincode" => $org_pincode ?? '',
-            "org_address" => $org_address ?? '',
-            "org_email" => $org_email ?? '',
-            "org_No" => $org_No ?? '',
-            "org_addedby" => $org_addedby ?? '',
 
-            "org_id" => $org_id,
-        );
 
-        if ($data == '') {
-        } else {
-            $data = $this->clinic_model->updatedata($id, $data);
-            $given_data = $this->clinic_model->getdata($id, $org_id);
-        }
+        // if ($this->form_validation->run() == false) {
 
         //     // very important query "LIFES SAVER"
         //     $error = strip_tags(validation_errors());
@@ -226,41 +209,41 @@ class Organization extends REST_Controller
         //         "error" => $error
         //     ], REST_Controller::HTTP_BAD_REQUEST);
         // } else {
-        $data = array(
-            "id" => $id,
+            $data = array(
+                "id" => $id,
 
-            "org_name" => $org_name ?? '',
-            "org_country" => $org_country ?? '',
-            "org_state" => $org_state ?? '',
-            "org_district" => $org_district ?? '',
-            "org_city" => $org_city ?? '',
-            "org_pincode" => $org_pincode ?? '',
-            "org_address" => $org_address ?? '',
-            "org_email" => $org_email ?? '',
-            "org_No" => $org_No ?? '',
-            "org_addedby" => $org_addedby ?? '',
+                "org_name" => $org_name ?? '',
+                "org_country" => $org_country ?? '',
+                "org_state" => $org_state ?? '',
+                "org_district" => $org_district ?? '',
+                "org_city" => $org_city ?? '',
+                "org_pincode" => $org_pincode ?? '',
+                "org_address" => $org_address ?? '',
+                "org_email" => $org_email ?? '',
+                "org_No" => $org_No ?? '',
+                "org_addedby" => $org_addedby ?? '',
 
-            "org_id" => $org_id,
-        );
+                "org_id" => $org_id,
+            );
 
-        if ($data == '') {
-        } else {
-            $data = $this->organization_model->updatedata($id, $data);
-            $given_data = $this->organization_model->getdata($id, $org_id);
-        }
+            if ($data == '') {
+            } else {
+                $data = $this->organization_model->updatedata($id, $data);
+                $given_data = $this->organization_model->getdata($id, $org_id);
+            }
 
-        if ($data) {
-            $this->response([
-                'status' => true,
-                'message' => 'organization Data Updated Successfully.',
-                'data' => $given_data
-            ], REST_Controller::HTTP_OK);
-        } else {
-            $this->response([
-                'status' => false,
-                'message' => 'Unsuccessful.'
-            ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
-        }
+            if ($data) {
+                $this->response([
+                    'status' => true,
+                    'message' => 'organization Data Updated Successfully.',
+                    'data' => $given_data
+                ], REST_Controller::HTTP_OK);
+            } else {
+                $this->response([
+                    'status' => false,
+                    'message' => 'Unsuccessful.'
+                ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+            }
         // }
     }
 
@@ -270,11 +253,11 @@ class Organization extends REST_Controller
 
         $data = $this->organization_model->deletedata($id);
 
-        if ($data == null) {
-            $this->response([
-                "status" => FALSE,
-                "message" => "Data not found"
-            ], REST_Controller::HTTP_BAD_REQUEST);
+       if ($data == null) {
+                $this->response([
+                    "status" => FALSE,
+                    "message" => "Data not found"
+                ], REST_Controller::HTTP_BAD_REQUEST);
         } elseif (!empty($data)) {
             if ($data) {
                 $this->response([

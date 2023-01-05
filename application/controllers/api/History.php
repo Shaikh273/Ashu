@@ -25,6 +25,7 @@ class History extends REST_Controller
 
         // PATIENT DATA
         // $id = $this->input->post('id');
+        $org_id = $this->input->post('org_id');
         $C_id = $this->input->post('C_id');
         $pat_id = $this->input->post('pat_id');
         // $dt = strtotime($this->input->post('dt'));
@@ -558,29 +559,30 @@ class History extends REST_Controller
 
         $data = $this->history_model->deletedata($id);
 
-        if ($data == null) {
-            $this->response([
-                "status" => FALSE,
-                "message" => "Data not found"
-            ], REST_Controller::HTTP_BAD_REQUEST);
-        } elseif (!empty($data)) {
-            if ($data) {
+            if ($data == null) {
                 $this->response([
-                    "status" => TRUE,
-                    "id" => $id,
-                    "message" => "Data Deleted "
-                ], REST_Controller::HTTP_OK);
+                    "status" => FALSE,
+                    "message" => "Data not found"
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            } elseif (!empty($data)) {
+                if ($data) {
+                    $this->response([
+                        "status" => TRUE,
+                        "id" => $id,
+                        "message" => "Data Deleted "
+                    ], REST_Controller::HTTP_OK);
+                } else {
+                    $this->response([
+                        "status" => FALSE,
+                        "message" => "Unable to Delete"
+                    ], REST_Controller::HTTP_BAD_REQUEST);
+                }
             } else {
                 $this->response([
                     "status" => FALSE,
-                    "message" => "Unable to Delete"
+                    "message" => "Data not found"
                 ], REST_Controller::HTTP_BAD_REQUEST);
             }
-        } else {
-            $this->response([
-                "status" => FALSE,
-                "message" => "Data not found"
-            ], REST_Controller::HTTP_BAD_REQUEST);
-        }
+       
     }
 }
