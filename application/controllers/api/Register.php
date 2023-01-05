@@ -14,6 +14,7 @@ class Register extends REST_Controller
         parent::__construct();
         $this->load->database();
         $this->load->model('api/registerpatient_model');
+        $this->pat = "Patients";
     }
 
     public function patient_get()
@@ -73,8 +74,26 @@ class Register extends REST_Controller
         $emg_name = $this->security->xss_clean($this->input->post("emg_name"));
         $emg_no = $this->security->xss_clean($this->input->post("emg_no"));
 
-        $pat_id = $this->db->select('pat_id')->from($this->patients)->order_by('id','DESC')->get()->row()->pat_id ?? 'p_0';
-        $pat_id = substr($first_name,0,3).'_0'.explode('_',$pat_id)[1]+1;
+
+        $org_id = $this->security->xss_clean($this->input->post('org_id'));
+
+        $patient_id = $this->db->select('pat_id')->from($this->pat)->order_by("$this->pat.id", 'DESC')->get()->row()->pat_id ?? '_0';
+
+
+        if (!empty($patient_id)) {
+            if (!empty($org_id)) {
+                $pat_id =  explode('_', $patient_id)[1] + 1;
+                $pat_id =  substr($first_name, 0, 3) . '-P_0' . $pat_id;
+            } else {
+                $this->response([
+                    'status' => false,
+                    'message' => "Organization not assigned",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        }
+
+        // print($pat_id);die();  
+
 
         if (!empty($_FILES['img'])) {
             $fileName = $_FILES['img']['name'];
@@ -124,51 +143,58 @@ class Register extends REST_Controller
         //         "error" => $error
         //     ], REST_Controller::HTTP_BAD_REQUEST);
         // } else {
-            $data = array(
-                "pat_id" => $pat_id,
-                "middle_name" => $middle_name ?? '',
-                "last_name" => $last_name ?? '',
-                "mobile_no" => $mobileNo ?? '',
-                "secondarynumber" => $secondarynumber ?? '',
-                "email" => $email ?? '',
-                "gender" => $gender ?? '',
-                "DOB" => $DOB ?? '',
-                "language" => $language ?? '',
-                "patienttype" => $patienttype ?? '',
-                "address" => $address ?? '',
-                "state" => $state ?? '',
-                "city" => $city ?? '',
-                "pincode" => $pincode ?? '',
-                "occupation" => $occupation ?? '',
-                "employeeid" => $employeeid ?? '',
-                "medicalrecordno" => $medicalrecordno ?? '',
-                "governmentid_type" => $governmentid_type ?? '',
-                "governmentidno" => $governmentidno ?? '',
-                "img" => $img ?? '',
-                "blood_grp" => $blood_grp ?? '',
-                "maritail_status" => $maritail_status ?? '',
-                "disabled" => $disabled ?? '',
-                "emg_relation" => $emg_relation ?? '',
-                "emg_name" => $emg_name ?? '',
-                "emg_no" => $emg_no ?? '',
-                "pat_id" => $pat_id,
-                'created_at' => date('Y-m-d H:i:s'),
-            );
 
-            $insertData = $this->registerpatient_model->insertdata($data);
-            if ($insertData) {
-                $this->response([
-                    'status' => TRUE,
-                    'message' => "You've Registered Successfully",
-                    'data' => $data
-                ], REST_Controller::HTTP_OK);
-            } else {
-                $this->response([
-                    "status" => False,
-                    "Message" => "Registration Failed"
-                ], REST_Controller::HTTP_BAD_REQUEST);
-            }
+        $data = array(
+            "first_name" => $first_name ?? '',
+            "middle_name" => $middle_name ?? '',
+            "last_name" => $last_name ?? '',
+            "mobile_no" => $mobileNo ?? '',
+            "secondarynumber" => $secondarynumber ?? '',
+            "email" => $email ?? '',
+            "gender" => $gender ?? '',
+            "DOB" => $DOB ?? '',
+            "language" => $language ?? '',
+            "patienttype" => $patienttype ?? '',
+            "address" => $address ?? '',
+            "state" => $state ?? '',
+            "city" => $city ?? '',
+            "pincode" => $pincode ?? '',
+            "occupation" => $occupation ?? '',
+            "employeeid" => $employeeid ?? '',
+            "medicalrecordno" => $medicalrecordno ?? '',
+            "governmentid_type" => $governmentid_type ?? '',
+            "governmentidno" => $governmentidno ?? '',
+
+            "img" => $img ?? '',
+            "blood_grp" => $blood_grp ?? '',
+            "maritail_status" => $maritail_status ?? '',
+            "disabled" => $disabled ?? '',
+            "emg_relation" => $emg_relation ?? '',
+            "emg_name" => $emg_name ?? '',
+            "emg_no" => $emg_no ?? '',
+            
+            "org_id" => $org_id,
+            "pat_id" => $pat_id,
+
+            'created_at' => date('Y-m-d H:i:s'),
+        );
+
+        $insertData = $this->registerpatient_model->insertdata($data);
+        if ($insertData) {
+            $this->response([
+                'status' => TRUE,
+                'message' => "You've Registered Successfully",
+                'data' => $data
+            ], REST_Controller::HTTP_OK);
+        } else {
+            $this->response([
+                "status" => False,
+                "Message" => "Registration Failed"
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }
+
         // }
+
     }
 
     public function patientupdate_post()
@@ -256,58 +282,58 @@ class Register extends REST_Controller
         //         "error" => $error
         //     ], REST_Controller::HTTP_BAD_REQUEST);
         // } else {
-            $data = array(
-                "id" => $id,
+        $data = array(
+            "id" => $id,
 
-                "first_name" => $first_name ?? '',
-                "middle_name" => $middle_name ?? '',
-                "last_name" => $last_name ?? '',
-                "mobile_no" => $mobileNo ?? '',
-                "secondarynumber" => $secondarynumber ?? '',
-                "email" => $email ?? '',
-                "gender" => $gender ?? '',
-                "DOB" => $DOB ?? '',
-                "language" => $language ?? '',
-                "patienttype" => $patienttype ?? '',
-                "address" => $address ?? '',
-                "state" => $state ?? '',
-                "city" => $city ?? '',
-                "pincode" => $pincode ?? '',
-                "occupation" => $occupation ?? '',
-                "employeeid" => $employeeid ?? '',
-                "medicalrecordno" => $medicalrecordno ?? '',
-                "governmentid_type" => $governmentid_type ?? '',
-                "governmentidno" => $governmentidno ?? '',
+            "first_name" => $first_name ?? '',
+            "middle_name" => $middle_name ?? '',
+            "last_name" => $last_name ?? '',
+            "mobile_no" => $mobileNo ?? '',
+            "secondarynumber" => $secondarynumber ?? '',
+            "email" => $email ?? '',
+            "gender" => $gender ?? '',
+            "DOB" => $DOB ?? '',
+            "language" => $language ?? '',
+            "patienttype" => $patienttype ?? '',
+            "address" => $address ?? '',
+            "state" => $state ?? '',
+            "city" => $city ?? '',
+            "pincode" => $pincode ?? '',
+            "occupation" => $occupation ?? '',
+            "employeeid" => $employeeid ?? '',
+            "medicalrecordno" => $medicalrecordno ?? '',
+            "governmentid_type" => $governmentid_type ?? '',
+            "governmentidno" => $governmentidno ?? '',
 
-                "img" => $img ?? '',
-                "blood_grp" => $blood_grp ?? '',
-                "maritail_status" => $maritail_status ?? '',
-                "disabled" => $disabled ?? '',
-                "emg_relation" => $emg_relation ?? '',
-                "emg_name" => $emg_name ?? '',
-                "emg_no" => $emg_no ?? '',
+            "img" => $img ?? '',
+            "blood_grp" => $blood_grp ?? '',
+            "maritail_status" => $maritail_status ?? '',
+            "disabled" => $disabled ?? '',
+            "emg_relation" => $emg_relation ?? '',
+            "emg_name" => $emg_name ?? '',
+            "emg_no" => $emg_no ?? '',
 
-                "pat_id" => $pat_id,
-            );
+            "pat_id" => $pat_id,
+        );
 
-            if ($data == '') {
-            } else {
-                $data = $this->registerpatient_model->updatedata($id,$data);
-                $given_data = $this->registerpatient_model->getdata($id, $pat_id);
-            }
+        if ($data == '') {
+        } else {
+            $data = $this->registerpatient_model->updatedata($id, $data);
+            $given_data = $this->registerpatient_model->getdata($id, $pat_id);
+        }
 
-            if ($data) {
-                $this->response([
-                    'status' => true,
-                    'message' => 'Patient Updated Successfully.',
-                    'data' => $given_data
-                ], REST_Controller::HTTP_OK);
-            } else {
-                $this->response([
-                    'status' => false,
-                    'message' => 'Unsuccessful.'
-                ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
-            }
+        if ($data) {
+            $this->response([
+                'status' => true,
+                'message' => 'Patient Updated Successfully.',
+                'data' => $given_data
+            ], REST_Controller::HTTP_OK);
+        } else {
+            $this->response([
+                'status' => false,
+                'message' => 'Unsuccessful.'
+            ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+        }
         // }
     }
 
@@ -318,10 +344,10 @@ class Register extends REST_Controller
         $data = $this->registerpatient_model->deletedata($id);
 
         if ($data == null) {
-                $this->response([
-                    "status" => FALSE,
-                    "message" => "Data not found"
-                ], REST_Controller::HTTP_BAD_REQUEST);
+            $this->response([
+                "status" => FALSE,
+                "message" => "Data not found"
+            ], REST_Controller::HTTP_BAD_REQUEST);
         } elseif (!empty($data)) {
             if ($data) {
                 $this->response([
