@@ -24,7 +24,7 @@ class Staff extends REST_Controller
     {
         $u_id = $this->security->xss_clean($this->input->get('u_id'));
         $role_id = $this->db->select('role_id')->from($this->staff)->where("u_id = '$u_id'")->get()->row()->id ?? '';
-        $role = $this->db->select('role')->from($this->staff)->join($this->role, "$this->staff.role_id = $this->role.id")->where('id', $role_id)->get()->row()->role ?? '';
+        $role = $this->db->select('role')->from($this->staff)->join($this->role, "$this->staff.role_id = $this->role.id")->where("$this->role.id = $role_id")->get()->row()->role ?? '';
         $data = [];
         if (!empty($role)) {
 
