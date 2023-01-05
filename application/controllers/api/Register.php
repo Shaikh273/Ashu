@@ -63,8 +63,8 @@ class Register extends REST_Controller
         $medicalrecordno = $this->security->xss_clean($this->input->post("medicalrecordno"));
         $governmentid_type = $this->security->xss_clean($this->input->post("governmentid_type"));
         $governmentidno = $this->security->xss_clean($this->input->post("governmentidno"));
-
-
+        
+        
         $img = $this->input->post("img");
         $blood_grp = $this->security->xss_clean($this->input->post("blood_grp"));
         $maritail_status = $this->security->xss_clean($this->input->post("maritail_status"));
@@ -73,7 +73,8 @@ class Register extends REST_Controller
         $emg_name = $this->security->xss_clean($this->input->post("emg_name"));
         $emg_no = $this->security->xss_clean($this->input->post("emg_no"));
 
-        $pat_id = $this->input->post('pat_id');
+        $pat_id = $this->db->select('pat_id')->from($this->patients)->order_by('id','DESC')->get()->row()->pat_id ?? 'p_0';
+        $pat_id = substr($first_name,0,3).'_0'.explode('_',$pat_id)[1]+1;
 
         if (!empty($_FILES['img'])) {
             $fileName = $_FILES['img']['name'];
@@ -124,7 +125,7 @@ class Register extends REST_Controller
         //     ], REST_Controller::HTTP_BAD_REQUEST);
         // } else {
             $data = array(
-                "first_name" => $first_name ?? '',
+                "pat_id" => $pat_id,
                 "middle_name" => $middle_name ?? '',
                 "last_name" => $last_name ?? '',
                 "mobile_no" => $mobileNo ?? '',
@@ -143,7 +144,6 @@ class Register extends REST_Controller
                 "medicalrecordno" => $medicalrecordno ?? '',
                 "governmentid_type" => $governmentid_type ?? '',
                 "governmentidno" => $governmentidno ?? '',
-
                 "img" => $img ?? '',
                 "blood_grp" => $blood_grp ?? '',
                 "maritail_status" => $maritail_status ?? '',
@@ -151,9 +151,7 @@ class Register extends REST_Controller
                 "emg_relation" => $emg_relation ?? '',
                 "emg_name" => $emg_name ?? '',
                 "emg_no" => $emg_no ?? '',
-
                 "pat_id" => $pat_id,
-
                 'created_at' => date('Y-m-d H:i:s'),
             );
 
