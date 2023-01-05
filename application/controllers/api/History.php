@@ -558,30 +558,29 @@ class History extends REST_Controller
 
         $data = $this->history_model->deletedata($id);
 
-            if ($data == null) {
+        if ($data == null) {
+            $this->response([
+                "status" => FALSE,
+                "message" => "Data not found"
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        } elseif (!empty($data)) {
+            if ($data) {
                 $this->response([
-                    "status" => FALSE,
-                    "message" => "Data not found"
-                ], REST_Controller::HTTP_BAD_REQUEST);
-            } elseif (!empty($data)) {
-                if ($data) {
-                    $this->response([
-                        "status" => TRUE,
-                        "id" => $id,
-                        "message" => "Data Deleted "
-                    ], REST_Controller::HTTP_OK);
-                } else {
-                    $this->response([
-                        "status" => FALSE,
-                        "message" => "Unable to Delete"
-                    ], REST_Controller::HTTP_BAD_REQUEST);
-                }
+                    "status" => TRUE,
+                    "id" => $id,
+                    "message" => "Data Deleted "
+                ], REST_Controller::HTTP_OK);
             } else {
                 $this->response([
                     "status" => FALSE,
-                    "message" => "Data not found"
+                    "message" => "Unable to Delete"
                 ], REST_Controller::HTTP_BAD_REQUEST);
             }
-       
+        } else {
+            $this->response([
+                "status" => FALSE,
+                "message" => "Data not found"
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }
     }
 }
