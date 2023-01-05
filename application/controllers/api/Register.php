@@ -14,6 +14,10 @@ class Register extends REST_Controller
         parent::__construct();
         $this->load->database();
         $this->load->model('api/registerpatient_model');
+        $this->role = 'role';
+        $this->staff = 'staff';
+        $this->org = 'admin_org';
+        $this->organization = 'organization';
     }
 
     public function patient_get()
@@ -63,7 +67,7 @@ class Register extends REST_Controller
         $medicalrecordno = $this->security->xss_clean($this->input->post("medicalrecordno"));
         $governmentid_type = $this->security->xss_clean($this->input->post("governmentid_type"));
         $governmentidno = $this->security->xss_clean($this->input->post("governmentidno"));
-
+        
         $img = $this->input->post("img");
         $blood_grp = $this->security->xss_clean($this->input->post("blood_grp"));
         $maritail_status = $this->security->xss_clean($this->input->post("maritail_status"));
@@ -72,7 +76,22 @@ class Register extends REST_Controller
         $emg_name = $this->security->xss_clean($this->input->post("emg_name"));
         $emg_no = $this->security->xss_clean($this->input->post("emg_no"));
 
-        $pat_id = $this->input->post('pat_id');
+
+        $admin = $this->security->xss_clean($this->input->post('admin'));
+        $role_id = $this->security->xss_clean($this->input->post('role_id'));
+
+        $role = $this->db->select('role')->from($this->role)->where('id', $role_id)->get()->row()->role ?? '';
+
+        $user_id = $this->db->select('u_id')->from($this->staff)->join($this->role, "$this->staff.role_id = $this->role.id")->where("$this->role.role = '$role' AND admin = '$admin'")->order_by("staff.id", 'DESC')->get()->row()->u_id ?? '_0';
+
+        $user_id = !empty($user_id) ? $user_id : '_0';
+
+        $org = $this->get('org');
+
+        $pat_id = explode('_', $user_id)[1] + 1;
+        $pat_id =  substr($first_name, 0, 3) . "-P_0" . $pat_id;
+        // $pat_id = $this->input->post('pat_id');
+        // print_r($pat_id);die();
 
         if (!empty($_FILES['img'])) {
             $fileName = $_FILES['img']['name'];
@@ -83,7 +102,7 @@ class Register extends REST_Controller
             $config['max_size']     = '1024000';
             $config['max_width'] = '6000';
             $config['max_height'] = '6000';
-
+            
             $this->load->library('upload', $config);
             $this->upload->initialize($config);
             if (!$this->upload->do_upload('img')) {
@@ -178,8 +197,8 @@ class Register extends REST_Controller
         $emg_name = $this->security->xss_clean($this->input->post("emg_name"));
         $emg_no = $this->security->xss_clean($this->input->post("emg_no"));
 
-        $org = $this->get('org');
 
+      
 
         $pat_id = $this->input->post('pat_id');
 
@@ -205,6 +224,7 @@ class Register extends REST_Controller
         } else {
             $img = '';
         }
+
 
         $data = array(
             "id" => $id,
