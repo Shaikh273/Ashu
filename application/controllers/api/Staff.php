@@ -219,7 +219,7 @@ class Staff extends REST_Controller {
         $id_img = $this->security->xss_clean($this->input->post('id_img'));
         $join_date = $this->security->xss_clean($this->input->post('join_date'));
         $role_id = $this->security->xss_clean($this->input->post('role_id'));
-        $status = $this->security->xss_clean($this->input->post('status'));
+        $org_id = $this->security->xss_clean($this->input->post('org_id'));
 
         $data = [
             'name' => $name ?? '',
