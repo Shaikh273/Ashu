@@ -11,19 +11,36 @@ class history_model extends CI_Model
 
     public function insertdata($data1, $data2, $data3, $data4, $data5, $data6, $data7, $data8)
     {
-        $sql =   $this->db->trans_Start();
+        // print_r($data1);die();
+        // $sql =   $this->db->trans_Start();
         // $this->db->insert('history_opthalmic_history', $data1);
-        $this->db->insert('history_visit', $data1);
-        $this->db->insert('history_chief_complaints', $data2);
-        $this->db->insert('history_systemic_history', $data3);
-        $this->db->insert('history_drug_allergies', $data4);
-        $this->db->insert('history_contact_allergies', $data5);
-        $this->db->insert('history_food_allergies', $data6);
-        $this->db->insert('history_vital_signs', $data7);
-        $this->db->insert('history_anthropometry', $data8);
-        $this->db->trans_Complete();
 
-        return $sql ? true : false;
+        $sql1 = $this->db->insert('history_visit', $data1);
+
+        if(!empty($data2['name'])) {
+            $sql = $this->db->insert('history_chief_complaints', $data2);
+        }
+        if(!empty($data3['name'])) {               
+            $sql = $this->db->insert('history_systemic_history', $data3);
+        }
+        if(!empty($data4['name'])) {
+            $sql = $this->db->insert('history_drug_allergies', $data4);
+        }
+        if(!empty($data5['name'])) {
+            $sql = $this->db->insert('history_contact_allergies', $data5);
+        }
+        if(!empty($data6['name'])) {
+            $sql = $this->db->insert('history_food_allergies', $data6);
+        }
+        if(!empty($data7['name'])) {
+            $sql = $this->db->insert('history_vital_signs', $data7);
+        }
+        if(!empty($temperature)) {
+            $sql = $this->db->insert('history_anthropometry', $data8);
+        }
+        // $this->db->trans_Complete();
+
+        return $sql1 ? true : false;
     }
 
     public function updatedata($id, $data1, $data2, $data3, $data4, $data5, $data6, $data7, $data8)
@@ -44,33 +61,26 @@ class history_model extends CI_Model
         return $sql ? true : false;
     }
 
-    public function getData($C_id, $pat_id)
+    public function getData($org_id)
     {
         $data = array();
-        $data['history_visit'] =
-            $this->db->select("*")->from('history_visit')->where("pat_id = '$pat_id' AND C_id = '$C_id'")->get()->result();
+        if(!empty($org_id)){
+            $data['history_visit'] =
+            $this->db->select("history_visit.*,organization.*,patients.*")->from('history_visit')->join('organization','history_visit.org_id = organization.org_id')->join('patients','history_visit.pat_id = patients.pat_id')->where("history_visit.org_id = '$org_id'")->get()->result();
 
-        $data['history_chief_complaints'] =
-            $this->db->select("*")->from('history_chief_complaints')->where("pat_id = '$pat_id' AND C_id = '$C_id'")->get()->result();
+            $case_id = $this->db->select('C_id')->from('history_visit')->get()->result();
+            $length = count($case_id);
 
-        $data['history_systemic_history'] =
-            $this->db->select("*")->from('history_systemic_history')->where("pat_id = '$pat_id' AND C_id = '$C_id'")->get()->result();
-
-        $data['history_drug_allergies'] =
-            $this->db->select("*")->from('history_drug_allergies')->where("pat_id = '$pat_id' AND C_id = '$C_id'")->get()->result();
-
-        $data['history_contact_allergies'] =
-            $this->db->select("*")->from('history_contact_allergies')->where("pat_id = '$pat_id' AND C_id = '$C_id'")->get()->result();
-
-        $data['history_food_allergies'] =
-            $this->db->select("*")->from('history_food_allergies')->where("pat_id = '$pat_id' AND C_id = '$C_id'")->get()->result();
-
-        $data['history_vital_signs'] =
-            $this->db->select("*")->from('history_vital_signs')->where("pat_id = '$pat_id' AND C_id = '$C_id'")->get()->result();
-
-        $data['history_anthropometry'] =
-            $this->db->select("*")->from('history_anthropometry')->where("pat_id = '$pat_id' AND C_id = '$C_id'")->get()->result();
-
+            for($i = 0; $i < $length; ++$i){
+                $c_id = $case_id[$i]->C_id;
+                $data['history_visit'][$i]->history_chief_complaints = $this->db->select("*")->from('history_chief_complaints')->where("C_id = '$c_id'")->get()->row();
+                $data['history_visit'][$i]->history_systemic_history = $this->db->select("*")->from('history_systemic_history')->where("C_id = '$c_id'")->get()->row();
+                $data['history_visit'][$i]->history_drug_allergies = $this->db->select("*")->from('history_drug_allergies')->where("C_id = '$c_id'")->get()->row();
+                $data['history_visit'][$i]->history_contact_allergies = $this->db->select("*")->from('history_contact_allergies')->where("C_id = '$c_id'")->get()->row();
+                $data['history_visit'][$i]->history_vital_signs = $this->db->select("*")->from('history_vital_signs')->where("C_id = '$c_id'")->get()->row();
+                $data['history_visit'][$i]->history_anthropometry = $this->db->select("*")->from('history_anthropometry')->where("C_id = '$c_id'")->get()->row();
+            }           
+        }
 
         if (!empty($data['history_visit'])) {
             return $data;

@@ -14,35 +14,57 @@ class Register extends REST_Controller
         parent::__construct();
         $this->load->database();
         $this->load->model('api/registerpatient_model');
-        $this->role = 'role';
-        $this->staff = 'staff';
-        $this->org = 'admin_org';
-        $this->organization = 'organization';
+        $this->pat = "Patients";
     }
 
     public function patient_get()
     {
-        $id = $this->input->get('id');
-        $pat_id = $this->input->get('pat_id');
-
-        if ($id || $pat_id) {
-            $data = $this->registerpatient_model->getData($id, $pat_id);
-            if (!empty($data)) {
-                $this->response([
-                    'status' => true,
-                    'data' => $data
-                ], REST_Controller::HTTP_OK);
+        $u_id = $this->security->xss_clean($this->input->get('u_id'));
+        $role_id = $this->db->select('role_id')->from($this->staff)->where("u_id = '$u_id'")->get()->row()->role_id ?? '';
+        $role = $this->db->select('role')->from($this->role)->where("$this->role.id = '$role_id'")->get()->row()->role ?? '';
+        $data = [];
+        if (!empty($role)) {
+            if ($role == 'Super Admin') {
+                $data['user_data'] = $this->db->select("*,$this->role.role")->from($this->staff)->join($this->role, "$this->staff.role_id = $this->role.id")->where("u_id = '$u_id'")->get()->row();
+                $staff = $this->db->select('DISTINCT(u_id)')->from($this->staff)->join($this->role, "$this->staff.role_id = $this->role.id")->where("admin = '$u_id' AND $this->role.role = 'Admin'")->get()->result();
+                if (count($staff) > 0) {
+                    for ($i = 0; $i < count($staff); ++$i) {
+                        $staff_id = $staff[$i]->u_id;
+                        $data['admin'][$i] = $this->db->select('*')->from($this->staff)->where("admin = '$u_id' AND u_id = '$staff_id'")->get()->row();
+                        // print_r($data['staff']);
+                        $org = $this->db->select('org_id')->from($this->org)->where("admin_id = '$staff_id'")->get()->result();
+                        for ($j = 0; $j < count($org); ++$j) {
+                            $org_id = $org[$j]->org_id;
+                            $data['admin'][$i]->org[$j] = $this->db->select('*')->from($this->organization)->where("org_id = '$org_id'")->get()->row();
+                            $data['admin'][$i]->org[$j]->staff = $this->db->select('*')->from($this->staff)->where("org_id = '$org_id'")->get()->result();
+                        }
+                    }
+                }
+            } else if ($role == 'Admin') {
+                $data['user_data'] = $this->db->select("*,$this->role.role")->from($this->staff)->join($this->role, "$this->staff.role_id = $this->role.id")->where("u_id = '$u_id'")->get()->row();
+                $org = $this->db->select('org_id')->from($this->org)->where("admin_id = '$u_id'")->get()->result();
+                for ($j = 0; $j < count($org); ++$j) {
+                    $org_id = $org[$j]->org_id;
+                    $data['org'][$j] = $this->db->select('*')->from($this->organization)->where("org_id = '$org_id'")->get()->row();
+                    $data['org'][$j]->staff = $this->db->select('*')->from($this->staff)->where("org_id = '$org_id'")->get()->result();
+                }
             } else {
-                $this->response([
-                    'status' => false,
-                    'data' => 'Data Not Found.'
-                ], REST_Controller::HTTP_NOT_FOUND);
+                $org_id = $this->db->select('org_id')->from($this->staff)->where("u_id = '$u_id'")->get()->row()->org_id ?? '';
+
+                $data['user_data'] = $this->db->select("*,$this->role.role")->from($this->staff)->join($this->role, "$this->staff.role_id = $this->role.id")->where("u_id = '$u_id'")->get()->row();
+
+                $data['org'] = $this->db->select('*')->from($this->organization)->where("org_id = '$org_id'")->get()->row();
             }
+            $this->response([
+                'status' => true,
+                'data' => $data,
+            ], REST_Controller::HTTP_OK);
+            // $data['organization'] = $this->db->select('*')->from($this->org)->;
         } else {
             $this->response([
                 'status' => false,
-                'data' => 'Check Patient ID or Appointment ID.'
-            ], REST_Controller::HTTP_NOT_FOUND);
+                'message' => 'Role is not Assigned',
+            ], REST_Controller::HTTP_BAD_REQUEST);
         }
     }
 
@@ -67,7 +89,8 @@ class Register extends REST_Controller
         $medicalrecordno = $this->security->xss_clean($this->input->post("medicalrecordno"));
         $governmentid_type = $this->security->xss_clean($this->input->post("governmentid_type"));
         $governmentidno = $this->security->xss_clean($this->input->post("governmentidno"));
-
+        
+        
         $img = $this->input->post("img");
         $blood_grp = $this->security->xss_clean($this->input->post("blood_grp"));
         $maritail_status = $this->security->xss_clean($this->input->post("maritail_status"));
@@ -77,22 +100,25 @@ class Register extends REST_Controller
         $emg_no = $this->security->xss_clean($this->input->post("emg_no"));
 
 
-        $admin = $this->security->xss_clean($this->input->post('admin'));
-        $role_id = $this->security->xss_clean($this->input->post('role_id'));
+        $org_id = $this->security->xss_clean($this->input->post('org_id'));
 
-        $role = $this->db->select('role')->from($this->role)->where('id', $role_id)->get()->row()->role ?? '';
+        $patient_id = $this->db->select('pat_id')->from($this->pat)->order_by("$this->pat.id", 'DESC')->get()->row()->pat_id ?? '_0';
 
-        $user_id = $this->db->select('u_id')->from($this->staff)->join($this->role, "$this->staff.role_id = $this->role.id")->where("$this->role.role = '$role' AND admin = '$admin'")->order_by("staff.id", 'DESC')->get()->row()->u_id ?? '_0';
 
-        $user_id = !empty($user_id) ? $user_id : '_0';
+        if (!empty($patient_id)) {
+            if (!empty($org_id)) {
+                $pat_id =  explode('_', $patient_id)[1] + 1;
+                $pat_id =  substr($first_name, 0, 3) . '-P_0' . $pat_id;
+            } else {
+                $this->response([
+                    'status' => false,
+                    'message' => "Organization not assigned",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        }
 
-        $org = $this->get('org');
+        // print($pat_id);die();  
 
-        $pat_id = explode('_', $user_id)[1] + 1;
-        $pat_id =  substr($first_name, 0, 3) . "-P_0" . $pat_id;
-        // $pat_id = $this->input->post('pat_id');
-        // print_r($pat_id);
-        // die();
 
         if (!empty($_FILES['img'])) {
             $fileName = $_FILES['img']['name'];
@@ -109,6 +135,7 @@ class Register extends REST_Controller
             if (!$this->upload->do_upload('img')) {
                 echo $this->upload->display_errors();
                 $img = '';
+                #redirect("employee/view?I=" .base64_encode($eid));
             } else {
                 $path = $this->upload->data();
                 $img = $path['file_name'];
@@ -116,6 +143,32 @@ class Register extends REST_Controller
         } else {
             $img = '';
         }
+
+        // $this->form_validation->set_rules(
+        //     "mobileNo",
+        //     "Mobile No",
+        //     "required|numeric|is_unique[patients.mobile_no]|min_length[10]|max_length[15]",
+        //     array(
+        //         'max_length' => 'Mobile no. should be maximum 15 digits',
+        //         'min_length' => 'Mobile no. should be minimum 10 digits',
+        //         'is_unique' => 'Mobile no. already used',
+        //         'required' => 'This Field must be filled',
+        //         'numeric' => 'Please Enter only Numbers'
+        //     )
+        // );
+
+        // if ($this->form_validation->run() == false) {
+
+        //     // very important query "LIFES SAVER"
+        //     $error = strip_tags(validation_errors());
+
+        //     $this->response([
+        //         "status" => False,
+        //         "message" => "Invalid Details",
+        //         "error" => $error
+        //     ], REST_Controller::HTTP_BAD_REQUEST);
+        // } else {
+
         $data = array(
             "first_name" => $first_name ?? '',
             "middle_name" => $middle_name ?? '',
@@ -144,7 +197,8 @@ class Register extends REST_Controller
             "emg_relation" => $emg_relation ?? '',
             "emg_name" => $emg_name ?? '',
             "emg_no" => $emg_no ?? '',
-
+            
+            "org_id" => $org_id,
             "pat_id" => $pat_id,
 
             'created_at' => date('Y-m-d H:i:s'),
@@ -163,6 +217,9 @@ class Register extends REST_Controller
                 "Message" => "Registration Failed"
             ], REST_Controller::HTTP_BAD_REQUEST);
         }
+
+        // }
+
     }
 
     public function patientupdate_post()
@@ -198,9 +255,6 @@ class Register extends REST_Controller
         $emg_name = $this->security->xss_clean($this->input->post("emg_name"));
         $emg_no = $this->security->xss_clean($this->input->post("emg_no"));
 
-
-
-
         $pat_id = $this->input->post('pat_id');
 
         if (!empty($_FILES['img'])) {
@@ -218,6 +272,7 @@ class Register extends REST_Controller
             if (!$this->upload->do_upload('img')) {
                 echo $this->upload->display_errors();
                 $img = '';
+                #redirect("employee/view?I=" .base64_encode($eid));
             } else {
                 $path = $this->upload->data();
                 $img = $path['file_name'];
@@ -226,7 +281,32 @@ class Register extends REST_Controller
             $img = '';
         }
 
+        // $this->form_validation->set_rules(
+        //     "mobileNo",
+        //     "Mobile No",
+        //     "required|numeric|is_unique[patients.mobile_no]|min_length[10]|max_length[15]",
+        //     array(
+        //         'max_length' => 'Mobile no. should be maximum 15 digits',
+        //         'min_length' => 'Mobile no. should be minimum 10 digits',
+        //         'is_unique' => 'Mobile no. already used',
+        //         'required' => 'This Field must be filled',
+        //         'numeric' => 'Please Enter only Numbers'
+        //     )
+        // );
 
+
+
+        // if ($this->form_validation->run() == false) {
+
+        //     // very important query "LIFES SAVER"
+        //     $error = strip_tags(validation_errors());
+
+        //     $this->response([
+        //         "status" => False,
+        //         "message" => "Invalid Details",
+        //         "error" => $error
+        //     ], REST_Controller::HTTP_BAD_REQUEST);
+        // } else {
         $data = array(
             "id" => $id,
 
@@ -279,6 +359,7 @@ class Register extends REST_Controller
                 'message' => 'Unsuccessful.'
             ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
         }
+        // }
     }
 
     public function patient_delete()
