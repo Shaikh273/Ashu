@@ -49,7 +49,9 @@ CREATE TABLE `organization` (
 --
 
 INSERT INTO `organization` (`id`, `org_id`, `org_name`, `org_country`, `org_state`, `org_district`, `org_city`, `org_pincode`, `org_address`, `org_email`, `org_No`, `org_addedby`, `created_at`, `updated_at`) VALUES
-(1, 'Ash_01', 'Ashu', 'India', 'Maharashtra', 'Mumbai', '400010', '', 'madanpura Nagpada 2 taki', 'nooralam@gmail.com', '8898971045', 'Maa-S_01', '2023-01-04 11:50:24', '2023-01-04 16:20:24');
+( 'Ash_01', 'Ashu', 'India', 'Maharashtra', 'Mumbai', '400010', '', 'madanpura Nagpada 2 taki', 'nooralam@gmail.com', '8898971045', 'Maa-S_01', '2023-01-04 11:50:24', '2023-01-04 16:20:24');
+INSERT INTO `organization` ( `org_id`, `org_name`, `org_country`, `org_state`, `org_district`, `org_city`, `org_pincode`, `org_address`, `org_email`, `org_No`, `org_addedby`, `created_at`, `updated_at`) VALUES
+( 'Ash_01', 'Ashu', 'India', 'Maharashtra', 'Mumbai', '400010', '', 'madanpura Nagpada 2 taki', 'nooralam@gmail.com', '8898971045', 'Maa-S_01', '2023-01-04 11:50:24', '2023-01-04 16:20:24');
 
 --
 -- Indexes for dumped tables
