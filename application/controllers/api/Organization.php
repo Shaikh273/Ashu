@@ -154,7 +154,7 @@ class Organization extends REST_Controller
         $org_address = $this->security->xss_clean($this->input->post("org_address"));
         $org_email = $this->security->xss_clean($this->input->post("org_email"));
         $org_No = $this->security->xss_clean($this->input->post("org_No"));
-        $addedby = $this->security->xss_clean($this->input->post("addedby"));
+        $org_addedby = $this->security->xss_clean($this->input->post("addedby"));
         
         $org_logo = $this->input->post("img");
         $org_id = $this->input->post('org_id');
