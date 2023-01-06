@@ -23,7 +23,7 @@ class Organization extends REST_Controller
         $org_id = $this->input->get('org_id');
 
         if ($id || $org_id) {
-            $data = $this->organization_model->getData($id, $org_id);
+            $data = $this->organization_model->getData($org_id ?? $id);
             if (!empty($data)) {
                 $this->response([
                     'status' => true,
@@ -50,15 +50,13 @@ class Organization extends REST_Controller
         $org_state = $this->security->xss_clean($this->input->post("org_state"));
         $org_district = $this->security->xss_clean($this->input->post("org_district"));
         $org_city = $this->security->xss_clean($this->input->post("org_city"));
-        $org_city = $this->security->xss_clean($this->input->post("org_pincode"));
+        $org_pincode = $this->security->xss_clean($this->input->post("org_pincode"));
         $org_address = $this->security->xss_clean($this->input->post("org_address"));
         $org_email = $this->security->xss_clean($this->input->post("org_email"));
         $org_No = $this->security->xss_clean($this->input->post("org_No"));
-        $org_addedby = $this->security->xss_clean($this->input->post("org_addedby"));
-        
+        $org_addedby = $this->security->xss_clean($this->input->post("org_addedby"));        
         $org = $this->db->select('org_id')->from($this->organization)->order_by('id','DESC')->get()->row() ?? '_0';
-        $org_logo = $this->input->post("img");
-        
+        $org_logo = $this->security->xss_clean($this->input->post("img"));        
         $org_id =  explode('_',$org)[1]+1;
         $org_id = substr($org_name,0,3).'_0'.$org_id;
 
@@ -66,8 +64,8 @@ class Organization extends REST_Controller
             $fileName = $_FILES['img']['name'];
 
             $config['file_name'] = $fileName;
-            $config['upload_path'] = './assets/uploads/images/users/';
-            $config['allowed_types'] = 'gif|jpg|png';
+            $config['upload_path'] = './assets/uploads/organization/';
+            $config['allowed_types'] = 'gif|jpg|png|pdf';
             $config['max_size']     = '1024000';
             $config['max_width'] = '6000';
             $config['max_height'] = '6000';
@@ -76,14 +74,14 @@ class Organization extends REST_Controller
             $this->upload->initialize($config);
             if (!$this->upload->do_upload('img')) {
                 echo $this->upload->display_errors();
-                $img = '';
+                $message = strip_tags($this->upload->display_errors());
                 #redirect("employee/view?I=" .base64_encode($eid));
             } else {
                 $path = $this->upload->data();
-                $img = $path['file_name'];
+                $org_logo = $path['file_name'];
             }
         } else {
-            $img = '';
+            $message = '';
         }
 
         // $this->form_validation->set_rules(
@@ -112,6 +110,7 @@ class Organization extends REST_Controller
         // } else {
             $data = array(
                 "org_id" => $org_id,
+                "org_logo" => $org_logo,
                 "org_name" => $org_name ?? '',
                 "org_country" => $org_country ?? '',
                 "org_state" => $org_state ?? '',
@@ -128,10 +127,10 @@ class Organization extends REST_Controller
             $insertData = $this->organization_model->insertdata($data);
             if ($insertData) {
                 $this->response([
-                    'status' => TRUE,
-                    'message' => "You're Registered Successfully",
+                    'status' => !empty($message) ? false : true,
+                    'message' => !empty($message) ? $message : "You're Registered Successfully",
                     'data' => $data
-                ], REST_Controller::HTTP_OK);
+                ], !empty($message) ? REST_Controller::HTTP_OK : REST_Controller::HTTP_BAD_REQUEST);
             } else {
                 $this->response([
                     "status" => False,
@@ -144,7 +143,7 @@ class Organization extends REST_Controller
     public function organizationupdate_post()
     {
         $id = $this->post('id');
-
+        $org_id = $this->input->post('org_id');
         $org_name = $this->security->xss_clean($this->input->post("org_name"));
         $org_country = $this->security->xss_clean($this->input->post("org_country"));
         $org_state = $this->security->xss_clean($this->input->post("org_state"));
@@ -154,33 +153,33 @@ class Organization extends REST_Controller
         $org_address = $this->security->xss_clean($this->input->post("org_address"));
         $org_email = $this->security->xss_clean($this->input->post("org_email"));
         $org_No = $this->security->xss_clean($this->input->post("org_No"));
-        $addedby = $this->security->xss_clean($this->input->post("addedby"));
-        
-        $org_logo = $this->input->post("img");
-        $org_id = $this->input->post('org_id');
+        $addedby = $this->security->xss_clean($this->input->post("addedby"));       
+        $org_logo = $this->security->xss_clean($this->input->post("img"));
 
         if (!empty($_FILES['img'])) {
             $fileName = $_FILES['img']['name'];
 
             $config['file_name'] = $fileName;
-            $config['upload_path'] = './assets/uploads/images/users/';
-            $config['allowed_types'] = 'gif|jpg|png';
+            $config['upload_path'] = './assets/uploads/organization/';
+            $config['allowed_types'] = 'gif|jpg|png|pdf';
             $config['max_size']     = '1024000';
             $config['max_width'] = '6000';
             $config['max_height'] = '6000';
-
+            $config['overwrite'] = true;
+            
             $this->load->library('upload', $config);
+            $this->upload->overwrite = true;
             $this->upload->initialize($config);
             if (!$this->upload->do_upload('img')) {
                 echo $this->upload->display_errors();
-                $img = '';
+                $message = strip_tags($this->upload->display_errors());
                 #redirect("employee/view?I=" .base64_encode($eid));
             } else {
                 $path = $this->upload->data();
-                $img = $path['file_name'];
+                $org_logo = $path['file_name'];
             }
         } else {
-            $img = '';
+            $message = '';
         }
 
         // $this->form_validation->set_rules(
@@ -209,27 +208,42 @@ class Organization extends REST_Controller
         //         "error" => $error
         //     ], REST_Controller::HTTP_BAD_REQUEST);
         // } else {
-            $data = array(
-                "id" => $id,
-
-                "org_name" => $org_name ?? '',
-                "org_country" => $org_country ?? '',
-                "org_state" => $org_state ?? '',
-                "org_district" => $org_district ?? '',
-                "org_city" => $org_city ?? '',
-                "org_pincode" => $org_pincode ?? '',
-                "org_address" => $org_address ?? '',
-                "org_email" => $org_email ?? '',
-                "org_No" => $org_No ?? '',
-                "org_addedby" => $org_addedby ?? '',
-
-                "org_id" => $org_id,
-            );
+            $data = array();
+            if(!empty($org_name)){
+                $data['org_name'] = $org_name;
+            }
+            if(!empty($org_country)){
+                $data['org_country'] = $org_country;
+            }
+            if(!empty($org_state)){
+                $data['org_state'] = $org_state;
+            }
+            if(!empty($org_district)){
+                $data['org_district'] = $org_district;
+            }
+            if(!empty($org_city)){
+                $data['org_city'] = $org_city;
+            }
+            if(!empty($org_logo)){
+                $data['org_logo'] = $org_logo;
+            }
+            if(!empty($org_city)){
+                $data['org_city'] = $org_city;
+            }
+            if(!empty($org_pincode)){
+                $data['org_pincode'] = $org_pincode;
+            }
+            if(!empty($org_address)){
+                $data['org_address'] = $org_address;
+            }
+            if(!empty($org_addedby)){
+                $data['org_addedby'] = $org_addedby;
+            }
 
             if ($data == '') {
             } else {
-                $data = $this->organization_model->updatedata($id, $data);
-                $given_data = $this->organization_model->getdata($id, $org_id);
+                $data = $this->organization_model->updatedata($org_id, $data);
+                $given_data = $this->organization_model->getdata($org_id);
             }
 
             if ($data) {

@@ -57,6 +57,8 @@ class Staff extends REST_Controller {
             }
             $this->response([
                 'status'=>true,
+                'staff_img'=>'https://www./Ashu/assets/uploads/staff/',
+                'staff_proof_img'=>'https://www./Ashu/assets/uploads/staff/',
                 'data'=>$data,
             ], REST_Controller::HTTP_OK);
             // $data['organization'] = $this->db->select('*')->from($this->org)->;
@@ -156,6 +158,54 @@ class Staff extends REST_Controller {
                     ],REST_Controller::HTTP_BAD_REQUEST);
                 }   
             }
+
+            if(!empty($_FILES['img'])) {
+                $fileName = $_FILES['img']['name'];
+    
+                $config['file_name'] = $fileName;
+                $config['upload_path'] = './assets/uploads/staff/';
+                $config['allowed_types'] = 'gif|jpg|png|pdf|jpeg|docx|doc';
+                $config['max_size']     = '10024';
+                $config['max_width'] = '6000';
+                $config['max_height'] = '6000';
+                $config['remove_spaces'] = FALSE;
+    
+                $this->load->library('img', $config);
+                $this->upload->initialize($config);
+                if (!$this->upload->do_upload('img')) {
+                    $message2 = strip_tags($this->upload->display_errors());
+                }
+                else {
+                    $path = $this->upload->data();
+                    $img = $path['file_name'];
+                }
+            }else{
+                $message1 = '';
+            }
+
+            if(!empty($_FILES['id_img'])) {
+                $fileName = $_FILES['id_img']['name'];
+    
+                $config['file_name'] = $fileName;
+                $config['upload_path'] = './assets/uploads/staff/staff_proof/';
+                $config['allowed_types'] = 'gif|jpg|png|pdf|jpeg|docx|doc';
+                $config['max_size']     = '10024';
+                $config['max_width'] = '6000';
+                $config['max_height'] = '6000';
+                $config['remove_spaces'] = FALSE;
+    
+                $this->load->library('id_img', $config);
+                $this->upload->initialize($config);
+                if (!$this->upload->do_upload('id_img')) {
+                    $message2 = strip_tags($this->upload->display_errors());
+                }
+                else {
+                    $path = $this->upload->data();
+                    $id_img = $path['file_name'];
+                }
+            }else{
+                $message2 = '';
+            }
             
             $data = [
                 'name' => $name ?? '',
@@ -184,9 +234,9 @@ class Staff extends REST_Controller {
             $result = $this->db->insert($this->staff,$data);
             if($result){
                 $this->response([
-                    'status'=>true,
-                    'message'=>'Staff Registered Successfull',
-                ], REST_Controller::HTTP_OK);
+                    'status'=>!empty($message1) || !empty($message2) ? false : true,
+                    'message'=>!empty($message1) || !empty($message2) ? "{$message1}\n{$message2}" : 'Staff Registered Successfull',
+                ], !empty($message1) || !empty($message2)  ? REST_Controller::HTTP_OK : REST_Controller::HTTP_BAD_REQUEST);
             }else{            
                 $this->response([
                     'status'=>false,
@@ -202,11 +252,11 @@ class Staff extends REST_Controller {
     }
 
     public function staff_update_post(){
+        $u_id = $this->security->xss_clean($this->input->post('u_id'));
         $name = $this->security->xss_clean($this->input->post('name'));
         $admin = $this->security->xss_clean($this->input->post('admin'));
         $email = $this->security->xss_clean($this->input->post('email'));
         $password = $this->security->xss_clean($this->input->post('password'));
-        $gender = $this->security->xss_clean($this->input->post('gender'));
         $gender = $this->security->xss_clean($this->input->post('gender'));
         $d_o_b = $this->security->xss_clean($this->input->post('d_o_b'));
         $age = $this->security->xss_clean($this->input->post('age'));
@@ -221,35 +271,120 @@ class Staff extends REST_Controller {
         $role_id = $this->security->xss_clean($this->input->post('role_id'));
         $status = $this->security->xss_clean($this->input->post('status'));
 
-        $data = [
-            'name' => $name ?? '',
-            'u_id' => $u_id ?? '',
-            'admin' => $admin ?? '',
-            'email' => $email ?? '',
-            'password' => hash('sha1',$password) ?? '',
-            'gender' => $gender ?? '',
-            'd_o_b' => $d_o_b ?? '',
-            'age' => $age ?? '',
-            'address' => $address ?? '',
-            'mobile_no' => $mobile_no ?? '',
-            'img' => $img ?? '',
-            'qualification' => $qualification ?? '',
-            'speciality' => $speciality ?? '',
-            'id_proof' => $id_proof ?? '',
-            'id_img' => $id_img ?? '',
-            'join_date' => $join_date ?? '',
-            'role_id' => $role_id ?? '',
-            'status' => $status ?? '',
-        ];
+        if(!empty($_FILES['img'])) {
+            $fileName = $_FILES['img']['name'];
+
+            $config['file_name'] = $fileName;
+            $config['upload_path'] = './assets/uploads/staff/';
+            $config['allowed_types'] = 'gif|jpg|png|pdf|jpeg|docx|doc';
+            $config['max_size']     = '10024';
+            $config['max_width'] = '6000';
+            $config['max_height'] = '6000';
+            $config['remove_spaces'] = FALSE;
+            $config['overwrite'] = true;
+
+            $this->load->library('img', $config);
+            $this->upload->overwrite = true;
+            $this->upload->initialize($config);
+            if (!$this->upload->do_upload('img')) {
+                $message1 = strip_tags($this->upload->display_errors());
+            }
+            else {
+                $path = $this->upload->data();
+                $img = $path['file_name'];
+            }
+        }else{
+            $message1 = '';
+        }
+
+        if(!empty($_FILES['id_img'])) {
+            $fileName = $_FILES['id_img']['name'];
+
+            $config['file_name'] = $fileName;
+            $config['upload_path'] = './assets/uploads/staff/staff_proof/';
+            $config['allowed_types'] = 'gif|jpg|png|pdf|jpeg|docx|doc';
+            $config['max_size']     = '10024';
+            $config['max_width'] = '6000';
+            $config['max_height'] = '6000';
+            $config['remove_spaces'] = FALSE;
+            $config['overwrite'] = true;
+
+            $this->load->library('id_img', $config);
+            $this->upload->overwrite = true;
+            $this->upload->initialize($config);
+            if (!$this->upload->do_upload('id_img')) {
+                $message2 = strip_tags($this->upload->display_errors());
+            }
+            else {
+                $path = $this->upload->data();
+                $id_img = $path['file_name'];
+            }
+        }else{
+            $message2 = '';
+        }
+
+        $data = [];
+        if(!empty($name)){
+            $data['name'] = $name;
+        }
+        if(!empty($admin)){
+            $data['admin'] = $admin;
+        }
+        if(!empty($email)){
+            $data['email'] = $email;
+        }
+        if(!empty($password)){
+            $data['password'] = $password;
+        }
+        if(!empty($gender)){
+            $data['gender'] = $gender;
+        }
+        if(!empty($d_o_b)){
+            $data['d_o_b'] = $d_o_b;
+        }
+        if(!empty($age)){
+            $data['age'] = $age;
+        }
+        if(!empty($address)){
+            $data['address'] = $address;
+        }
+        if(!empty($mobile_no)){
+            $data['mobile_no'] = $mobile_no;
+        }
+        if(!empty($img)){
+            $data['img'] = $img;
+        }
+        if(!empty($qualification)){
+            $data['qualification'] = $qualification;
+        }
+        if(!empty($speciality)){
+            $data['speciality'] = $speciality;
+        }
+        if(!empty($id_proof)){
+            $data['id_proof'] = $id_proof;
+        }
+        if(!empty($id_img)){
+            $data['id_img'] = $id_img;
+        }
+        if(!empty($join_date)){
+            $data['join_date'] = $join_date;
+        }
+        if(!empty($role_id)){
+            $data['role_id'] = $role_id;
+        }
+        if(!empty($status)){
+            $data['status'] = $status;
+        }
 
         // print_r($data);die();
 
-        $result = $this->db->insert($this->staff,$data);
+        $result = $this->db->update($this->staff,$data,array('u_id'=>$u_id));
         if($result){
             $this->response([
-                'status'=>true,
-                'message'=>'Staff Registered Successfull',
-            ], REST_Controller::HTTP_OK);
+                'status'=>!empty($message1) || !empty($message2) ? false : true,
+                'message'=>!empty($message1) || !empty($message2) ? "{$message1}\n{$message2}" :
+                'Profile Updated Successfull',
+            ], !empty($message1) || !empty($message2)  ? REST_Controller::HTTP_OK : REST_Controller::HTTP_BAD_REQUEST);
         }else{            
             $this->response([
                 'status'=>false,
