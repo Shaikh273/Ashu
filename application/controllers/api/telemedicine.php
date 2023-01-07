@@ -16,56 +16,101 @@ class telemedicine extends REST_Controller
         $this->tele = 'telemedicine';
     }
 
-    // public function staff_profile_get()
-    // {
-    //     $u_id = $this->security->xss_clean($this->input->get('u_id'));
-    //     $role_id = $this->db->select('role_id')->from($this->tele)->where("u_id = '$u_id'")->get()->row()->role_id ?? '';
-    //     $role = $this->db->select('role')->from($this->role)->where("$this->role.id = '$role_id'")->get()->row()->role ?? '';
-    //     $data = [];
-    //     if (!empty($role)) {
-    //         if ($role == 'Super Admin') {
-    //             $data['user_data'] = $this->db->select("*,$this->role.role")->from($this->tele)->join($this->role, "$this->tele.role_id = $this->role.id")->where("u_id = '$u_id'")->get()->row();
-    //             $staff = $this->db->select('DISTINCT(u_id)')->from($this->tele)->join($this->role, "$this->tele.role_id = $this->role.id")->where("admin = '$u_id' AND $this->role.role = 'Admin'")->get()->result();
-    //             if (count($staff) > 0) {
-    //                 for ($i = 0; $i < count($staff); ++$i) {
-    //                     $staff_id = $staff[$i]->u_id;
-    //                     $data['admin'][$i] = $this->db->select('*')->from($this->tele)->where("admin = '$u_id' AND u_id = '$staff_id'")->get()->row();
-    //                     // print_r($data['staff']);
-    //                     $org = $this->db->select('org_id')->from($this->org)->where("admin_id = '$staff_id'")->get()->result();
-    //                     for ($j = 0; $j < count($org); ++$j) {
-    //                         $org_id = $org[$j]->org_id;
-    //                         $data['admin'][$i]->org[$j] = $this->db->select('*')->from($this->organization)->where("org_id = '$org_id'")->get()->row();
-    //                         $data['admin'][$i]->org[$j]->staff = $this->db->select('*')->from($this->tele)->where("org_id = '$org_id'")->get()->result();
-    //                     }
-    //                 }
-    //             }
-    //         } else if ($role == 'Admin') {
-    //             $data['user_data'] = $this->db->select("*,$this->role.role")->from($this->tele)->join($this->role, "$this->tele.role_id = $this->role.id")->where("u_id = '$u_id'")->get()->row();
-    //             $org = $this->db->select('org_id')->from($this->org)->where("admin_id = '$u_id'")->get()->result();
-    //             for ($j = 0; $j < count($org); ++$j) {
-    //                 $org_id = $org[$j]->org_id;
-    //                 $data['org'][$j] = $this->db->select('*')->from($this->organization)->where("org_id = '$org_id'")->get()->row();
-    //                 $data['org'][$j]->staff = $this->db->select('*')->from($this->tele)->where("org_id = '$org_id'")->get()->result();
-    //             }
-    //         } else {
-    //             $org_id = $this->db->select('org_id')->from($this->tele)->where("u_id = '$u_id'")->get()->row()->org_id ?? '';
+    public function telemedicine_get()
+    {
+        $tele_id = $this->security->xss_clean($this->input->get('tele_id'));
 
-    //             $data['user_data'] = $this->db->select("*,$this->role.role")->from($this->tele)->join($this->role, "$this->tele.role_id = $this->role.id")->where("u_id = '$u_id'")->get()->row();
+        // $tele = $this->db->select('*')->from($this->tele)->where("tele_id = '$tele_id'")->get()->row()->tele ?? '';
+        $data = array();
+        $pat_id = $this->db->select('pat_id')->from($this->tele)->where("tele_id= '$tele_id'")->get()->row()->pat_id ?? '';
 
-    //             $data['org'] = $this->db->select('*')->from($this->organization)->where("org_id = '$org_id'")->get()->row();
-    //         }
-    //         $this->response([
-    //             'status' => true,
-    //             'data' => $data,
-    //         ], REST_Controller::HTTP_OK);
-    //         // $data['organization'] = $this->db->select('*')->from($this->org)->;
-    //     } else {
-    //         $this->response([
-    //             'status' => false,
-    //             'message' => 'Role is not Assigned',
-    //         ], REST_Controller::HTTP_BAD_REQUEST);
-    //     }
-    // }
+        if (!empty($pat_id)) {
+            $data["patient_data"] = $this->db->select('*')->from('patients')->where("pat_id = '$pat_id'")->get()->row();
+
+            
+            if (!empty($data["patient_data"])) {
+                $data['history_visit'] =
+                $this->db->select("history_visit.id AS ID,history_visit.visit_type,history_visit.created_at,history_visit.created_at,history_visit.updated_at,organization.*,patients.*")->from('history_visit')->join('organization', 'history_visit.org_id = organization.org_id')->join('patients', 'history_visit.pat_id = patients.pat_id')->where("history_visit.pat_id = '$pat_id'")->get()->result();
+                
+                $case_id = $this->db->select('C_id')->from('history_visit')->get()->result();
+                $length = count($case_id);
+                
+                for ($i = 0; $i < $length; ++$i) {
+                    $c_id = $case_id[$i]->C_id;
+                    $data['history_visit'][$i]->history_chief_complaints = $this->db->select("*")->from('history_chief_complaints')->where("C_id = '$c_id'")->get()->result();
+                    
+                    // print_r($data);die();
+                    
+                    $data['history_visit'][$i]->history_systemic_history = $this->db->select("*")->from('history_systemic_history')->where("C_id = '$c_id'")->get()->result();
+                    $data['history_visit'][$i]->history_drug_allergies = $this->db->select("*")->from('history_drug_allergies')->where("C_id = '$c_id'")->get()->result();
+                    $data['history_visit'][$i]->history_contact_allergies = $this->db->select("*")->from('history_contact_allergies')->where("C_id = '$c_id'")->get()->result();
+                    $data['history_visit'][$i]->history_vital_signs = $this->db->select("*")->from('history_vital_signs')->where("C_id = '$c_id'")->get()->result();
+                    $data['history_visit'][$i]->history_anthropometry = $this->db->select("*")->from('history_anthropometry')->where("C_id = '$c_id'")->get()->result();
+                }
+            }
+            if (!empty($data)) {
+                $this->response([
+                    'status' => true,
+                    'data' => $data
+                ], REST_Controller::HTTP_OK);
+            } else {
+                $this->response([
+                    'status' => false,
+                    'data' => 'Data Not Found.'
+                ], REST_Controller::HTTP_NOT_FOUND);
+            }
+        } else {
+            $this->response([
+                'status' => false,
+                'message' => 'Telemedicine Not Found',
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }
+        //     $role = $this->db->select('role')->from($this->role)->where("$this->role.id = '$tele_id'")->get()->row()->role ?? '';
+        //     $data = [];
+        //     if (!empty($role)) {
+        //         if ($role == 'Super Admin') {
+        //             $data['user_data'] = $this->db->select("*,$this->role.role")->from($this->tele)->join($this->role, "$this->tele.tele_id = $this->role.id")->where("u_id = '$u_id'")->get()->row();
+        //             $staff = $this->db->select('DISTINCT(u_id)')->from($this->tele)->join($this->role, "$this->tele.tele_id = $this->role.id")->where("admin = '$u_id' AND $this->role.role = 'Admin'")->get()->result();
+        //             if (count($staff) > 0) {
+        //                 for ($i = 0; $i < count($staff); ++$i) {
+        //                     $staff_id = $staff[$i]->u_id;
+        //                     $data['admin'][$i] = $this->db->select('*')->from($this->tele)->where("admin = '$u_id' AND u_id = '$staff_id'")->get()->row();
+        //                     // print_r($data['staff']);
+        //                     $org = $this->db->select('org_id')->from($this->org)->where("admin_id = '$staff_id'")->get()->result();
+        //                     for ($j = 0; $j < count($org); ++$j) {
+        //                         $org_id = $org[$j]->org_id;
+        //                         $data['admin'][$i]->org[$j] = $this->db->select('*')->from($this->organization)->where("org_id = '$org_id'")->get()->row();
+        //                         $data['admin'][$i]->org[$j]->staff = $this->db->select('*')->from($this->tele)->where("org_id = '$org_id'")->get()->result();
+        //                     }
+        //                 }
+        //             }
+        //         } else if ($role == 'Admin') {
+        //             $data['user_data'] = $this->db->select("*,$this->role.role")->from($this->tele)->join($this->role, "$this->tele.tele_id = $this->role.id")->where("u_id = '$u_id'")->get()->row();
+        //             $org = $this->db->select('org_id')->from($this->org)->where("admin_id = '$u_id'")->get()->result();
+        //             for ($j = 0; $j < count($org); ++$j) {
+        //                 $org_id = $org[$j]->org_id;
+        //                 $data['org'][$j] = $this->db->select('*')->from($this->organization)->where("org_id = '$org_id'")->get()->row();
+        //                 $data['org'][$j]->staff = $this->db->select('*')->from($this->tele)->where("org_id = '$org_id'")->get()->result();
+        //             }
+        //         } else {
+        //             $org_id = $this->db->select('org_id')->from($this->tele)->where("u_id = '$u_id'")->get()->row()->org_id ?? '';
+
+        //             $data['user_data'] = $this->db->select("*,$this->role.role")->from($this->tele)->join($this->role, "$this->tele.tele_id = $this->role.id")->where("u_id = '$u_id'")->get()->row();
+
+        //             $data['org'] = $this->db->select('*')->from($this->organization)->where("org_id = '$org_id'")->get()->row();
+        //         }
+        //         $this->response([
+        //             'status' => true,
+        //             'data' => $data,
+        //         ], REST_Controller::HTTP_OK);
+        //         // $data['organization'] = $this->db->select('*')->from($this->org)->;
+        //     } else {
+        //         $this->response([
+        //             'status' => false,
+        //             'message' => 'Role is not Assigned',
+        //         ], REST_Controller::HTTP_BAD_REQUEST);
+        //     }
+    }
 
     public function telemedicine_post()
     {
@@ -110,63 +155,6 @@ class telemedicine extends REST_Controller
             "duration" => $total_time,
             "status" => $status,
             "created_at" => date('Y-m-d H:i:s'),
-        ];
-
-
-        $result = $this->db->insert($this->tele, $data);
-        if ($result) {
-            $this->response([
-                'status' => true,
-                'message' => 'Staff Registered Successfull',
-            ], REST_Controller::HTTP_OK);
-        } else {
-            $this->response([
-                'status' => false,
-                'message' => 'Internal Server Error',
-            ], REST_Controller::HTTP_BAD_REQUEST);
-        }
-    }
-
-    public function staff_update_post()
-    {
-        $name = $this->security->xss_clean($this->input->post('name'));
-        $admin = $this->security->xss_clean($this->input->post('admin'));
-        $email = $this->security->xss_clean($this->input->post('email'));
-        $password = $this->security->xss_clean($this->input->post('password'));
-        $gender = $this->security->xss_clean($this->input->post('gender'));
-        $gender = $this->security->xss_clean($this->input->post('gender'));
-        $d_o_b = $this->security->xss_clean($this->input->post('d_o_b'));
-        $age = $this->security->xss_clean($this->input->post('age'));
-        $address = $this->security->xss_clean($this->input->post('address'));
-        $mobile_no = $this->security->xss_clean($this->input->post('mobile_no'));
-        $img = $this->security->xss_clean($this->input->post('img'));
-        $qualification = $this->security->xss_clean($this->input->post('qualification'));
-        $speciality = $this->security->xss_clean($this->input->post('speciality'));
-        $id_proof = $this->security->xss_clean($this->input->post('id_proof'));
-        $id_img = $this->security->xss_clean($this->input->post('id_img'));
-        $join_date = $this->security->xss_clean($this->input->post('join_date'));
-        $role_id = $this->security->xss_clean($this->input->post('role_id'));
-        $status = $this->security->xss_clean($this->input->post('status'));
-
-        $data = [
-            'name' => $name ?? '',
-            'u_id' => $u_id ?? '',
-            'admin' => $admin ?? '',
-            'email' => $email ?? '',
-            'password' => hash('sha1', $password) ?? '',
-            'gender' => $gender ?? '',
-            'd_o_b' => $d_o_b ?? '',
-            'age' => $age ?? '',
-            'address' => $address ?? '',
-            'mobile_no' => $mobile_no ?? '',
-            'img' => $img ?? '',
-            'qualification' => $qualification ?? '',
-            'speciality' => $speciality ?? '',
-            'id_proof' => $id_proof ?? '',
-            'id_img' => $id_img ?? '',
-            'join_date' => $join_date ?? '',
-            'role_id' => $role_id ?? '',
-            'status' => $status ?? '',
         ];
 
 
