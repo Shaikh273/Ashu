@@ -213,8 +213,6 @@ class History extends REST_Controller
         $data8 = array(
             // 'id' => $id,
             'C_id' => $C_id,
-            'pat_id' => $pat_id,
-            'org_id' => $org_id,
             'height' => $height ?? '',
             'weight' => $weight ?? '',
             'bmi' => $bmi ?? '',
@@ -356,10 +354,10 @@ class History extends REST_Controller
         // VISIT HISTORY
         $data1 = array();
         if (!empty($visit_type)) {
-            $data['visit_type'] = $visit_type;
+            $data1['visit_type'] = $visit_type;
         }
         if (!empty($comments)) {
-            $data['comments'] = $comments;
+            $data1['comments'] = $comments;
         }
 
 
@@ -598,34 +596,37 @@ class History extends REST_Controller
         // 'weight' => $weight ?? '',
         // 'bmi' => $bmi ?? '',
         // 'comments' => $comments ?? '',
+        
+        if (empty($data1)) {
+                $this->response([
+                    'status' => false,
+                    'message' => 'Unsuccessful.'
+                ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+            } else {
+                $data = $this->history_model->updatedata(
+                    $C_id,
+                    $data1,
+                    $data2,
+                    $data3,
+                    $data4,
+                    $data5,
+                    $data6,
+                    $data7,
+                    $data8
+                );
+                // print_r($data1);die();           
 
-        if ($data1 == '') {
-        } else {
-            $data = $this->history_model->updatedata(
-                $id,
-                $data1,
-                $data2,
-                $data3,
-                $data4,
-                $data5,
-                $data6,
-                $data7,
-                $data8
-            );
-            $given_data = $this->history_model->getdata($C_id, $pat_id);
-        }
-
-        if ($data) {
-            $this->response([
-                'status' => true,
-                'message' => 'History Updated Successfully.',
-                'data' => $given_data
-            ], REST_Controller::HTTP_OK);
-        } else {
-            $this->response([
-                'status' => false,
-                'message' => 'Unsuccessful.'
-            ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+            if ($data) {
+                $this->response([
+                    'status' => true,
+                    'message' => 'History Updated Successfully.',
+                ], REST_Controller::HTTP_OK);
+            } else {
+                $this->response([
+                    'status' => false,
+                    'message' => 'Unsuccessful.'
+                ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+            }
         }
     }
 
