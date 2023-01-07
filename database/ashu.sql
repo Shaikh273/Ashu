@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 05, 2023 at 01:58 PM
+-- Generation Time: Jan 06, 2023 at 01:28 PM
 -- Server version: 10.4.20-MariaDB
 -- PHP Version: 7.4.22
 
@@ -2089,6 +2089,7 @@ INSERT INTO `history_vital_signs` (`id`, `C_id`, `temperature`, `pulse`, `blood_
 CREATE TABLE `organization` (
   `id` int(10) NOT NULL,
   `org_id` varchar(100) NOT NULL,
+  `org_logo` varchar(65) NOT NULL,
   `org_name` varchar(10) NOT NULL,
   `org_country` varchar(10) NOT NULL,
   `org_state` varchar(40) NOT NULL,
@@ -2107,8 +2108,8 @@ CREATE TABLE `organization` (
 -- Dumping data for table `organization`
 --
 
-INSERT INTO `organization` (`id`, `org_id`, `org_name`, `org_country`, `org_state`, `org_district`, `org_city`, `org_pincode`, `org_address`, `org_email`, `org_No`, `org_addedby`, `created_at`, `updated_at`) VALUES
-(1, 'Ash_01', 'Ashu', 'India', 'Maharashtra', 'Mumbai', '400010', '', 'madanpura Nagpada 2 taki', 'nooralam@gmail.com', '8898971045', 'Maa-S_01', '2023-01-04 11:50:24', '2023-01-04 16:20:24');
+INSERT INTO `organization` (`id`, `org_id`, `org_logo`, `org_name`, `org_country`, `org_state`, `org_district`, `org_city`, `org_pincode`, `org_address`, `org_email`, `org_No`, `org_addedby`, `created_at`, `updated_at`) VALUES
+(1, 'Ash_01', '', 'Ashu', 'India', 'Maharashtra', 'Mumbai', '400010', '', 'madanpura Nagpada 2 taki', 'nooralam@gmail.com', '8898971045', 'Maa-S_01', '2023-01-04 11:50:24', '2023-01-04 16:20:24');
 
 -- --------------------------------------------------------
 

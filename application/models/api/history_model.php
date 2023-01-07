@@ -92,17 +92,19 @@ class history_model extends CI_Model
     public function deletedata($id)
     {
         $deleteData =
-            $this->db->delete("history_visit", array('id' => $id));
-        $this->db->delete("history_chief_complaints", array('id' => $id));
-        $this->db->delete("history_systemic_history", array('id' => $id));
-        $this->db->delete("history_drug_allergies", array('id' => $id));
-        $this->db->delete("history_contact_allergies", array('id' => $id));
-        $this->db->delete("history_food_allergies", array('id' => $id));
-        $this->db->delete("history_vital_signs", array('id' => $id));
-        $this->db->delete("history_anthropometry", array('id' => $id));
+        $this->db->delete("history_visit", array('C_id' => $id));
+        $this->db->delete("history_chief_complaints", array('C_id' => $id));
+        $this->db->delete("history_systemic_history", array('C_id' => $id));
+        $this->db->delete("history_drug_allergies", array('C_id' => $id));
+        $this->db->delete("history_contact_allergies", array('C_id' => $id));
+        $this->db->delete("history_food_allergies", array('C_id' => $id));
+        $this->db->delete("history_vital_signs", array('C_id' => $id));
+        $this->db->delete("history_anthropometry", array('C_id' => $id));
 
-        if ($deleteData) {
-            return $deleteData ? true : false;
+        $deleteData = $this->db->select('C_id')->from('history_visit')->where(array('C_id'=>$id))->get()->row()->C_id ?? '';
+
+        if($deleteData) {
+            return empty($deleteData) ? true : false;
         } else {
             return 'Unable to Delete';
         }
