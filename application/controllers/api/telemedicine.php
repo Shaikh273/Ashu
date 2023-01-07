@@ -24,14 +24,12 @@ class telemedicine extends REST_Controller
         $data = array();
         $pat_id = $this->db->select('pat_id')->from($this->tele)->where("tele_id= '$tele_id'")->get()->row()->pat_id ?? '';
 
-        
         if (!empty($pat_id)) {
             $data["patient_data"] = $this->db->select('*')->from('patients')->where("pat_id = '$pat_id'")->get()->row();
-            // print_r($data);die();
 
             if (!empty($data["patient_data"])) {
                 $data['history_visit'] =
-                $this->db->select("history_visit.id AS ID,history_visit.visit_type,history_visit.created_at,history_visit.created_at,history_visit.updated_at,organization.*,patients.*")->from('history_visit')->join('organization', 'history_visit.org_id = organization.org_id')->join('patients', 'history_visit.pat_id = patients.pat_id')->where("history_visit.pat_id = '$pat_id'")->get()->result();
+                    $this->db->select("history_visit.id AS ID,history_visit.visit_type,history_visit.created_at,history_visit.created_at,history_visit.updated_at,organization.*,patients.*")->from('history_visit')->join('organization', 'history_visit.org_id = organization.org_id')->join('patients', 'history_visit.pat_id = patients.pat_id')->where("history_visit.pat_id = '$pat_id'")->get()->result();
 
                 $case_id = $this->db->select('C_id')->from('history_visit')->get()->result();
                 $length = count($case_id);
@@ -134,6 +132,8 @@ class telemedicine extends REST_Controller
             $year = date('Y');
             // $next_year = date('Y') + 1;
         }
+        print_r($tele_id);
+        die();
 
         $tele_id =  explode('_', $tele_id)[1] + 1;
         $tele_id = "Tele{$year}_0" . $tele_id;
@@ -157,63 +157,6 @@ class telemedicine extends REST_Controller
             "duration" => $total_time,
             "status" => $status,
             "created_at" => date('Y-m-d H:i:s'),
-        ];
-
-
-        $result = $this->db->insert($this->tele, $data);
-        if ($result) {
-            $this->response([
-                'status' => true,
-                'message' => 'Staff Registered Successfull',
-            ], REST_Controller::HTTP_OK);
-        } else {
-            $this->response([
-                'status' => false,
-                'message' => 'Internal Server Error',
-            ], REST_Controller::HTTP_BAD_REQUEST);
-        }
-    }
-
-    public function staff_update_post()
-    {
-        $name = $this->security->xss_clean($this->input->post('name'));
-        $admin = $this->security->xss_clean($this->input->post('admin'));
-        $email = $this->security->xss_clean($this->input->post('email'));
-        $password = $this->security->xss_clean($this->input->post('password'));
-        $gender = $this->security->xss_clean($this->input->post('gender'));
-        $gender = $this->security->xss_clean($this->input->post('gender'));
-        $d_o_b = $this->security->xss_clean($this->input->post('d_o_b'));
-        $age = $this->security->xss_clean($this->input->post('age'));
-        $address = $this->security->xss_clean($this->input->post('address'));
-        $mobile_no = $this->security->xss_clean($this->input->post('mobile_no'));
-        $img = $this->security->xss_clean($this->input->post('img'));
-        $qualification = $this->security->xss_clean($this->input->post('qualification'));
-        $speciality = $this->security->xss_clean($this->input->post('speciality'));
-        $id_proof = $this->security->xss_clean($this->input->post('id_proof'));
-        $id_img = $this->security->xss_clean($this->input->post('id_img'));
-        $join_date = $this->security->xss_clean($this->input->post('join_date'));
-        $role_id = $this->security->xss_clean($this->input->post('role_id'));
-        $status = $this->security->xss_clean($this->input->post('status'));
-
-        $data = [
-            'name' => $name ?? '',
-            'u_id' => $u_id ?? '',
-            'admin' => $admin ?? '',
-            'email' => $email ?? '',
-            'password' => hash('sha1', $password) ?? '',
-            'gender' => $gender ?? '',
-            'd_o_b' => $d_o_b ?? '',
-            'age' => $age ?? '',
-            'address' => $address ?? '',
-            'mobile_no' => $mobile_no ?? '',
-            'img' => $img ?? '',
-            'qualification' => $qualification ?? '',
-            'speciality' => $speciality ?? '',
-            'id_proof' => $id_proof ?? '',
-            'id_img' => $id_img ?? '',
-            'join_date' => $join_date ?? '',
-            'role_id' => $role_id ?? '',
-            'status' => $status ?? '',
         ];
 
 
