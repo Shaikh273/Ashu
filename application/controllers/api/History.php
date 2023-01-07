@@ -324,6 +324,7 @@ class History extends REST_Controller
                 $data['history_visit'][$i]->history_contact_allergies = $this->db->select("*")->from('history_contact_allergies')->where("C_id = '$c_id'")->get()->result();
                 $data['history_visit'][$i]->history_vital_signs = $this->db->select("*")->from('history_vital_signs')->where("C_id = '$c_id'")->get()->result();
                 $data['history_visit'][$i]->history_anthropometry = $this->db->select("*")->from('history_anthropometry')->where("C_id = '$c_id'")->get()->result();
+                $data['history_visit'][$i]->test_cases = $this->db->select("test_cases.id,test_cases.problem,test_cases.description,test_cases.reading,test_cases.doctor_id,test_cases.status")->from('test_cases')->join('tests', 'test_cases.test_id = tests.id')->where("C_id = '$c_id'")->get()->result();
             }
         }
 
@@ -648,5 +649,98 @@ class History extends REST_Controller
             ], REST_Controller::HTTP_BAD_REQUEST);
         }      
 
+    }
+
+    // -----------------------------Test Cases------------------------------- //
+    public function test_cases_post() {
+        $c_id = $this->security->xss_clean($this->input->post('C_id'));
+        $problem =  $this->security->xss_clean($this->input->post('problem'));   
+        $description =  $this->security->xss_clean($this->input->post('description'));   
+        $test_id =  $this->security->xss_clean($this->input->post('test_id'));   
+        $reading =  $this->security->xss_clean($this->input->post('reading'));   
+        $doctor_id =  $this->security->xss_clean($this->input->post('doctor_id'));   
+        $status =  $this->security->xss_clean($this->input->post('status'));
+        
+        $this->form_validation->set_rules('C_id','Cases Id','required',array(
+            'required' => 'Case Id is Missing'
+        ));
+        $this->form_validation->set_rules('test_id','Cases Id','required',array(
+            'required' => 'Test Id is Missing'
+        ));
+
+        if($this->form_validation->run() == false){
+            $error = strip_tags(validation_errors());
+            $this->response([
+                "status" => false,
+                "message" => $error,
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }else{
+            $data = array(
+                'C_id' => $c_id,
+                'problem' => $problem,
+                'description' => $description,
+                'test_id' => $test_id,
+                'reading' => $reading,
+                'doctor_id' => $doctor_id,
+                'status' => $status,
+            );
+
+            $insert = $this->db->insert('test_cases',$data);
+            if($insert){
+                $this->response([
+                    "status" => true,
+                    "message" => "Data Inserted Successfully"
+                ], REST_Controller::HTTP_OK);
+            }else{
+                $this->response([
+                    "status" => false,
+                    "message" => "Internal Server Error"
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        }
+    }
+
+    public function test_cases_update_post() {
+        $id = $this->security->xss_clean($this->input->post('id'));
+        $c_id = $this->security->xss_clean($this->input->post('C_id'));
+        $problem = $this->security->xss_clean($this->input->post('problem'));
+        $description = $this->security->xss_clean($this->input->post('description'));
+        $test_id = $this->security->xss_clean($this->input->post('test_id'));
+        $reading = $this->security->xss_clean($this->input->post('reading'));
+        $doctor_id = $this->security->xss_clean($this->input->post('doctor_id'));
+        $status = $this->security->xss_clean($this->input->post('status'));
+
+        $data = array();
+        if (!empty($problem) && !empty($id)) {
+            $data['problem'] = $problem;
+        }
+        if (!empty($description) && !empty($id)) {
+            $data['description'] = $description;
+        }
+        if (!empty($test_id) && !empty($id)) {
+            $data['test_id'] = $test_id;
+        }
+        if (!empty($reading) && !empty($id)) {
+            $data['reading'] = $reading;
+        }
+        if (!empty($doctor_id) && !empty($id)) {
+            $data['doctor_id'] = $doctor_id;
+        }
+        if (!empty($status) && !empty($id)) {
+            $data['status'] = $status;
+        }
+
+        $update = $this->db->update('test_cases',$data, array('id'=>$id));
+        if($update){
+            $this->response([
+                "status" => true,
+                "message" => "Data Updated Successfully"
+            ], REST_Controller::HTTP_OK);
+        }else{
+            $this->response([
+                "status" => false,
+                "message" => "Internal Server Error"
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }
     }
 }
