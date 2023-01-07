@@ -55,10 +55,11 @@ class Organization extends REST_Controller
         $org_email = $this->security->xss_clean($this->input->post("org_email"));
         $org_No = $this->security->xss_clean($this->input->post("org_No"));
         $org_addedby = $this->security->xss_clean($this->input->post("org_addedby"));        
-        $org = $this->db->select('org_id')->from($this->organization)->order_by('id','DESC')->get()->row() ?? '_0';
+        $org = $this->db->select('org_id')->from($this->organization)->order_by('id','DESC')->get()->row()->org_id ?? '_0';
         $org_logo = $this->security->xss_clean($this->input->post("img"));        
         $org_id =  explode('_',$org)[1]+1;
         $org_id = substr($org_name,0,3).'_0'.$org_id;
+        // print_r($org_id);die();
 
         if (!empty($_FILES['img'])) {
             $fileName = $_FILES['img']['name'];
@@ -85,7 +86,7 @@ class Organization extends REST_Controller
         }
 
         // $this->form_validation->set_rules(
-        //     "mobileNo",
+            //     "mobileNo",
         //     "Mobile No",
         //     "required|numeric|is_unique[organizations.mobile_no]|min_length[10]|max_length[15]",
         //     array(
@@ -123,7 +124,6 @@ class Organization extends REST_Controller
                 "org_addedby" => $org_addedby,                
                 'created_at' => date('Y-m-d H:i:s'),
             );
-
             $insertData = $this->organization_model->insertdata($data);
             if ($insertData) {
                 $this->response([
