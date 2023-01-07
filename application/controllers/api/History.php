@@ -45,7 +45,7 @@ class History extends REST_Controller
 
         // VISIT HISTORY
         $visit_type = $this->input->post('visit_type');
-        $comments = $this->input->post('comments');
+        $comments1 = $this->input->post('visit_comments');
 
         // VISIT HISTORY
         $data1 = array(
@@ -53,8 +53,8 @@ class History extends REST_Controller
             'org_id' => $org_id,
             'C_id' => $C_id,
             'visit_type' => $visit_type ?? '',
-            'creatd_by' => $created_by,
-            'comments' => $comments ?? '',
+            'created_by' => $created_by,
+            'comments' => $comments1 ?? '',
             'created_at' => date('Y-m-d H:i:s'),
         );
         // print_r($data1);die();
@@ -65,9 +65,9 @@ class History extends REST_Controller
         // $side = $this->input->post('side');
         $duration = $this->input->post('duration');
         $duration_unit = $this->input->post('duration_unit');
-        $comments1 = $this->input->post('chief_comments');
+        $comments2 = $this->input->post('chief_comments');
         $options = $this->input->post('options');
-        $comments2 = $this->input->post('chief_complaints_comments');
+        $comments3 = $this->input->post('chief_complaints_comments');
 
         // CHIEF COMPLAINTS
         $data2 = array(
@@ -77,9 +77,9 @@ class History extends REST_Controller
             'name' => $name1 ?? '',
             'duration' => $duration ?? '',
             'duration_unit' => $duration_unit ?? '',
-            'comments1' => $comments1 ?? '',
+            'comments1' => $comments2 ?? '',
             'options' => $options ?? '',
-            'comments2' => $comments2 ?? '',
+            'comments2' => $comment3 ?? '',
 
             'created_at' => date('Y-m-d H:i:s'),
         );
@@ -90,8 +90,8 @@ class History extends REST_Controller
         $name2 = $this->input->post('systemic_history_name');
         $duration1 = $this->input->post('duration1');
         $duration_unit1 = $this->input->post('duration_unit1');
-        $comments1 = $this->input->post('systemic_comments');
-        $comments2 = $this->input->post('systemic_history_comments');
+        $comments4 = $this->input->post('systemic_comments');
+        $comments5 = $this->input->post('systemic_history_comments');
         $family_history = $this->input->post('family_history');
         $medical_history = $this->input->post('medical_history');
         $special_status = $this->input->post('special_status');
@@ -104,8 +104,8 @@ class History extends REST_Controller
             'name' => $name2 ?? '',
             'duration' => $duration1 ?? '',
             'duration_unit' => $duration_unit1 ?? '',
-            'comments1' => $comments1 ?? '',
-            'comments2' => $comments2 ?? '',
+            'comments1' => $comments4 ?? '',
+            'comments2' => $comments5 ?? '',
             'family_history' => $family_history ?? '',
             'medical_history' => $medical_history ?? '',
             'special_status' => $special_status ?? '',
@@ -119,8 +119,8 @@ class History extends REST_Controller
         $name3 = $this->input->post('drug_allergies_name');
         $duration2 = $this->input->post('duration2');
         $duration_unit2 = $this->input->post('duration_unit2');
-        $comments1 = $this->input->post('drug_comments');
-        $comments2 = $this->input->post('drug_allergies_comments');
+        $comments6 = $this->input->post('drug_comments');
+        $comments7 = $this->input->post('drug_allergies_comments');
 
         // DRUG ALLERGIES
         $data4 = array(
@@ -130,8 +130,8 @@ class History extends REST_Controller
             'name' => $name3 ?? '',
             'duration' => $duration2 ?? '',
             'duration_unit' => $duration_unit2 ?? '',
-            'comments1' => $comments1 ?? '',
-            'comments2' => $comments2 ?? '',
+            'comments1' => $comments6 ?? '',
+            'comments2' => $comments7 ?? '',
 
             'created_at' => date('Y-m-d H:i:s'),
         );
@@ -142,8 +142,8 @@ class History extends REST_Controller
         $name4 = $this->input->post('contact_allergies_name');
         $duration3 = $this->input->post('duration3');
         $duration_unit3 = $this->input->post('duration_unit3');
-        $comments1 = $this->input->post('contact_comments');
-        $comments2 = $this->input->post('contact_allergies_comments');
+        $comments8 = $this->input->post('contact_comments');
+        $comments9 = $this->input->post('contact_allergies_comments');
 
         // CONTACT ALLERGIES
         $data5 = array(
@@ -153,8 +153,8 @@ class History extends REST_Controller
             'name' => $name4 ?? '',
             'duration' => $duration3 ?? '',
             'duration_unit' => $duration_unit3 ?? '',
-            'comments1' => $comments1 ?? '',
-            'comments2' => $comments2 ?? '',
+            'comments1' => $comments8 ?? '',
+            'comments2' => $comments9 ?? '',
 
             'created_at' => date('Y-m-d H:i:s'),
         );
@@ -165,8 +165,8 @@ class History extends REST_Controller
         $name5 = $this->input->post('food_allergies_name');
         $duration4 = $this->input->post('duration4');
         $duration_unit4 = $this->input->post('duration_unit4');
-        $comments1 = $this->input->post('food_comments');
-        $comments2 = $this->input->post('food_allergies_comments');
+        $comments10 = $this->input->post('food_comments');
+        $comments11 = $this->input->post('food_allergies_comments');
         $other = $this->input->post('other');
 
         // FOOD ALLERGIES
@@ -177,8 +177,8 @@ class History extends REST_Controller
             'name' => $name5 ?? '',
             'duration' => $duration4 ?? '',
             'duration_unit' => $duration_unit4 ?? '',
-            'comments1' => $comments1 ?? '',
-            'comments2' => $comments2 ?? '',
+            'comments1' => $comments10 ?? '',
+            'comments2' => $comments11 ?? '',
             'other' => $other ?? '',
 
             'created_at' => date('Y-m-d H:i:s'),
@@ -209,7 +209,7 @@ class History extends REST_Controller
         $height = $this->input->post('height');
         $weight = $this->input->post('weight');
         $bmi = $this->input->post('bmi');
-        $comments = $this->input->post('anthropometry_comments');
+        $comments12 = $this->input->post('anthropometry_comments');
 
         // ANTHROPOMETRY HISTORY
         $data8 = array(
@@ -218,7 +218,7 @@ class History extends REST_Controller
             'height' => $height ?? '',
             'weight' => $weight ?? '',
             'bmi' => $bmi ?? '',
-            'comments' => $comments ?? '',
+            'comments' => $comments12 ?? '',
             'created_at' => date('Y-m-d H:i:s'),
         );
 
@@ -358,30 +358,31 @@ class History extends REST_Controller
         $id = $this->post('id');
         $C_id = $this->input->post('C_id');
         $pat_id = $this->input->post('pat_id');
+        $createdby = $this->input->post('created_by');
 
         // VISIT HISTORY
         $visit_type = $this->input->post('visit_type');
-        $comments = $this->input->post(' visit_comments');
+        $comments1 = $this->input->post('visit_comments');
 
         // VISIT HISTORY
         $data1 = array();
         if (!empty($visit_type)) {
             $data1['visit_type'] = $visit_type;
         }
-        if (!empty($comments)) {
-            $data1['comments'] = $comments;
+        if (!empty($comments1)) {
+            $data1['comments'] = $comments1;
         }
-
-
+        
+        
         // CHIEF COMPLAINTS
         $chief_complaint_type = $this->input->post('chief_complaint_type');
         $chief_complaint_name = $this->input->post('chief_complaint_name');
         $duration = $this->input->post('duration');
         $duration_unit = $this->input->post('duration_unit');
-        $comments1 = $this->input->post('chief_comments');
+        $comments2 = $this->input->post('chief_comments');
         $options = $this->input->post('options');
-        $comments2 = $this->input->post('chief_complaints_comments');
-
+        $comments3 = $this->input->post('chief_complaints_comments');
+        
         // CHIEF COMPLAINTS
         $data2 = array();
         if (!empty($chief_complaint_type)) {
@@ -399,24 +400,24 @@ class History extends REST_Controller
         if (!empty($options)) {
             $data2['options'] = $options;
         }
-        if (!empty($comments1)) {
-            $data2['comments1'] = $comments1;
-        }
         if (!empty($comments2)) {
-            $data2['comments2'] = $comments2;
+            $data2['comments1'] = $comments2;
         }
-
+        if (!empty($comments3)) {
+            $data2['comments2'] = $comments3;
+        }
+        
         // SYSTEMIC HISTORY
         $systemic_history_type = $this->input->post('systemic_history_type');
         $systemic_history_name = $this->input->post('systemic_history_name');
         $duration1 = $this->input->post('duration1');
         $duration_unit1 = $this->input->post('duration_unit1');
-        $comments1 = $this->input->post('systemic_comments');
-        $comments2 = $this->input->post('systemic_history_comments');
+        $comments4 = $this->input->post('systemic_comments');
+        $comments5 = $this->input->post('systemic_history_comments');
         $family_history = $this->input->post('family_history');
         $medical_history = $this->input->post('medical_history');
         $special_status = $this->input->post('special_status');
-
+        
         // SYSTEMIC HISTORY
         $data3 = array();
         if (!empty($systemic_history_type)) {
@@ -431,11 +432,11 @@ class History extends REST_Controller
         if (!empty($duration_unit1)) {
             $data3['duration_unit'] = $duration_unit1;
         }
-        if (!empty($comments1)) {
-            $data3['comments1'] = $comments1;
+        if (!empty($comments4)) {
+            $data3['comments1'] = $comments4;
         }
-        if (!empty($comments2)) {
-            $data3['comments2'] = $comments2;
+        if (!empty($comments5)) {
+            $data3['comments2'] = $comments5;
         }
         if (!empty($family_history)) {
             $data3['family_history'] = $family_history;
@@ -446,15 +447,15 @@ class History extends REST_Controller
         if (!empty($special_status)) {
             $data3['special_status'] = $special_status;
         }
-
+        
         //DRUG ALLERGIES
         $drug_allergies_type = $this->input->post('drug_allergies_type');
         $drug_allergies_name = $this->input->post('name');
         $duration2 = $this->input->post('duration2');
         $duration_unit2 = $this->input->post('duration_unit2');
-        $comments1 = $this->input->post('drug_comments');
-        $comments2 = $this->input->post('drug_allergies_comments');
-
+        $comments6 = $this->input->post('drug_comments');
+        $comments7 = $this->input->post('drug_allergies_comments');
+        
         // DRUG ALLERGIES
         $data4 = array();
         if (!empty($drug_allergies_type)) {
@@ -469,11 +470,11 @@ class History extends REST_Controller
         if (!empty($duration_unit2)) {
             $data4['duration_unit'] = $duration_unit2;
         }
-        if (!empty($comments1)) {
-            $data4['comments1'] = $comments1;
+        if (!empty($comments6)) {
+            $data4['comments1'] = $comments6;
         }
-        if (!empty($comments2)) {
-            $data4['comments2'] = $comments2;
+        if (!empty($comments7)) {
+            $data4['comments2'] = $comments7;
         }
         // 'drug_allergies_type' => $drug_allergies_type ?? '',
         // 'name' => $name ?? '',
@@ -481,16 +482,16 @@ class History extends REST_Controller
         // 'duration_unit' => $duration_unit ?? '',
         // 'comments1' => $comments1 ?? '',
         // 'comments2' => $comments2 ?? '',
-
-
+        
+        
         // CONATCT ALLERGIES
         $contact_allergies_type = $this->input->post('contact_allergies_type');
         $contact_allergies_name = $this->input->post('contact_allergies_name');
         $duration3 = $this->input->post('duration3');
         $duration_unit3 = $this->input->post('duration_unit3');
-        $comments1 = $this->input->post('contact_comments');
-        $comments2 = $this->input->post('contact_allergies_comments');
-
+        $comments8 = $this->input->post('contact_comments');
+        $comments9 = $this->input->post('contact_allergies_comments');
+        
         // CONTACT ALLERGIES
         $data5 = array();
         if (!empty($contact_allergies_type)) {
@@ -505,11 +506,11 @@ class History extends REST_Controller
         if (!empty($duration_unit3)) {
             $data5['duration_unit'] = $duration_unit3;
         }
-        if (!empty($comments1)) {
-            $data5['comments1'] = $comments1;
+        if (!empty($comments8)) {
+            $data5['comments1'] = $comments8;
         }
-        if (!empty($comments2)) {
-            $data5['comments2'] = $comments2;
+        if (!empty($comments9)) {
+            $data5['comments2'] = $comments9;
         }
         // 'contact_allergies_type' => $contact_allergies_type ?? '',
         // 'name' => $name ?? '',
@@ -517,17 +518,17 @@ class History extends REST_Controller
         // 'duration_unit' => $duration_unit ?? '',
         // 'comments1' => $comments1 ?? '',
         // 'comments2' => $comments2 ?? '',
-
-
+        
+        
         // // FOOD ALLERGIES
         $food_allergies_type = $this->input->post('food_allergies_type');
         $name = $this->input->post('name');
         $duration4 = $this->input->post('duration4');
         $duration_unit4 = $this->input->post('duration_unit4');
-        $comments1 = $this->input->post('food_comments');
-        $comments2 = $this->input->post('food_allergies_comments');
+        $comments10 = $this->input->post('food_comments');
+        $comments11 = $this->input->post('food_allergies_comments');
         $other = $this->input->post('other');
-
+        
         // FOOD ALLERGIES
         $data6 = array();
         // 'id' => $id,
@@ -552,20 +553,20 @@ class History extends REST_Controller
         if (!empty($duration_unit4)) {
             $data6['duration_unit'] = $duration_unit4;
         }
-        if (!empty($comments1)) {
-            $data6['comments1'] = $comments1;
+        if (!empty($comments10)) {
+            $data6['comments1'] = $comments10;
         }
-        if (!empty($comments2)) {
-            $data6['comments2'] = $comments2;
+        if (!empty($comments11)) {
+            $data6['comments2'] = $comments11;
         }
-
+        
         // VITAL SIGNS
         $temperature = $this->input->post('temperature');
         $pulse = $this->input->post('pulse');
         $blood_pressure = $this->input->post('blood_pressure');
         $rr = $this->input->post('rr');
         $spo2 = $this->input->post('spo2');
-
+        
         // VITAL SIGNS
         $data7 = array();
         if (!empty($temperature)) {
@@ -583,13 +584,13 @@ class History extends REST_Controller
         if (!empty($spo2)) {
             $data7['spo2'] = $spo2;
         }
-
+        
         // ANTHROPOMETRY HISTORY
         $height = $this->input->post('height');
         $weight = $this->input->post('weight');
         $bmi = $this->input->post('bmi');
-        $comments = $this->input->post('anthropometry_comments');
-
+        $comments12 = $this->input->post('anthropometry_comments');
+        
         // ANTHROPOMETRY HISTORY
         $data8 = array();
         if (!empty($height)) {
@@ -601,14 +602,14 @@ class History extends REST_Controller
         if (!empty($bmi)) {
             $data8['bmi'] = $bmi;
         }
-        if (!empty($comments)) {
-            $data8['comments'] = $comments;
+        if (!empty($comments12)) {
+            $data8['comments'] = $comments12;
         }
         // 'height' => $height ?? '',
         // 'weight' => $weight ?? '',
         // 'bmi' => $bmi ?? '',
         // 'comments' => $comments ?? '',
-
+        
         if (empty($data1)) {
             $this->response([
                 'status' => false,
@@ -626,8 +627,8 @@ class History extends REST_Controller
                 $data7,
                 $data8
             );
-
-            // print_r($C_id);die();           
+            // print_r($comments1);die();           
+            
             if ($data) {
                 $this->response([
                     'status' => true,
