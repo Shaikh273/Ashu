@@ -17,25 +17,25 @@ class history_model extends CI_Model
 
         $sql1 = $this->db->insert('history_visit', $data1);
 
-        if(!empty($data2['name'])) {
+        if(!empty($data2['C_id'])) {
             $sql = $this->db->insert('history_chief_complaints', $data2);
         }
-        if(!empty($data3['name'])) {               
+        if(!empty($data3['C_id'])) {               
             $sql = $this->db->insert('history_systemic_history', $data3);
         }
-        if(!empty($data4['name'])) {
+        if(!empty($data4['C_id'])) {
             $sql = $this->db->insert('history_drug_allergies', $data4);
         }
-        if(!empty($data5['name'])) {
+        if(!empty($data5['C_id'])) {
             $sql = $this->db->insert('history_contact_allergies', $data5);
         }
-        if(!empty($data6['name'])) {
+        if(!empty($data6['C_id'])) {
             $sql = $this->db->insert('history_food_allergies', $data6);
         }
-        if(!empty($data7['name'])) {
+        if(!empty($data7['C_id'])) {
             $sql = $this->db->insert('history_vital_signs', $data7);
         }
-        if(!empty($temperature)) {
+        if(!empty($data8['C_id'])) {
             $sql = $this->db->insert('history_anthropometry', $data8);
         }
         // $this->db->trans_Complete();
@@ -43,20 +43,36 @@ class history_model extends CI_Model
         return $sql1 ? true : false;
     }
 
-    public function updatedata($id, $data1, $data2, $data3, $data4, $data5, $data6, $data7, $data8)
+    public function updatedata($C_id, $data1, $data2, $data3, $data4, $data5, $data6, $data7, $data8)
     {
-        $sql =   $this->db->trans_Start();
+        // $sql =   $this->db->trans_Start();
+        // print_r($data1);die();
         // $this->db->insert('history_opthalmic_history', $data1);
-
-        $this->db->update('history_visit', $data1, array('id' => $id));
-        $this->db->update('history_chief_complaints', $data2, array('id' => $id));
-        $this->db->update('history_systemic_history', $data3, array('id' => $id));
-        $this->db->update('history_drug_allergies', $data4, array('id' => $id));
-        $this->db->update('history_contact_allergies', $data5, array('id' => $id));
-        $this->db->update('history_food_allergies', $data6, array('id' => $id));
-        $this->db->update('history_vital_signs', $data7, array('id' => $id));
-        $this->db->update('history_anthropometry', $data8, array('id' => $id));
-        $this->db->trans_Complete();
+        if(!empty($data1)){
+            $sql = $this->db->update('history_visit', $data1, array('C_id' => $C_id));
+        }
+        if(!empty($data2)){
+            $this->db->update('history_chief_complaints', $data2, array('C_id' => $C_id));
+        }
+        if(!empty($data3)){
+            $this->db->update('history_systemic_history', $data3, array('C_id' => $C_id));
+        }
+        if(!empty($data4)){
+            $this->db->update('history_drug_allergies', $data4, array('C_id' => $C_id));
+        }
+        if(!empty($data5)){
+            $this->db->update('history_contact_allergies', $data5, array('C_id' => $C_id));
+        }
+        if(!empty($data6)){
+            $this->db->update('history_food_allergies', $data6, array('C_id' => $C_id));
+        }
+        if(!empty($data7)){
+            $this->db->update('history_vital_signs', $data7, array('C_id' => $C_id));
+        }
+        if(!empty($data8)){
+            $this->db->update('history_anthropometry', $data8, array('C_id' => $C_id));
+        }
+        // $this->db->trans_Complete();
 
         return $sql ? true : false;
     }
@@ -92,19 +108,21 @@ class history_model extends CI_Model
     public function deletedata($id)
     {
         $deleteData =
-            $this->db->delete("history_visit", array('id' => $id));
-        $this->db->delete("history_chief_complaints", array('id' => $id));
-        $this->db->delete("history_systemic_history", array('id' => $id));
-        $this->db->delete("history_drug_allergies", array('id' => $id));
-        $this->db->delete("history_contact_allergies", array('id' => $id));
-        $this->db->delete("history_food_allergies", array('id' => $id));
-        $this->db->delete("history_vital_signs", array('id' => $id));
-        $this->db->delete("history_anthropometry", array('id' => $id));
+        $this->db->delete("history_visit", array('C_id' => $id));
+        $this->db->delete("history_chief_complaints", array('C_id' => $id));
+        $this->db->delete("history_systemic_history", array('C_id' => $id));
+        $this->db->delete("history_drug_allergies", array('C_id' => $id));
+        $this->db->delete("history_contact_allergies", array('C_id' => $id));
+        $this->db->delete("history_food_allergies", array('C_id' => $id));
+        $this->db->delete("history_vital_signs", array('C_id' => $id));
+        $this->db->delete("history_anthropometry", array('C_id' => $id));
 
-        if ($deleteData) {
-            return $deleteData ? true : false;
+        $deleteData = $this->db->select('C_id')->from('history_visit')->where(array('C_id'=>$id))->get()->row()->C_id ?? '';
+
+        if($deleteData) {
+            return empty($deleteData) ? true : false;
         } else {
-            return 'Unable to Delete';
+            return false;
         }
     }
 }
