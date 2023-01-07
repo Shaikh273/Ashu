@@ -411,7 +411,7 @@ class History extends REST_Controller
             $data3['systemic_history_type'] = $systemic_history_type;
         }
         if (!empty($systemic_history_name)) {
-            $data3['systemic_history_name'] = $systemic_history_name;
+            $data3['name'] = $systemic_history_name;
         }
         if (!empty($duration1)) {
             $data3['duration'] = $duration1;
