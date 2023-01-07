@@ -317,7 +317,7 @@ class History extends REST_Controller
 
             $case_id = $this->db->select('C_id')->from('history_visit')->get()->result();
             $length = count($case_id);
-
+            // print_r($case_id);die();
             for ($i = 0; $i < $length; ++$i) {
                 $c_id = $case_id[$i]->C_id;
                 $data['history_visit'][$i]->history_chief_complaints = $this->db->select("*")->from('history_chief_complaints')->where("C_id = '$c_id'")->get()->result();
@@ -645,7 +645,6 @@ class History extends REST_Controller
                 "status" => $data,
                 "message" => "Unable to Delete"
             ], REST_Controller::HTTP_BAD_REQUEST);
-        }      
-
+        }
     }
 }
