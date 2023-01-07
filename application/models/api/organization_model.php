@@ -16,9 +16,9 @@ class organization_model extends CI_Model
         return $sql ? true : false;
     }
 
-    public function updatedata($id, $data)
+    public function updatedata($org_id, $data)
     {
-        $sql =   $this->db->update('organization', $data, array('id' => $id));
+        $sql =   $this->db->update('organization', $data, array('org_id' => $org_id));
 
         return $sql ? true : false;
     }
