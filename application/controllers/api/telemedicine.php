@@ -27,20 +27,19 @@ class telemedicine extends REST_Controller
         if (!empty($pat_id)) {
             $data["patient_data"] = $this->db->select('*')->from('patients')->where("pat_id = '$pat_id'")->get()->row();
 
-            
             if (!empty($data["patient_data"])) {
                 $data['history_visit'] =
-                $this->db->select("history_visit.id AS ID,history_visit.visit_type,history_visit.created_at,history_visit.created_at,history_visit.updated_at,organization.*,patients.*")->from('history_visit')->join('organization', 'history_visit.org_id = organization.org_id')->join('patients', 'history_visit.pat_id = patients.pat_id')->where("history_visit.pat_id = '$pat_id'")->get()->result();
-                
+                    $this->db->select("history_visit.id AS ID,history_visit.visit_type,history_visit.created_at,history_visit.created_at,history_visit.updated_at,organization.*,patients.*")->from('history_visit')->join('organization', 'history_visit.org_id = organization.org_id')->join('patients', 'history_visit.pat_id = patients.pat_id')->where("history_visit.pat_id = '$pat_id'")->get()->result();
+
                 $case_id = $this->db->select('C_id')->from('history_visit')->get()->result();
                 $length = count($case_id);
-                
+
                 for ($i = 0; $i < $length; ++$i) {
                     $c_id = $case_id[$i]->C_id;
                     $data['history_visit'][$i]->history_chief_complaints = $this->db->select("*")->from('history_chief_complaints')->where("C_id = '$c_id'")->get()->result();
-                    
+
                     // print_r($data);die();
-                    
+
                     $data['history_visit'][$i]->history_systemic_history = $this->db->select("*")->from('history_systemic_history')->where("C_id = '$c_id'")->get()->result();
                     $data['history_visit'][$i]->history_drug_allergies = $this->db->select("*")->from('history_drug_allergies')->where("C_id = '$c_id'")->get()->result();
                     $data['history_visit'][$i]->history_contact_allergies = $this->db->select("*")->from('history_contact_allergies')->where("C_id = '$c_id'")->get()->result();
@@ -48,6 +47,7 @@ class telemedicine extends REST_Controller
                     $data['history_visit'][$i]->history_anthropometry = $this->db->select("*")->from('history_anthropometry')->where("C_id = '$c_id'")->get()->result();
                 }
             }
+
             if (!empty($data)) {
                 $this->response([
                     'status' => true,
@@ -132,6 +132,8 @@ class telemedicine extends REST_Controller
             $year = date('Y');
             // $next_year = date('Y') + 1;
         }
+        print_r($tele_id);
+        die();
 
         $tele_id =  explode('_', $tele_id)[1] + 1;
         $tele_id = "Tele{$year}_0" . $tele_id;
