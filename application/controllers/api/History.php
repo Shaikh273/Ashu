@@ -311,9 +311,9 @@ class History extends REST_Controller
         $data = array();
         if (!empty($org_id)) {
             $data['history_visit'] =
-                $this->db->select("history_visit.id AS ID,history_visit.visit_type,history_visit.created_at,history_visit.created_at,history_visit.updated_at,organization.*,patients.*")->from('history_visit')->join('organization', 'history_visit.org_id = organization.org_id')->join('patients', 'history_visit.pat_id = patients.pat_id')->where("history_visit.org_id = '$org_id'")->get()->result();
+                $this->db->select("history_visit.id AS ID,history_visit.visit_type,history_visit.created_at,history_visit.created_at,history_visit.updated_at,organization.*,patients.*")->from('history_visit')->join('organization', 'history_visit.org_id = organization.org_id')->join('patients', 'history_visit.pat_id = patients.pat_id')->where("history_visit.org_id = '$org_id'  XOR history_visit.C_id = '$org_id' XOR history_visit.pat_id = '$org_id'")->get()->result();
 
-            $case_id = $this->db->select('C_id')->from('history_visit')->get()->result();
+            $case_id = $this->db->select('C_id')->from('history_visit')->where("history_visit.org_id = '$org_id' XOR history_visit.C_id = '$org_id' XOR history_visit.pat_id = '$org_id'")->get()->result();
             $length = count($case_id);
 
             for ($i = 0; $i < $length; ++$i) {
@@ -652,6 +652,7 @@ class History extends REST_Controller
     }
 
     // -----------------------------Test Cases------------------------------- //
+
     public function test_cases_post() {
         $c_id = $this->security->xss_clean($this->input->post('C_id'));
         $problem =  $this->security->xss_clean($this->input->post('problem'));   
