@@ -149,7 +149,7 @@ class Organization extends REST_Controller
                 "Message" => "Registration Failed"
             ], REST_Controller::HTTP_BAD_REQUEST);
         }
-        
+
         $data = array(
             "org_id" => $org_id,
             "org_logo" => $org_logo,
@@ -178,7 +178,6 @@ class Organization extends REST_Controller
                 "Message" => "Registration Failed"
             ], REST_Controller::HTTP_BAD_REQUEST);
         }
-        
     }
 
     public function organizationupdate_post()
@@ -308,7 +307,7 @@ class Organization extends REST_Controller
                 ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
-        
+
         $data = array();
         if (!empty($org_name)) {
             $data['org_name'] = $org_name;
