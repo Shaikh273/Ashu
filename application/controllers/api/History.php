@@ -372,8 +372,8 @@ class History extends REST_Controller
         if (!empty($comments1)) {
             $data1['comments'] = $comments1;
         }
-        
-        
+
+
         // CHIEF COMPLAINTS
         $chief_complaint_type = $this->input->post('chief_complaint_type');
         $chief_complaint_name = $this->input->post('chief_complaint_name');
@@ -382,7 +382,7 @@ class History extends REST_Controller
         $comments2 = $this->input->post('chief_comments');
         $options = $this->input->post('options');
         $comments3 = $this->input->post('chief_complaints_comments');
-        
+
         // CHIEF COMPLAINTS
         $data2 = array();
         if (!empty($chief_complaint_type)) {
@@ -406,7 +406,7 @@ class History extends REST_Controller
         if (!empty($comments3)) {
             $data2['comments2'] = $comments3;
         }
-        
+
         // SYSTEMIC HISTORY
         $systemic_history_type = $this->input->post('systemic_history_type');
         $systemic_history_name = $this->input->post('systemic_history_name');
@@ -417,7 +417,7 @@ class History extends REST_Controller
         $family_history = $this->input->post('family_history');
         $medical_history = $this->input->post('medical_history');
         $special_status = $this->input->post('special_status');
-        
+
         // SYSTEMIC HISTORY
         $data3 = array();
         if (!empty($systemic_history_type)) {
@@ -447,7 +447,7 @@ class History extends REST_Controller
         if (!empty($special_status)) {
             $data3['special_status'] = $special_status;
         }
-        
+
         //DRUG ALLERGIES
         $drug_allergies_type = $this->input->post('drug_allergies_type');
         $drug_allergies_name = $this->input->post('name');
@@ -455,7 +455,7 @@ class History extends REST_Controller
         $duration_unit2 = $this->input->post('duration_unit2');
         $comments6 = $this->input->post('drug_comments');
         $comments7 = $this->input->post('drug_allergies_comments');
-        
+
         // DRUG ALLERGIES
         $data4 = array();
         if (!empty($drug_allergies_type)) {
@@ -482,8 +482,8 @@ class History extends REST_Controller
         // 'duration_unit' => $duration_unit ?? '',
         // 'comments1' => $comments1 ?? '',
         // 'comments2' => $comments2 ?? '',
-        
-        
+
+
         // CONATCT ALLERGIES
         $contact_allergies_type = $this->input->post('contact_allergies_type');
         $contact_allergies_name = $this->input->post('contact_allergies_name');
@@ -491,7 +491,7 @@ class History extends REST_Controller
         $duration_unit3 = $this->input->post('duration_unit3');
         $comments8 = $this->input->post('contact_comments');
         $comments9 = $this->input->post('contact_allergies_comments');
-        
+
         // CONTACT ALLERGIES
         $data5 = array();
         if (!empty($contact_allergies_type)) {
@@ -518,8 +518,8 @@ class History extends REST_Controller
         // 'duration_unit' => $duration_unit ?? '',
         // 'comments1' => $comments1 ?? '',
         // 'comments2' => $comments2 ?? '',
-        
-        
+
+
         // // FOOD ALLERGIES
         $food_allergies_type = $this->input->post('food_allergies_type');
         $name = $this->input->post('name');
@@ -528,7 +528,7 @@ class History extends REST_Controller
         $comments10 = $this->input->post('food_comments');
         $comments11 = $this->input->post('food_allergies_comments');
         $other = $this->input->post('other');
-        
+
         // FOOD ALLERGIES
         $data6 = array();
         // 'id' => $id,
@@ -559,14 +559,14 @@ class History extends REST_Controller
         if (!empty($comments11)) {
             $data6['comments2'] = $comments11;
         }
-        
+
         // VITAL SIGNS
         $temperature = $this->input->post('temperature');
         $pulse = $this->input->post('pulse');
         $blood_pressure = $this->input->post('blood_pressure');
         $rr = $this->input->post('rr');
         $spo2 = $this->input->post('spo2');
-        
+
         // VITAL SIGNS
         $data7 = array();
         if (!empty($temperature)) {
@@ -584,13 +584,13 @@ class History extends REST_Controller
         if (!empty($spo2)) {
             $data7['spo2'] = $spo2;
         }
-        
+
         // ANTHROPOMETRY HISTORY
         $height = $this->input->post('height');
         $weight = $this->input->post('weight');
         $bmi = $this->input->post('bmi');
         $comments12 = $this->input->post('anthropometry_comments');
-        
+
         // ANTHROPOMETRY HISTORY
         $data8 = array();
         if (!empty($height)) {
@@ -609,7 +609,7 @@ class History extends REST_Controller
         // 'weight' => $weight ?? '',
         // 'bmi' => $bmi ?? '',
         // 'comments' => $comments ?? '',
-        
+
         if (empty($data1)) {
             $this->response([
                 'status' => false,
@@ -628,7 +628,7 @@ class History extends REST_Controller
                 $data8
             );
             // print_r($comments1);die();           
-            
+
             if ($data) {
                 $this->response([
                     'status' => true,
