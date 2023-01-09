@@ -89,8 +89,8 @@ class Register extends REST_Controller
         $medicalrecordno = $this->security->xss_clean($this->input->post("medicalrecordno"));
         $governmentid_type = $this->security->xss_clean($this->input->post("governmentid_type"));
         $governmentidno = $this->security->xss_clean($this->input->post("governmentidno"));
-        
-        
+
+
         $img = $this->input->post("img");
         $blood_grp = $this->security->xss_clean($this->input->post("blood_grp"));
         $maritail_status = $this->security->xss_clean($this->input->post("maritail_status"));
@@ -197,7 +197,7 @@ class Register extends REST_Controller
             "emg_relation" => $emg_relation ?? '',
             "emg_name" => $emg_name ?? '',
             "emg_no" => $emg_no ?? '',
-            
+
             "org_id" => $org_id,
             "pat_id" => $pat_id,
 
