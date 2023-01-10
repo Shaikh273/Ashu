@@ -21,7 +21,6 @@ class Register extends REST_Controller
     {
         $data = $this->db->select('*')->from($this->pat)->get()->result();
         if (!empty($data)) {
-
             $this->response([
                 'status' => true,
                 'data' => $data,

@@ -24,30 +24,41 @@ class telemedicine extends REST_Controller
         $data = array();
         $pat_id = $this->db->select('pat_id')->from($this->tele)->where("tele_id= '$tele_id'")->get()->row()->pat_id ?? '';
 
-        if (!empty($pat_id)) {
-            $data["patient_data"] = $this->db->select('*')->from('patients')->where("pat_id = '$pat_id'")->get()->row();
+        if (!empty($org_id)) {
+            $data['visit_history'] =
+                $this->db->select("history_visit.id AS ID ")
+                ->from('history_visit')->where("history_visit.org_id = '$org_id'  XOR history_visit.C_id = '$org_id' XOR history_visit.pat_id = '$org_id'")->get()->result();
 
-            if (!empty($data["patient_data"])) {
-                $data['history_visit'] =
-                    $this->db->select("history_visit.id AS ID,history_visit.visit_type,history_visit.created_at,history_visit.created_at,history_visit.updated_at,organization.*,patients.*")->from('history_visit')->join('organization', 'history_visit.org_id = organization.org_id')->join('patients', 'history_visit.pat_id = patients.pat_id')->where("history_visit.pat_id = '$pat_id'")->get()->result();
 
-                $case_id = $this->db->select('C_id')->from('history_visit')->get()->result();
-                $length = count($case_id);
+            $case_id = $this->db->select('C_id,pat_id')->from('history_visit')->where("history_visit.org_id = '$org_id' XOR history_visit.C_id = '$org_id' XOR history_visit.pat_id = '$org_id'")->get()->result();
+            $length = count($case_id);
 
-                for ($i = 0; $i < $length; ++$i) {
-                    $c_id = $case_id[$i]->C_id;
-                    $data['history_visit'][$i]->history_chief_complaints = $this->db->select("*")->from('history_chief_complaints')->where("C_id = '$c_id'")->get()->result();
+            for ($i = 0; $i < $length; ++$i) {
+                $pat_id = $case_id[$i]->pat_id;
+                // print_r($pat_id);die();
+                $c_id = $case_id[$i]->C_id;
+                $data['visit_history'][$i]->organization = $this->db->select("organization.*")->from('organization')->where('org_id', $org_id)->get()->row() ?? [];
+                $data['visit_history'][$i]->patient_data = $this->db->select("patients.*")->from('patients')->where('pat_id', $pat_id)->get()->row();
+                $data['visit_history'][$i]->visit =
+                    $this->db->select("
+                    history_visit.id AS ID,
+                    history_visit.c_id,
+                    history_visit.visit_type,
+                    history_visit.created_by,
+                    history_visit.created_at,
+                    history_visit.updated_at,
+                ")
+                    // ->from('history_visit')->join('organization', 'history_visit.org_id = organization.org_id')->join('patients', 'history_visit.pat_id = patients.pat_id')->where("history_visit.org_id = '$org_id'  XOR history_visit.C_id = '$org_id' XOR history_visit.pat_id = '$org_id'")->get()->result();
+                    ->from('history_visit')->where("history_visit.org_id = '$c_id'  XOR history_visit.C_id = '$c_id' XOR history_visit.pat_id = '$c_id'")->get()->result();
 
-                    // print_r($data);die();
-
-                    $data['history_visit'][$i]->history_systemic_history = $this->db->select("*")->from('history_systemic_history')->where("C_id = '$c_id'")->get()->result();
-                    $data['history_visit'][$i]->history_drug_allergies = $this->db->select("*")->from('history_drug_allergies')->where("C_id = '$c_id'")->get()->result();
-                    $data['history_visit'][$i]->history_contact_allergies = $this->db->select("*")->from('history_contact_allergies')->where("C_id = '$c_id'")->get()->result();
-                    $data['history_visit'][$i]->history_vital_signs = $this->db->select("*")->from('history_vital_signs')->where("C_id = '$c_id'")->get()->result();
-                    $data['history_visit'][$i]->history_anthropometry = $this->db->select("*")->from('history_anthropometry')->where("C_id = '$c_id'")->get()->result();
-                }
+                $data['visit_history'][$i]->chief_complaints = $this->db->select("*")->from('history_chief_complaints')->where("C_id = '$c_id'")->get()->result();
+                $data['visit_history'][$i]->systemic_history = $this->db->select("*")->from('history_systemic_history')->where("C_id = '$c_id'")->get()->result();
+                $data['visit_history'][$i]->drug_allergies = $this->db->select("*")->from('history_drug_allergies')->where("C_id = '$c_id'")->get()->result();
+                $data['visit_history'][$i]->contact_allergies = $this->db->select("*")->from('history_contact_allergies')->where("C_id = '$c_id'")->get()->result();
+                $data['visit_history'][$i]->vital_signs = $this->db->select("*")->from('history_vital_signs')->where("C_id = '$c_id'")->get()->result();
+                $data['visit_history'][$i]->anthropometry = $this->db->select("*")->from('history_anthropometry')->where("C_id = '$c_id'")->get()->result();
+                $data['visit_history'][$i]->test_cases = $this->db->select("test_cases.id,test_cases.problem,test_cases.description,test_cases.reading,test_cases.doctor_id,test_cases.status")->from('test_cases')->join('tests', 'test_cases.test_id = tests.id')->where("C_id = '$c_id'")->get()->result();
             }
-
             if (!empty($data)) {
                 $this->response([
                     'status' => true,
@@ -59,12 +70,9 @@ class telemedicine extends REST_Controller
                     'data' => 'Data Not Found.'
                 ], REST_Controller::HTTP_NOT_FOUND);
             }
-        } else {
-            $this->response([
-                'status' => false,
-                'message' => 'Telemedicine Not Found',
-            ], REST_Controller::HTTP_BAD_REQUEST);
         }
+
+      
         //     $role = $this->db->select('role')->from($this->role)->where("$this->role.id = '$tele_id'")->get()->row()->role ?? '';
         //     $data = [];
         //     if (!empty($role)) {

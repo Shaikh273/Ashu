@@ -36,10 +36,18 @@ class Organization extends REST_Controller
                 ], REST_Controller::HTTP_NOT_FOUND);
             }
         } else {
-            $this->response([
-                'status' => false,
-                'data' => 'Check organization ID.'
-            ], REST_Controller::HTTP_NOT_FOUND);
+            $data = $this->db->select('*')->from('organization')->get()->result();
+            if (!empty($data)) {
+                $this->response([
+                    'status' => true,
+                    'data' => $data
+                ], REST_Controller::HTTP_OK);
+            } else {
+                $this->response([
+                    'status' => false,
+                    'data' => 'Data Not Found.'
+                ], REST_Controller::HTTP_NOT_FOUND);
+            }
         }
     }
 
