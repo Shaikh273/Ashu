@@ -12,7 +12,7 @@ class History extends REST_Controller
     {
         parent::__construct();
         $this->load->database();
-        $this->load->model('api/history_model');
+        $this->load->model('api/History_model');
         $this->history = 'history_visit';
     }
 
@@ -235,7 +235,7 @@ class History extends REST_Controller
 
         if ($data1 == '') {
         } else {
-            $data = $this->history_model->insertdata(
+            $data = $this->History_model->insertdata(
                 $data1,
                 $data2,
                 $data3,
@@ -313,9 +313,9 @@ class History extends REST_Controller
         $data = array();
         if (!empty($org_id)) {
             $data['visit_history'] =
-            $this->db->select("history_visit.id AS ID ")
-            ->from('history_visit')->join('organization', 'history_visit.org_id = organization.org_id')->join('patients', 'history_visit.pat_id = patients.pat_id')->where("history_visit.org_id = '$org_id'  XOR history_visit.C_id = '$org_id' XOR history_visit.pat_id = '$org_id'")->get()->result();
-           
+                $this->db->select("history_visit.id AS ID ")
+                ->from('history_visit')->where("history_visit.org_id = '$org_id'  XOR history_visit.C_id = '$org_id' XOR history_visit.pat_id = '$org_id'")->get()->result();
+
 
             $case_id = $this->db->select('C_id,pat_id')->from('history_visit')->where("history_visit.org_id = '$org_id' XOR history_visit.C_id = '$org_id' XOR history_visit.pat_id = '$org_id'")->get()->result();
             $length = count($case_id);
@@ -327,7 +327,7 @@ class History extends REST_Controller
                 $data['visit_history'][$i]->organization = $this->db->select("organization.*")->from('organization')->where('org_id', $org_id)->get()->row() ?? [];
                 $data['visit_history'][$i]->patient_data = $this->db->select("patients.*")->from('patients')->where('pat_id', $pat_id)->get()->row();
                 $data['visit_history'][$i]->visit =
-                $this->db->select("
+                    $this->db->select("
                     history_visit.id AS ID,
                     history_visit.c_id,
                     history_visit.visit_type,
@@ -335,10 +335,10 @@ class History extends REST_Controller
                     history_visit.created_at,
                     history_visit.updated_at,
                 ")
-                // ->from('history_visit')->join('organization', 'history_visit.org_id = organization.org_id')->join('patients', 'history_visit.pat_id = patients.pat_id')->where("history_visit.org_id = '$org_id'  XOR history_visit.C_id = '$org_id' XOR history_visit.pat_id = '$org_id'")->get()->result();
-                ->from('history_visit')->where("history_visit.org_id = '$c_id'  XOR history_visit.C_id = '$c_id' XOR history_visit.pat_id = '$c_id'")->get()->result();
+                    // ->from('history_visit')->join('organization', 'history_visit.org_id = organization.org_id')->join('patients', 'history_visit.pat_id = patients.pat_id')->where("history_visit.org_id = '$org_id'  XOR history_visit.C_id = '$org_id' XOR history_visit.pat_id = '$org_id'")->get()->result();
+                    ->from('history_visit')->where("history_visit.org_id = '$c_id'  XOR history_visit.C_id = '$c_id' XOR history_visit.pat_id = '$c_id'")->get()->result();
 
-                $data['visit_history'][$i]->chief_complaints = $this->db->select("*")->from('history_chief_complaints')->where("C_id = '$c_id'")->get()->result() ;
+                $data['visit_history'][$i]->chief_complaints = $this->db->select("*")->from('history_chief_complaints')->where("C_id = '$c_id'")->get()->result();
                 $data['visit_history'][$i]->systemic_history = $this->db->select("*")->from('history_systemic_history')->where("C_id = '$c_id'")->get()->result();
                 $data['visit_history'][$i]->drug_allergies = $this->db->select("*")->from('history_drug_allergies')->where("C_id = '$c_id'")->get()->result();
                 $data['visit_history'][$i]->contact_allergies = $this->db->select("*")->from('history_contact_allergies')->where("C_id = '$c_id'")->get()->result();
@@ -625,7 +625,7 @@ class History extends REST_Controller
                 'message' => 'Unsuccessful.'
             ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
         } else {
-            $data = $this->model->updatedata(
+            $data = $this->History_model->updatedata(
                 $C_id,
                 $data1,
                 $data2,
@@ -656,7 +656,7 @@ class History extends REST_Controller
     {
 
         $case_id = $this->input->get('case_id');
-        $data = $this->model->deletedata($case_id);
+        $data = $this->History_model->deletedata($case_id);
 
         if ($data) {
             $this->response([
