@@ -246,77 +246,101 @@ class Register extends REST_Controller
             $img = '';
         }
 
-        // $this->form_validation->set_rules(
-        //     "mobileNo",
-        //     "Mobile No",
-        //     "required|numeric|is_unique[patients.mobile_no]|min_length[10]|max_length[15]",
-        //     array(
-        //         'max_length' => 'Mobile no. should be maximum 15 digits',
-        //         'min_length' => 'Mobile no. should be minimum 10 digits',
-        //         'is_unique' => 'Mobile no. already used',
-        //         'required' => 'This Field must be filled',
-        //         'numeric' => 'Please Enter only Numbers'
-        //     )
-        // );
 
+        $data = array();
+        if (!empty($first_name)) {
+            $data['first_name'] = $first_name;
+        }
+        if (!empty($middle_name)) {
+            $data['middle_name'] = $middle_name;
+        }
+        if (!empty($last_name)) {
+            $data['last_name'] = $last_name;
+        }
+        if (!empty($mobileNo)) {
+            $data['mobile_no'] = $mobileNo;
+        }
+        if (!empty($secondarynumber)) {
+            $data['secondarynumber'] = $secondarynumber;
+        }
+        if (!empty($email)) {
+            $data['email'] = $email;
+        }
+        if (!empty($gender)) {
+            $data['gender'] = $gender;
+        }
+        if (!empty($DOB)) {
+            $data['DOB'] = $DOB;
+        }
+        if (!empty($language)) {
+            $data['language'] = $language;
+        }
+        if (!empty($patienttype)) {
+            $data['patienttype'] = $patienttype;
+        }
+        if (!empty($address)) {
+            $data['address'] = $address;
+        }
+        if (!empty($state)) {
+            $data['state'] = $state;
+        }
+        if (!empty($city)) {
+            $data['city'] = $city;
+        }
+        if (!empty($pincode)) {
+            $data['pincode'] = $pincode;
+        }
+        if (!empty($occupation)) {
+            $data['occupation'] = $occupation;
+        }
+        if (!empty($employeeid)) {
+            $data['employeeid'] = $employeeid;
+        }
+        if (!empty($medicalrecordno)) {
+            $data['medicalrecordno'] = $medicalrecordno;
+        }
+        if (!empty($governmentid_type)) {
+            $data['governmentid_type'] = $governmentid_type;
+        }
+        if (!empty($governmentidno)) {
+            $data['governmentidno'] = $governmentidno;
+        }
+        if (!empty($img)) {
+            $data['img'] = $img;
+        }
+        if (!empty($blood_grp)) {
+            $data['blood_grp'] = $blood_grp;
+        }
+        if (!empty($maritail_status)) {
+            $data['maritail_status'] = $maritail_status;
+        }
+        if (!empty($disabled)) {
+            $data['disabled'] = $disabled;
+        }
+        if (!empty($emg_relation)) {
+            $data['emg_relation'] = $emg_relation;
+        }
+        if (!empty($emg_name)) {
+            $data['emg_name'] = $emg_name;
+        }
+        if (!empty($emg_no)) {
+            $data['emg_no'] = $emg_no;
+        }
 
-
-        // if ($this->form_validation->run() == false) {
-
-        //     // very important query "LIFES SAVER"
-        //     $error = strip_tags(validation_errors());
-
-        //     $this->response([
-        //         "status" => False,
-        //         "message" => "Invalid Details",
-        //         "error" => $error
-        //     ], REST_Controller::HTTP_BAD_REQUEST);
-        // } else {
-        $data = array(
-            "id" => $id,
-
-            "first_name" => $first_name ?? '',
-            "middle_name" => $middle_name ?? '',
-            "last_name" => $last_name ?? '',
-            "mobile_no" => $mobileNo ?? '',
-            "secondarynumber" => $secondarynumber ?? '',
-            "email" => $email ?? '',
-            "gender" => $gender ?? '',
-            "DOB" => $DOB ?? '',
-            "language" => $language ?? '',
-            "patienttype" => $patienttype ?? '',
-            "address" => $address ?? '',
-            "state" => $state ?? '',
-            "city" => $city ?? '',
-            "pincode" => $pincode ?? '',
-            "occupation" => $occupation ?? '',
-            "employeeid" => $employeeid ?? '',
-            "medicalrecordno" => $medicalrecordno ?? '',
-            "governmentid_type" => $governmentid_type ?? '',
-            "governmentidno" => $governmentidno ?? '',
-
-            "img" => $img ?? '',
-            "blood_grp" => $blood_grp ?? '',
-            "maritail_status" => $maritail_status ?? '',
-            "disabled" => $disabled ?? '',
-            "emg_relation" => $emg_relation ?? '',
-            "emg_name" => $emg_name ?? '',
-            "emg_no" => $emg_no ?? '',
-
-            "pat_id" => $pat_id,
-        );
+        // print_r($data);
+        // die();
 
         if ($data == '') {
         } else {
-            $data = $this->registerpatient_model->updatedata($id, $data);
-            $given_data = $this->registerpatient_model->getdata($id, $pat_id);
+            $data = $this->registerpatient_model->updatedata($pat_id, $data);
+            // $given_data = $this->registerpatient_model->getdata($pat_id);
         }
 
         if ($data) {
             $this->response([
                 'status' => true,
                 'message' => 'Patient Updated Successfully.',
-                'data' => $given_data
+                // 'data' => $given_data
             ], REST_Controller::HTTP_OK);
         } else {
             $this->response([
