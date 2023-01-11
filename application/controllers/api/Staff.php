@@ -333,7 +333,7 @@ class Staff extends REST_Controller
             $data['email'] = $email;
         }
         if (!empty($password)) {
-            $data['password'] = $password;
+            $data['password'] = hash('Sha1', $password);
         }
         if (!empty($gender)) {
             $data['gender'] = $gender;
