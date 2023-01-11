@@ -23,7 +23,7 @@ class Staff extends REST_Controller
     public function staff_profile_get()
     {
         $u_id = $this->security->xss_clean($this->input->get('u_id'));
-        $role_id = $this->db->select('role_id')->from($this->staff)->where("u_id = '$u_id'")->get()->row()->role_id ??  '';
+        $role_id = $this->db->select('role_id')->from($this->staff)->where("u_id = '$u_id'")->get()->row()->role_id ?? '';
         $role = $this->db->select('role')->from($this->role)->where("$this->role.id = '$role_id'")->get()->row()->role ?? '';
         $data = [];
         if (!empty($role)) {
@@ -34,7 +34,7 @@ class Staff extends REST_Controller
                     for ($i = 0; $i < count($staff); ++$i) {
                         $staff_id = $staff[$i]->u_id;
                         $data['admin'][$i] = $this->db->select('*')->from($this->staff)->where("admin = '$u_id' AND u_id = '$staff_id'")->get()->row();
-
+                        // print_r($data['staff']);
                         $org = $this->db->select('org_id')->from($this->org)->where("admin_id = '$staff_id'")->get()->result();
                         for ($j = 0; $j < count($org); ++$j) {
                             $org_id = $org[$j]->org_id;
@@ -231,12 +231,14 @@ class Staff extends REST_Controller
                 'status' => $status ?? '',
             ];
 
+            // print_r($data);die();
+
             $result = $this->db->insert($this->staff, $data);
             if ($result) {
                 $this->response([
                     'status' => !empty($message1) || !empty($message2) ? false : true,
                     'message' => !empty($message1) || !empty($message2) ? "{$message1}\n{$message2}" : 'Staff Registered Successfull',
-                ], !empty($message1) || !empty($message2)  ? REST_Controller::HTTP_OK : REST_Controller::HTTP_BAD_REQUEST);
+                ], empty($message1) || empty($message2)  ? REST_Controller::HTTP_OK : REST_Controller::HTTP_BAD_REQUEST);
             } else {
                 $this->response([
                     'status' => false,
@@ -333,7 +335,7 @@ class Staff extends REST_Controller
             $data['email'] = $email;
         }
         if (!empty($password)) {
-            $data['password'] = hash('Sha1', $password);
+            $data['password'] = hash('sha1', $password);
         }
         if (!empty($gender)) {
             $data['gender'] = $gender;
@@ -375,13 +377,15 @@ class Staff extends REST_Controller
             $data['status'] = $status;
         }
 
+        // print_r($data);die();
+
         $result = $this->db->update($this->staff, $data, array('u_id' => $u_id));
         if ($result) {
             $this->response([
                 'status' => !empty($message1) || !empty($message2) ? false : true,
                 'message' => !empty($message1) || !empty($message2) ? "{$message1}\n{$message2}" :
                     'Profile Updated Successfull',
-            ], !empty($message1) || !empty($message2)  ? REST_Controller::HTTP_OK : REST_Controller::HTTP_BAD_REQUEST);
+            ], empty($message1) || empty($message2)  ? REST_Controller::HTTP_OK : REST_Controller::HTTP_BAD_REQUEST);
         } else {
             $this->response([
                 'status' => false,
