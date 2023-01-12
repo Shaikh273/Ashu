@@ -98,11 +98,13 @@ class Staff extends REST_Controller
 
         $role = $this->db->select('role')->from($this->role)->where('id', $role_id)->get()->row()->role ?? '';
         if (!empty($role)) {
-            $super_id = $this->db->select('u_id')->from($this->staff)->join($this->role, "$this->staff.role_id = $this->role.id")->where("$this->role.role = 'Super Admin'")->order_by("$this->staff.id", 'ASC')->get()->row()->u_id ?? '_0';
+            $super_id = $this->db->select('u_id')->from($this->staff)->join($this->role, "$this->staff.role_id = $this->role.id")->where("$this->role.role = 'Super Admin'")->order_by("$this->staff.id", 'DESC')->get()->row()->u_id ?? '_0';
 
-            $super_name = $this->db->select('name')->from($this->staff)->join($this->role, "$this->staff.role_id = $this->role.id")->where("$this->role.role = 'Super Admin'")->order_by("$this->staff.id", 'ASC')->get()->row()->name ?? '';
 
-            $user_id = $this->db->select('u_id')->from($this->staff)->join($this->role, "$this->staff.role_id = $this->role.id")->where("$this->role.role = '$role' AND admin = '$admin'")->order_by("staff.id", 'DESC')->get()->row()->u_id ?? '_0';
+            $super_name = $this->db->select('name')->from($this->staff)->join($this->role, "$this->staff.role_id = $this->role.id")->where("$this->role.role = 'Super Admin'")->order_by("$this->staff.id", 'DESC')->get()->row()->name ?? '';
+
+            // print_r($super_name);die();
+            $user_id = $this->db->select('u_id')->from($this->staff)->join($this->role, "$this->staff.role_id = $this->role.id")->where("$this->role.role = '$role' AND admin = '$admin'")->order_by("$this->staff.id", 'DESC')->get()->row()->u_id ?? '_0';
             $user_id = !empty($user_id) ? $user_id : '_0';
 
             $admin_id = $this->db->select('u_id')->from($this->staff)->join($this->role, "$this->staff.role_id = $this->role.id")->where("$this->role.role = '$role' AND admin = '$admin'")->order_by("$this->staff.id", 'DESC')->get()->row()->u_id ?? '_0';
@@ -118,7 +120,9 @@ class Staff extends REST_Controller
             if ($role == 'Admin') {
                 if (!empty($super_name) && !empty($admin)) {
                     $u_id =  explode('_', $user_id)[1] + 1;
-                    $u_id =  substr($super_name, 0, 3) . '-' . substr($name, 0, 3) . "-A_0" . $u_id;
+                    $u_id =  substr($name, 0, 3) . '-' . substr($super_name, 0, 3) . "-A_0" . $u_id;
+                    print_r($u_id);
+                    die();
                 } else {
                     $this->response([
                         'status' => false,
@@ -130,7 +134,7 @@ class Staff extends REST_Controller
                 if (!empty($org_id)) {
                     if (!empty($admin_name) && !empty($admin)) {
                         $u_id =  explode('_', $user_id)[1] + 1;
-                        $u_id =  substr($admin_name, 0, 3) . '-' . substr($name, 0, 3) . "-D_0" . $u_id;
+                        $u_id =   substr($name, 0, 3) . '-' .  substr($admin_name, 0, 3) . "-D_0" . $u_id;
                     } else {
                         $this->response([
                             'status' => false,
@@ -148,7 +152,7 @@ class Staff extends REST_Controller
                 if (!empty($org_id)) {
                     if (!empty($admin_name) && !empty($admin)) {
                         $u_id = explode('_', $user_id)[1] + 1;
-                        $u_id =  substr($admin_name, 0, 3) . '-' . substr($name, 0, 3) . "-C_0" . $u_id;
+                        $u_id =  substr($name, 0, 3) . '-' . substr($admin_name, 0, 3) . "-C_0" . $u_id;
                     } else {
                         $this->response([
                             'status' => false,

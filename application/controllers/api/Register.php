@@ -43,6 +43,9 @@ class Register extends REST_Controller
         $email = $this->security->xss_clean($this->input->post("email"));
         $gender = $this->security->xss_clean($this->input->post("gender"));
         $DOB = $this->security->xss_clean($this->input->post("DOB"));
+        $years =$this->security->xss_clean($this->input->post("years"));
+        $months =$this->security->xss_clean($this->input->post("months"));
+        $days =$this->security->xss_clean($this->input->post("days"));
         $language = $this->security->xss_clean($this->input->post("language"));
         $patienttype = $this->security->xss_clean($this->input->post("patienttype"));
         $address = $this->security->xss_clean($this->input->post("address"));
@@ -143,6 +146,9 @@ class Register extends REST_Controller
             "email" => $email ?? '',
             "gender" => $gender ?? '',
             "DOB" => $DOB ?? '',
+            "years" => $years ?? '',
+            "months" => $months ?? '',
+            "days" => $days ?? '',
             "language" => $language ?? '',
             "patienttype" => $patienttype ?? '',
             "address" => $address ?? '',
@@ -199,6 +205,9 @@ class Register extends REST_Controller
         $email = $this->security->xss_clean($this->input->post("email"));
         $gender = $this->security->xss_clean($this->input->post("gender"));
         $DOB = $this->security->xss_clean($this->input->post("DOB"));
+        $years = $this->security->xss_clean($this->input->post("years"));
+        $months = $this->security->xss_clean($this->input->post("months"));
+        $days = $this->security->xss_clean($this->input->post("days"));
         $language = $this->security->xss_clean($this->input->post("language"));
         $patienttype = $this->security->xss_clean($this->input->post("patienttype"));
         $address = $this->security->xss_clean($this->input->post("address"));
@@ -271,6 +280,15 @@ class Register extends REST_Controller
         }
         if (!empty($DOB)) {
             $data['DOB'] = $DOB;
+        }
+        if (!empty($years)) {
+            $data['years'] = $years;
+        }
+        if (!empty($months)) {
+            $data['months'] = $months;
+        }
+        if (!empty($days)) {
+            $data['days'] = $days;
         }
         if (!empty($language)) {
             $data['language'] = $language;
