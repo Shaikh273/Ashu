@@ -82,51 +82,6 @@ class telemedicine extends REST_Controller
                 'message' => 'Telemedicine Not Found',
             ], REST_Controller::HTTP_BAD_REQUEST);
         }
-        //     $role = $this->db->select('role')->from($this->role)->where("$this->role.id = '$tele_id'")->get()->row()->role ?? '';
-        //     $data = [];
-        //     if (!empty($role)) {
-        //         if ($role == 'Super Admin') {
-        //             $data['user_data'] = $this->db->select("*,$this->role.role")->from($this->tele)->join($this->role, "$this->tele.tele_id = $this->role.id")->where("u_id = '$u_id'")->get()->row();
-        //             $staff = $this->db->select('DISTINCT(u_id)')->from($this->tele)->join($this->role, "$this->tele.tele_id = $this->role.id")->where("admin = '$u_id' AND $this->role.role = 'Admin'")->get()->result();
-        //             if (count($staff) > 0) {
-        //                 for ($i = 0; $i < count($staff); ++$i) {
-        //                     $staff_id = $staff[$i]->u_id;
-        //                     $data['admin'][$i] = $this->db->select('*')->from($this->tele)->where("admin = '$u_id' AND u_id = '$staff_id'")->get()->row();
-        //                     // print_r($data['staff']);
-        //                     $org = $this->db->select('org_id')->from($this->org)->where("admin_id = '$staff_id'")->get()->result();
-        //                     for ($j = 0; $j < count($org); ++$j) {
-        //                         $org_id = $org[$j]->org_id;
-        //                         $data['admin'][$i]->org[$j] = $this->db->select('*')->from($this->organization)->where("org_id = '$org_id'")->get()->row();
-        //                         $data['admin'][$i]->org[$j]->staff = $this->db->select('*')->from($this->tele)->where("org_id = '$org_id'")->get()->result();
-        //                     }
-        //                 }
-        //             }
-        //         } else if ($role == 'Admin') {
-        //             $data['user_data'] = $this->db->select("*,$this->role.role")->from($this->tele)->join($this->role, "$this->tele.tele_id = $this->role.id")->where("u_id = '$u_id'")->get()->row();
-        //             $org = $this->db->select('org_id')->from($this->org)->where("admin_id = '$u_id'")->get()->result();
-        //             for ($j = 0; $j < count($org); ++$j) {
-        //                 $org_id = $org[$j]->org_id;
-        //                 $data['org'][$j] = $this->db->select('*')->from($this->organization)->where("org_id = '$org_id'")->get()->row();
-        //                 $data['org'][$j]->staff = $this->db->select('*')->from($this->tele)->where("org_id = '$org_id'")->get()->result();
-        //             }
-        //         } else {
-        //             $org_id = $this->db->select('org_id')->from($this->tele)->where("u_id = '$u_id'")->get()->row()->org_id ?? '';
-
-        //             $data['user_data'] = $this->db->select("*,$this->role.role")->from($this->tele)->join($this->role, "$this->tele.tele_id = $this->role.id")->where("u_id = '$u_id'")->get()->row();
-
-        //             $data['org'] = $this->db->select('*')->from($this->organization)->where("org_id = '$org_id'")->get()->row();
-        //         }
-        //         $this->response([
-        //             'status' => true,
-        //             'data' => $data,
-        //         ], REST_Controller::HTTP_OK);
-        //         // $data['organization'] = $this->db->select('*')->from($this->org)->;
-        //     } else {
-        //         $this->response([
-        //             'status' => false,
-        //             'message' => 'Role is not Assigned',
-        //         ], REST_Controller::HTTP_BAD_REQUEST);
-        //     }
     }
 
     public function telemedicine_post()
@@ -137,9 +92,6 @@ class telemedicine extends REST_Controller
         $end_time = $this->security->xss_clean($this->input->post('end_time'));
         $status = $this->security->xss_clean($this->input->post('status'));
 
-
-        // $tele_id = $this->security->xss_clean($this->input->post('tele_id'));
-
         $tele_id = $this->db->select('tele_id')->from($this->tele)->order_by('id', 'DESC')->get()->row()->tele_id ?? 'tele_0';
 
         if (date('m') <= 3) {
@@ -149,22 +101,16 @@ class telemedicine extends REST_Controller
             $year = date('Y');
             // $next_year = date('Y') + 1;
         }
-        // print_r($tele_id);
-        // die();
 
         $tele_id =  explode('_', $tele_id)[1] + 1;
         $tele_id = "Tele{$year}_0" . $tele_id;
-
-        // print_r($tele_id);die();
-
 
 
         $t1 = new DateTime($start_time);
         $t2 = new DateTime($end_time);
         $duration = $t1->diff($t2);
+
         $total_time =  $duration->format('%h') . " Hours " . $duration->format('%i') . " Minutes";
-        // print_r($end_time . ' ' . $start_time);
-        // die();
         $data = [
             "tele_id" => $tele_id,
             "pat_id" => $pat_id,
