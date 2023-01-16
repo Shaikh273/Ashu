@@ -312,17 +312,15 @@ class History extends REST_Controller
         // $pat_id = $this->input->get('pat_id');
         $data = array();
         if (!empty($org_id)) {
-            $data['visit_history'] =
-                $this->db->select("history_visit.id AS ID ")
-                ->from('history_visit')->where("history_visit.org_id = '$org_id'  XOR history_visit.C_id = '$org_id' XOR history_visit.pat_id = '$org_id'")->get()->result();
+            $data['visit_history'] = $this->db->select("history_visit.id AS ID ")->from('history_visit')->where("history_visit.org_id = '$org_id'  XOR history_visit.C_id = '$org_id' XOR history_visit.pat_id = '$org_id'")->get()->result();
 
-
-            $case_id = $this->db->select('C_id,pat_id')->from('history_visit')->where("history_visit.org_id = '$org_id' XOR history_visit.C_id = '$org_id' XOR history_visit.pat_id = '$org_id'")->get()->result();
+            $case_id = $this->db->select('C_id,pat_id,org_id')->from('history_visit')->where("history_visit.org_id = '$org_id' XOR history_visit.C_id = '$org_id' XOR history_visit.pat_id = '$org_id'")->get()->result();
             $length = count($case_id);
 
             for ($i = 0; $i < $length; ++$i) {
                 $pat_id = $case_id[$i]->pat_id;
-                // print_r($pat_id);die();
+                $org_id = $case_id[$i]->org_id;
+                // print_r($org_id);die();
                 $c_id = $case_id[$i]->C_id;
                 $data['visit_history'][$i]->organization = $this->db->select("organization.*")->from('organization')->where('org_id', $org_id)->get()->row() ?? [];
                 $data['visit_history'][$i]->patient_data = $this->db->select("patients.*")->from('patients')->where('pat_id', $pat_id)->get()->row();
@@ -334,9 +332,7 @@ class History extends REST_Controller
                     history_visit.created_by,
                     history_visit.created_at,
                     history_visit.updated_at,
-                ")
-                    // ->from('history_visit')->join('organization', 'history_visit.org_id = organization.org_id')->join('patients', 'history_visit.pat_id = patients.pat_id')->where("history_visit.org_id = '$org_id'  XOR history_visit.C_id = '$org_id' XOR history_visit.pat_id = '$org_id'")->get()->result();
-                    ->from('history_visit')->where("history_visit.org_id = '$c_id'  XOR history_visit.C_id = '$c_id' XOR history_visit.pat_id = '$c_id'")->get()->result();
+                ")->from('history_visit')->where("history_visit.org_id = '$c_id'  XOR history_visit.C_id = '$c_id' XOR history_visit.pat_id = '$c_id'")->get()->result();
 
                 $data['visit_history'][$i]->chief_complaints = $this->db->select("*")->from('history_chief_complaints')->where("C_id = '$c_id'")->get()->result();
                 $data['visit_history'][$i]->systemic_history = $this->db->select("*")->from('history_systemic_history')->where("C_id = '$c_id'")->get()->result();
