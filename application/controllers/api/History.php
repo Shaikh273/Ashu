@@ -312,16 +312,17 @@ class History extends REST_Controller
         // $pat_id = $this->input->get('pat_id');
         $data = array();
         if (!empty($org_id)) {
-            $data['visit_history'] = $this->db->select("history_visit.id AS ID ")->from('history_visit')->where("history_visit.org_id = '$org_id'  XOR history_visit.C_id = '$org_id' XOR history_visit.pat_id = '$org_id'")->get()->result();
-
             $case_id = $this->db->select('C_id,pat_id,org_id')->from('history_visit')->where("history_visit.org_id = '$org_id' XOR history_visit.C_id = '$org_id' XOR history_visit.pat_id = '$org_id'")->get()->result();
             $length = count($case_id);
+
+            $data['visit_history'] = $this->db->select("history_visit.id AS ID ")->from('history_visit')->where("history_visit.org_id = '$org_id'  XOR history_visit.C_id = '$org_id' XOR history_visit.pat_id = '$org_id'")->get()->result();
 
             for ($i = 0; $i < $length; ++$i) {
                 $pat_id = $case_id[$i]->pat_id;
                 $org_id = $case_id[$i]->org_id;
                 // print_r($org_id);die();
                 $c_id = $case_id[$i]->C_id;
+
                 $data['visit_history'][$i]->organization = $this->db->select("organization.*")->from('organization')->where('org_id', $org_id)->get()->row() ?? [];
                 $data['visit_history'][$i]->patient_data = $this->db->select("patients.*")->from('patients')->where('pat_id', $pat_id)->get()->row();
                 $data['visit_history'][$i]->visit =
@@ -342,6 +343,67 @@ class History extends REST_Controller
                 $data['visit_history'][$i]->anthropometry = $this->db->select("*")->from('history_anthropometry')->where("C_id = '$c_id'")->get()->result();
                 $data['visit_history'][$i]->test_cases = $this->db->select("test_cases.id,test_cases.problem,test_cases.description,test_cases.reading,test_cases.doctor_id,test_cases.status")->from('test_cases')->join('tests', 'test_cases.test_id = tests.id')->where("C_id = '$c_id'")->get()->result();
             }
+        }
+
+        if (!empty($data)) {
+            $this->response([
+                'status' => true,
+                'data' => $data
+            ], REST_Controller::HTTP_OK);
+        } else {
+            $this->response([
+                'status' => false,
+                'data' => 'Data Not Found.'
+            ], REST_Controller::HTTP_NOT_FOUND);
+        }
+    }
+
+    public function history1_get()
+    {
+        $org_id = $this->input->get('org_id');
+        // $C_id = $this->input->get('C_id');
+        // $pat_id = $this->input->get('pat_id');
+        $data = array();
+        if (!empty($org_id)) {
+            $organization = $this->db->select('org_id')->from('history_visit')->where("history_visit.org_id = '$org_id' XOR history_visit.C_id = '$org_id' XOR history_visit.pat_id = '$org_id'")->get()->row()->org_id ?? '';            
+
+            $data['organization'] = $this->db->select("organization.*")->from('organization')->where('org_id', $organization)->get()->row() ?? [];
+
+            $patients = $this->db->select("DISTINCT(pat_id)")->from('history_visit')->where("history_visit.org_id = '$org_id' XOR history_visit.C_id = '$org_id' XOR history_visit.pat_id = '$org_id'")->get()->result();
+            
+            // print_r($patients);die();
+
+            $length = count($patients);
+            for($j = 0; $j < $length; ++$j){
+                $pat_id = $patients[$j]->pat_id;
+                $data['patients'][$j]['patient'] = $this->db->select("patients.*")->from('patients')->where('pat_id', $pat_id)->get()->row();
+                $case_id = $this->db->select("DISTINCT(C_id)")->from('history_visit')->where('pat_id', $pat_id)->get()->result();
+                $length1 = count($case_id);
+                $data2 = array();
+                for ($i = 0; $i < $length1; ++$i) {
+                    $c_id = $case_id[$i]->C_id;
+                    $data2[$i]['visit'] =
+                        $this->db->select("
+                        history_visit.id AS ID,
+                        history_visit.c_id,
+                        history_visit.visit_type,
+                        history_visit.created_by,
+                        history_visit.created_at,
+                        history_visit.updated_at,
+                    ")->from('history_visit')->where("history_visit.C_id = '$c_id'")->get()->result();
+    
+                    $data2[$i]['chief_complaints'] = $this->db->select("*")->from('history_chief_complaints')->where("C_id = '$c_id'")->get()->result();
+                    $data2[$i]['systemic_history'] = $this->db->select("*")->from('history_systemic_history')->where("C_id = '$c_id'")->get()->result();
+                    $data2[$i]['drug_allergies'] = $this->db->select("*")->from('history_drug_allergies')->where("C_id = '$c_id'")->get()->result();
+                    $data2[$i]['contact_allergies'] = $this->db->select("*")->from('history_contact_allergies')->where("C_id = '$c_id'")->get()->result();
+                    $data2[$i]['vital_signs'] = $this->db->select("*")->from('history_vital_signs')->where("C_id = '$c_id'")->get()->result();
+                    $data2[$i]['anthropometry'] = $this->db->select("*")->from('history_anthropometry')->where("C_id = '$c_id'")->get()->result();
+                    $data2[$i]['test_cases'] = $this->db->select("test_cases.id,test_cases.problem,test_cases.description,test_cases.reading,test_cases.doctor_id,test_cases.status")->from('test_cases')->join('tests', 'test_cases.test_id = tests.id')->where("C_id = '$c_id'")->get()->result();
+                }
+                $data['patients'][$j]['history_visit'] = $data2;
+            }
+
+            // $data['visit_history'] = $this->db->select("history_visit.id AS ID ")->from('history_visit')->where("history_visit.org_id = '$org_id'  XOR history_visit.C_id = '$org_id' XOR history_visit.pat_id = '$org_id'")->get()->result();
         }
 
         if (!empty($data)) {
@@ -667,32 +729,32 @@ class History extends REST_Controller
         }
     }
 
+
     // -----------------------------Test Cases------------------------------- //
 
-    public function test_cases_post()
-    {
+    public function test_cases_post() {
         $c_id = $this->security->xss_clean($this->input->post('C_id'));
-        $problem =  $this->security->xss_clean($this->input->post('problem'));
-        $description =  $this->security->xss_clean($this->input->post('description'));
-        $test_id =  $this->security->xss_clean($this->input->post('test_id'));
-        $reading =  $this->security->xss_clean($this->input->post('reading'));
-        $doctor_id =  $this->security->xss_clean($this->input->post('doctor_id'));
+        $problem =  $this->security->xss_clean($this->input->post('problem'));   
+        $description =  $this->security->xss_clean($this->input->post('description'));   
+        $test_id =  $this->security->xss_clean($this->input->post('test_id'));   
+        $reading =  $this->security->xss_clean($this->input->post('reading'));   
+        $doctor_id =  $this->security->xss_clean($this->input->post('doctor_id'));   
         $status =  $this->security->xss_clean($this->input->post('status'));
-
-        $this->form_validation->set_rules('C_id', 'Cases Id', 'required', array(
+        
+        $this->form_validation->set_rules('C_id','Cases Id','required',array(
             'required' => 'Case Id is Missing'
         ));
-        $this->form_validation->set_rules('test_id', 'Cases Id', 'required', array(
+        $this->form_validation->set_rules('test_id','Cases Id','required',array(
             'required' => 'Test Id is Missing'
         ));
 
-        if ($this->form_validation->run() == false) {
+        if($this->form_validation->run() == false){
             $error = strip_tags(validation_errors());
             $this->response([
                 "status" => false,
                 "message" => $error,
             ], REST_Controller::HTTP_BAD_REQUEST);
-        } else {
+        }else{
             $data = array(
                 'C_id' => $c_id,
                 'problem' => $problem,
@@ -703,13 +765,13 @@ class History extends REST_Controller
                 'status' => $status,
             );
 
-            $insert = $this->db->insert('test_cases', $data);
-            if ($insert) {
+            $insert = $this->db->insert('test_cases',$data);
+            if($insert){
                 $this->response([
                     "status" => true,
                     "message" => "Data Inserted Successfully"
                 ], REST_Controller::HTTP_OK);
-            } else {
+            }else{
                 $this->response([
                     "status" => false,
                     "message" => "Internal Server Error"
@@ -718,8 +780,7 @@ class History extends REST_Controller
         }
     }
 
-    public function test_cases_update_post()
-    {
+    public function test_cases_update_post() {
         $id = $this->security->xss_clean($this->input->post('id'));
         $c_id = $this->security->xss_clean($this->input->post('C_id'));
         $problem = $this->security->xss_clean($this->input->post('problem'));
@@ -749,13 +810,13 @@ class History extends REST_Controller
             $data['status'] = $status;
         }
 
-        $update = $this->db->update('test_cases', $data, array('id' => $id));
-        if ($update) {
+        $update = $this->db->update('test_cases',$data, array('id'=>$id));
+        if($update){
             $this->response([
                 "status" => true,
                 "message" => "Data Updated Successfully"
             ], REST_Controller::HTTP_OK);
-        } else {
+        }else{
             $this->response([
                 "status" => false,
                 "message" => "Internal Server Error"
