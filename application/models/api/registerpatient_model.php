@@ -16,17 +16,17 @@ class registerpatient_model extends CI_Model
         return $sql ? true : false;
     }
 
-    public function updatedata($id, $data)
+    public function updatedata($pat_id, $data)
     {
-        $sql =   $this->db->update('patients', $data, array('id' => $id));
+        $sql =   $this->db->update('patients', $data, array('pat_id' => $pat_id));
 
         return $sql ? true : false;
     }
 
-    public function getData($id, $pat_id)
+    public function getData($pat_id)
     {
         $data['Patient'] =
-            $this->db->select("*")->from('patients')->where("id = '$id' OR pat_id = '$pat_id'")->get()->result();
+            $this->db->select("*")->from('patients')->where("pat_id = '$pat_id'")->get()->result();
         if (!empty($data['Patient'])) {
             return $data;
         } else {
