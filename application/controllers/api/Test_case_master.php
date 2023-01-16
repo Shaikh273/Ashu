@@ -22,7 +22,7 @@ class Test_case_master extends REST_Controller
         $data = array();
         if (!empty($master_id)) {
 
-            $data = $this->db->select('*')->from('test_case_master')->where("master_id", $master_id)->get()->result();
+            $data = $this->db->select('master_id,test_id,test_master_name')->from('tests_master')->where("master_id", $master_id)->get()->result();
         }
 
         if (!empty($data)) {
@@ -52,7 +52,7 @@ class Test_case_master extends REST_Controller
             'created_at' => date('Y-m-d H:i:s'),
         );
 
-        $insert = $this->db->insert('test_master', $data);
+        $insert = $this->db->insert('tests_master', $data);
         if ($insert) {
             $this->response([
                 "status" => true,
@@ -84,8 +84,7 @@ class Test_case_master extends REST_Controller
             $data['test_master_name'] = $test_master_name;
         }
 
-
-        $update = $this->db->update('test_master', $data, array('id' => $id));
+        $update = $this->db->update('tests_master', $data, array('id' => $id));
         if ($update) {
             $this->response([
                 "status" => true,
