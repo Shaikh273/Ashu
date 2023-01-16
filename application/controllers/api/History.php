@@ -371,13 +371,13 @@ class History extends REST_Controller
 
             $patients = $this->db->select("DISTINCT(pat_id)")->from('history_visit')->where("history_visit.org_id = '$org_id' XOR history_visit.C_id = '$org_id' XOR history_visit.pat_id = '$org_id'")->get()->result();
             
-            // print_r($patients);die();
-
+            
             $length = count($patients);
             for($j = 0; $j < $length; ++$j){
                 $pat_id = $patients[$j]->pat_id;
                 $data['patients'][$j]['patient'] = $this->db->select("patients.*")->from('patients')->where('pat_id', $pat_id)->get()->row();
-                $case_id = $this->db->select("DISTINCT(C_id)")->from('history_visit')->where('pat_id', $pat_id)->get()->result();
+                $case_id = $this->db->select("DISTINCT(C_id)")->from('history_visit')->where("history_visit.org_id = '$org_id' XOR history_visit.C_id = '$org_id' XOR history_visit.pat_id = '$org_id'")->get()->result();
+                // print_r($case_id);die();
                 $length1 = count($case_id);
                 $data2 = array();
                 for ($i = 0; $i < $length1; ++$i) {
