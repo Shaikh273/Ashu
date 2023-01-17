@@ -12,7 +12,8 @@ class Test_case_master extends REST_Controller
     {
         parent::__construct();
         $this->load->database();
-        $this->test = 'test_cases';
+        // $this->test = 'test_cases';
+        $this->tests_master = 'tests_master';
     }
 
     public function test_master_get()
@@ -22,7 +23,25 @@ class Test_case_master extends REST_Controller
         $data = array();
         if (!empty($master_id)) {
 
-            $data = $this->db->select('master_id,test_id,test_master_name')->from('tests_master')->where("master_id", $master_id)->get()->result();
+            $master_id = $this->db->select('master_id')->from($this->tests_master)->where('master_id', $master_id)->get()->result();
+            $length = count($master_id);
+
+            for ($i = 0; $i < $length; ++$i) {
+                $master = $master_id[$i]->master_id;
+
+                $data['test_master'] = $this->db->select('master_id,test_id,test_master_name')->from($this->tests_master)->where("master_id", $master)->get()->result();
+            }
+        } else {
+            $master = $this->db->select('DISTINCT(master_id)')->from($this->tests_master)->order_by("master_id  ASC")->get()->result();
+
+            $length = count($master);
+
+            for ($i = 0; $i < $length; ++$i) {
+
+                $master_id = $master[$i]->master_id;
+
+                $data['test_master'][$i] = $this->db->select('master_id,test_id,test_master_name')->from($this->tests_master)->where("master_id", $master_id)->get()->result();
+            }
         }
 
         if (!empty($data)) {
@@ -52,7 +71,7 @@ class Test_case_master extends REST_Controller
             'created_at' => date('Y-m-d H:i:s'),
         );
 
-        $insert = $this->db->insert('tests_master', $data);
+        $insert = $this->db->insert($this->tests_master, $data);
         if ($insert) {
             $this->response([
                 "status" => true,
@@ -84,7 +103,7 @@ class Test_case_master extends REST_Controller
             $data['test_master_name'] = $test_master_name;
         }
 
-        $update = $this->db->update('tests_master', $data, array('id' => $id));
+        $update = $this->db->update($this->tests_master, $data, array('id' => $id));
         if ($update) {
             $this->response([
                 "status" => true,
@@ -101,7 +120,7 @@ class Test_case_master extends REST_Controller
     public function test_master_delete()
     {
         $test_id = $this->input->get('test_id');
-        $data = $this->db->delete("spiritual_count", array('test_id' => $test_id));
+        $data = $this->db->delete($this->tests_master, array('test_id' => $test_id));
 
         if ($data) {
             $this->response([
