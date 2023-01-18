@@ -18,6 +18,7 @@ class Prescription extends REST_Controller
     {
         $pat_id = $this->security->xss_clean($this->input->post('pat_id'));
         $C_id = $this->security->xss_clean($this->input->post('C_id'));
+        $staff_id = $this->security->xss_clean($this->input->post('staff_id'));
         $name = $this->security->xss_clean($this->input->post('name'));
         $type = $this->security->xss_clean($this->input->post('type'));
         $quantity = $this->security->xss_clean($this->input->post('quantity'));
@@ -33,6 +34,9 @@ class Prescription extends REST_Controller
         $this->form_validation->set_rules('pat_id', 'Patient Id', 'required', array(
             'required' => 'Patient Id is Missing'
         ));
+        $this->form_validation->set_rules('staff_id', 'Doctor Id', 'required', array(
+            'required' => 'Doctor Id is Missing'
+        ));
 
         if ($this->form_validation->run() == false) {
             $error = strip_tags(validation_errors());
@@ -44,6 +48,7 @@ class Prescription extends REST_Controller
             $data = array(
                 "pat_id" => $pat_id ?? '',
                 "C_id" => $C_id ?? '',
+                "staff_id" => $staff_id ?? '',
                 "name" => $name ?? '',
                 "type" => $type ?? '',
                 "quantity" => $quantity ?? '',
@@ -82,39 +87,6 @@ class Prescription extends REST_Controller
         if (!empty($C_id)) {
 
             $data['Prescription'] = $this->db->select("*")->from($this->pres)->where("C_id = '$C_id' XOR pat_id = '$C_id'")->get()->result() ?? [];
-
-            // $patients = $this->db->select("DISTINCT(pat_id)")->from('history_visit')->where("history_visit.org_id = '$org_id' XOR history_visit.C_id = '$org_id' XOR history_visit.pat_id = '$org_id'")->get()->result();
-
-
-            // $length = count($patients);
-            // for ($j = 0; $j < $length; ++$j) {
-            //     $pat_id = $patients[$j]->pat_id;
-            //     $data['patients'][$j]['patient'] = $this->db->select("patients.*")->from('patients')->where('pat_id', $pat_id)->get()->row();
-            //     $case_id = $this->db->select("DISTINCT(C_id)")->from('history_visit')->where("history_visit.org_id = '$org_id' XOR history_visit.C_id = '$org_id' XOR history_visit.pat_id = '$org_id'")->get()->result();
-            //     $length1 = count($case_id);
-            //     $data2 = array();
-            //     for ($i = 0; $i < $length1; ++$i) {
-            //         $c_id = $case_id[$i]->C_id;
-            //         $data2[$i]['visit'] =
-            //             $this->db->select("
-            //             history_visit.id AS ID,
-            //             history_visit.c_id,
-            //             history_visit.visit_type,
-            //             history_visit.created_by,
-            //             history_visit.created_at,
-            //             history_visit.updated_at,
-            //         ")->from('history_visit')->where("history_visit.C_id = '$c_id'")->get()->result();
-
-            //         $data2[$i]['chief_complaints'] = $this->db->select("*")->from('history_chief_complaints')->where("C_id = '$c_id'")->get()->result();
-            //         $data2[$i]['systemic_history'] = $this->db->select("*")->from('history_systemic_history')->where("C_id = '$c_id'")->get()->result();
-            //         $data2[$i]['drug_allergies'] = $this->db->select("*")->from('history_drug_allergies')->where("C_id = '$c_id'")->get()->result();
-            //         $data2[$i]['contact_allergies'] = $this->db->select("*")->from('history_contact_allergies')->where("C_id = '$c_id'")->get()->result();
-            //         $data2[$i]['vital_signs'] = $this->db->select("*")->from('history_vital_signs')->where("C_id = '$c_id'")->get()->result();
-            //         $data2[$i]['anthropometry'] = $this->db->select("*")->from('history_anthropometry')->where("C_id = '$c_id'")->get()->result();
-            //         $data2[$i]['test_cases'] = $this->db->select("test_cases.id,test_cases.problem,test_cases.description,test_cases.reading,test_cases.doctor_id,test_cases.status")->from('test_cases')->join('tests', 'test_cases.test_id = tests.id')->where("C_id = '$c_id'")->get()->result();
-            //     }
-            //     $data['patients'][$j]['history_visit'] = $data2;
-            // }
         } else {
             $this->response([
                 'status' => True,
@@ -132,6 +104,39 @@ class Prescription extends REST_Controller
                 'status' => false,
                 'data' => 'Data Not Found.'
             ], REST_Controller::HTTP_NOT_FOUND);
+        }
+    }
+
+    public function prescription_delete()
+    {
+        // $C_id = $this->delete('C_id');
+        $id = $this->delete('id');
+
+        $data = $this->db->delete($this->pres, array('id' => $id));
+
+        if ($data == False) {
+            $this->response([
+                "status" => FALSE,
+                "message" => "Data not found"
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        } elseif (!empty($data)) {
+            if ($data) {
+                $this->response([
+                    "status" => TRUE,
+                    "id" => $id,
+                    "message" => "Data Deleted "
+                ], REST_Controller::HTTP_OK);
+            } else {
+                $this->response([
+                    "status" => FALSE,
+                    "message" => "Unable to Delete"
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $this->response([
+                "status" => FALSE,
+                "message" => "Data not found"
+            ], REST_Controller::HTTP_BAD_REQUEST);
         }
     }
 }
