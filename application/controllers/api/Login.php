@@ -13,9 +13,6 @@ class Login extends REST_Controller
         parent::__construct();
         $this->load->database();
         $this->load->model('api/Users_model');
-
-        // $this->load->model('api/registerpatient_model');
-
     }
 
     public function login_post()
@@ -36,7 +33,7 @@ class Login extends REST_Controller
             );
 
             $user = $this->Users_model->getRows($con);
-            // $insertData = $this->registerpatient_model->getRows($);
+
             if ($user) {
 
                 $this->response([
