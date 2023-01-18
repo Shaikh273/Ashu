@@ -43,9 +43,9 @@ class Register extends REST_Controller
         $email = $this->security->xss_clean($this->input->post("email"));
         $gender = $this->security->xss_clean($this->input->post("gender"));
         $DOB = $this->security->xss_clean($this->input->post("DOB"));
-        $years =$this->security->xss_clean($this->input->post("years"));
-        $months =$this->security->xss_clean($this->input->post("months"));
-        $days =$this->security->xss_clean($this->input->post("days"));
+        $years = $this->security->xss_clean($this->input->post("years"));
+        $months = $this->security->xss_clean($this->input->post("months"));
+        $days = $this->security->xss_clean($this->input->post("days"));
         $language = $this->security->xss_clean($this->input->post("language"));
         $patienttype = $this->security->xss_clean($this->input->post("patienttype"));
         $address = $this->security->xss_clean($this->input->post("address"));
@@ -60,6 +60,7 @@ class Register extends REST_Controller
 
 
         $img = $this->input->post("img");
+        $qr = $this->input->post("qr");
         $blood_grp = $this->security->xss_clean($this->input->post("blood_grp"));
         $maritail_status = $this->security->xss_clean($this->input->post("maritail_status"));
         $disabled = $this->security->xss_clean($this->input->post("disabled"));
@@ -87,6 +88,30 @@ class Register extends REST_Controller
 
         // print($pat_id);die();  
 
+
+        if (!empty($_FILES['qr'])) {
+            $fileName = $_FILES['qr']['name'];
+
+            $config['file_name'] = $fileName;
+            $config['upload_path'] = './assets/uploads/images/users/';
+            $config['allowed_types'] = 'gif|jpg|png';
+            $config['max_size']     = '1024000';
+            $config['max_width'] = '6000';
+            $config['max_height'] = '6000';
+
+            $this->load->library('upload', $config);
+            $this->upload->initialize($config);
+            if (!$this->upload->do_upload('qr')) {
+                echo $this->upload->display_errors();
+                $qr = '';
+                #redirect("employee/view?I=" .base64_encode($eid));
+            } else {
+                $path = $this->upload->data();
+                $qr = $path['file_name'];
+            }
+        } else {
+            $qr = '';
+        }
 
         if (!empty($_FILES['img'])) {
             $fileName = $_FILES['img']['name'];
@@ -162,6 +187,7 @@ class Register extends REST_Controller
             "governmentidno" => $governmentidno ?? '',
 
             "img" => $img ?? '',
+            'qr' => $qr ?? '',
             "blood_grp" => $blood_grp ?? '',
             "maritail_status" => $maritail_status ?? '',
             "disabled" => $disabled ?? '',
@@ -222,6 +248,7 @@ class Register extends REST_Controller
 
 
         $img = $this->input->post("img");
+        $qr = $this->input->post("qr");
         $blood_grp = $this->security->xss_clean($this->input->post("blood_grp"));
         $maritail_status = $this->security->xss_clean($this->input->post("maritail_status"));
         $disabled = $this->security->xss_clean($this->input->post("disabled"));
@@ -230,6 +257,30 @@ class Register extends REST_Controller
         $emg_no = $this->security->xss_clean($this->input->post("emg_no"));
 
         $pat_id = $this->input->post('pat_id');
+
+        if (!empty($_FILES['qr'])) {
+            $fileName = $_FILES['qr']['name'];
+
+            $config['file_name'] = $fileName;
+            $config['upload_path'] = './assets/uploads/images/users/';
+            $config['allowed_types'] = 'gif|jpg|png';
+            $config['max_size']     = '1024000';
+            $config['max_width'] = '6000';
+            $config['max_height'] = '6000';
+
+            $this->load->library('upload', $config);
+            $this->upload->initialize($config);
+            if (!$this->upload->do_upload('qr')) {
+                echo $this->upload->display_errors();
+                $qr = '';
+                #redirect("employee/view?I=" .base64_encode($eid));
+            } else {
+                $path = $this->upload->data();
+                $qr = $path['file_name'];
+            }
+        } else {
+            $qr = '';
+        }
 
         if (!empty($_FILES['img'])) {
             $fileName = $_FILES['img']['name'];
@@ -325,6 +376,9 @@ class Register extends REST_Controller
         }
         if (!empty($img)) {
             $data['img'] = $img;
+        }
+        if (!empty($qr)) {
+            $data['qr'] = $qr;
         }
         if (!empty($blood_grp)) {
             $data['blood_grp'] = $blood_grp;
