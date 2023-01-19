@@ -13,7 +13,7 @@ class Organization extends REST_Controller
     {
         parent::__construct();
         $this->load->database();
-        $this->load->model('api/organization_model');
+        $this->load->model('api/Organization_model','organization_model');
         $this->organization = 'organization';
     }
 
@@ -144,7 +144,7 @@ class Organization extends REST_Controller
             'created_at' => date('Y-m-d H:i:s'),
         );
 
-        $insertData = $this->organization_model->insertdata($data);
+        $insertData = $this->Organization_model->insertdata($data);
         if ($insertData) {
             $this->response([
                 'status' => !empty($message) ? false : true,
@@ -157,7 +157,7 @@ class Organization extends REST_Controller
                 "Message" => "Registration Failed"
             ], REST_Controller::HTTP_BAD_REQUEST);
         }
-
+        
         $data = array(
             "org_id" => $org_id,
             "org_logo" => $org_logo,
@@ -173,7 +173,7 @@ class Organization extends REST_Controller
             "org_addedby" => $org_addedby,
             'created_at' => date('Y-m-d H:i:s'),
         );
-        $insertData = $this->organization_model->insertdata($data);
+        $insertData = $this->Organization_model->insertdata($data);
         if ($insertData) {
             $this->response([
                 'status' => !empty($message) ? false : true,
@@ -186,6 +186,7 @@ class Organization extends REST_Controller
                 "Message" => "Registration Failed"
             ], REST_Controller::HTTP_BAD_REQUEST);
         }
+        
     }
 
     public function organizationupdate_post()
@@ -297,8 +298,8 @@ class Organization extends REST_Controller
 
         if ($data == '') {
         } else {
-            $data = $this->organization_model->updatedata($org_id, $data);
-            $given_data = $this->organization_model->getdata($org_id);
+            $data = $this->Organization_model->updatedata($org_id, $data);
+            $given_data = $this->Organization_model->getdata($org_id);
 
             // print_r($given_data);die();
 
@@ -315,7 +316,7 @@ class Organization extends REST_Controller
                 ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
-
+        
         $data = array();
         if (!empty($org_name)) {
             $data['org_name'] = $org_name;
@@ -350,8 +351,8 @@ class Organization extends REST_Controller
 
         if ($data == '') {
         } else {
-            $data = $this->organization_model->updatedata($org_id, $data);
-            $given_data = $this->organization_model->getdata($org_id);
+            $data = $this->Organization_model->updatedata($org_id, $data);
+            $given_data = $this->Organization_model->getdata($org_id);
         }
 
         if ($data) {
@@ -373,7 +374,7 @@ class Organization extends REST_Controller
     {
         $id = $this->delete('id');
 
-        $data = $this->organization_model->deletedata($id);
+        $data = $this->Organization_model->deletedata($id);
 
         if ($data == null) {
             $this->response([

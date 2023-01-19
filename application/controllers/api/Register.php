@@ -13,16 +13,17 @@ class Register extends REST_Controller
     {
         parent::__construct();
         $this->load->database();
-        $this->load->model('api/registerpatient_model');
-        $this->pat = "Patients";
+        $this->load->model('api/Registerpatient_model');
+        $this->pat = "patients";
     }
 
-    public function patient_get()
+    public function patients_get()
     {
         $data = $this->db->select('*')->from($this->pat)->get()->result();
         if (!empty($data)) {
             $this->response([
                 'status' => true,
+                'img_url' => 'https://www./Ashu/assets/uploads/patients/',
                 'data' => $data,
             ], REST_Controller::HTTP_OK);
         } else {
@@ -43,9 +44,6 @@ class Register extends REST_Controller
         $email = $this->security->xss_clean($this->input->post("email"));
         $gender = $this->security->xss_clean($this->input->post("gender"));
         $DOB = $this->security->xss_clean($this->input->post("DOB"));
-        $years =$this->security->xss_clean($this->input->post("years"));
-        $months =$this->security->xss_clean($this->input->post("months"));
-        $days =$this->security->xss_clean($this->input->post("days"));
         $language = $this->security->xss_clean($this->input->post("language"));
         $patienttype = $this->security->xss_clean($this->input->post("patienttype"));
         $address = $this->security->xss_clean($this->input->post("address"));
@@ -57,8 +55,8 @@ class Register extends REST_Controller
         $medicalrecordno = $this->security->xss_clean($this->input->post("medicalrecordno"));
         $governmentid_type = $this->security->xss_clean($this->input->post("governmentid_type"));
         $governmentidno = $this->security->xss_clean($this->input->post("governmentidno"));
-
-
+        
+        
         $img = $this->input->post("img");
         $blood_grp = $this->security->xss_clean($this->input->post("blood_grp"));
         $maritail_status = $this->security->xss_clean($this->input->post("maritail_status"));
@@ -92,12 +90,12 @@ class Register extends REST_Controller
             $fileName = $_FILES['img']['name'];
 
             $config['file_name'] = $fileName;
-            $config['upload_path'] = './assets/uploads/images/users/';
+            $config['upload_path'] = './assets/uploads/patients/';
             $config['allowed_types'] = 'gif|jpg|png';
             $config['max_size']     = '1024000';
             $config['max_width'] = '6000';
             $config['max_height'] = '6000';
-
+            $config['remove_spaces'] = FALSE;
             $this->load->library('upload', $config);
             $this->upload->initialize($config);
             if (!$this->upload->do_upload('img')) {
@@ -146,9 +144,6 @@ class Register extends REST_Controller
             "email" => $email ?? '',
             "gender" => $gender ?? '',
             "DOB" => $DOB ?? '',
-            "years" => $years ?? '',
-            "months" => $months ?? '',
-            "days" => $days ?? '',
             "language" => $language ?? '',
             "patienttype" => $patienttype ?? '',
             "address" => $address ?? '',
@@ -168,14 +163,14 @@ class Register extends REST_Controller
             "emg_relation" => $emg_relation ?? '',
             "emg_name" => $emg_name ?? '',
             "emg_no" => $emg_no ?? '',
-
+            
             "org_id" => $org_id,
             "pat_id" => $pat_id,
 
             'created_at' => date('Y-m-d H:i:s'),
         );
 
-        $insertData = $this->registerpatient_model->insertdata($data);
+        $insertData = $this->Registerpatient_model->insertdata($data);
         if ($insertData) {
             $this->response([
                 'status' => TRUE,
@@ -195,7 +190,7 @@ class Register extends REST_Controller
 
     public function patientupdate_post()
     {
-        $id = $this->post('id');
+        // $pat_id = $this->post('pat_id');
 
         $first_name = $this->security->xss_clean($this->input->post("first_name"));
         $middle_name = $this->security->xss_clean($this->input->post("middle_name"));
@@ -205,9 +200,6 @@ class Register extends REST_Controller
         $email = $this->security->xss_clean($this->input->post("email"));
         $gender = $this->security->xss_clean($this->input->post("gender"));
         $DOB = $this->security->xss_clean($this->input->post("DOB"));
-        $years = $this->security->xss_clean($this->input->post("years"));
-        $months = $this->security->xss_clean($this->input->post("months"));
-        $days = $this->security->xss_clean($this->input->post("days"));
         $language = $this->security->xss_clean($this->input->post("language"));
         $patienttype = $this->security->xss_clean($this->input->post("patienttype"));
         $address = $this->security->xss_clean($this->input->post("address"));
@@ -235,13 +227,15 @@ class Register extends REST_Controller
             $fileName = $_FILES['img']['name'];
 
             $config['file_name'] = $fileName;
-            $config['upload_path'] = './assets/uploads/images/users/';
+            $config['upload_path'] = './assets/uploads/patients/';
             $config['allowed_types'] = 'gif|jpg|png';
             $config['max_size']     = '1024000';
             $config['max_width'] = '6000';
             $config['max_height'] = '6000';
-
+            $config['remove_spaces'] = FALSE;
+            $config['overwrite'] = true;
             $this->load->library('upload', $config);
+            $this->upload->overwrite = true;
             $this->upload->initialize($config);
             if (!$this->upload->do_upload('img')) {
                 echo $this->upload->display_errors();
@@ -255,8 +249,67 @@ class Register extends REST_Controller
             $img = '';
         }
 
+        // $this->form_validation->set_rules(
+        //     "mobileNo",
+        //     "Mobile No",
+        //     "required|numeric|is_unique[patients.mobile_no]|min_length[10]|max_length[15]",
+        //     array(
+        //         'max_length' => 'Mobile no. should be maximum 15 digits',
+        //         'min_length' => 'Mobile no. should be minimum 10 digits',
+        //         'is_unique' => 'Mobile no. already used',
+        //         'required' => 'This Field must be filled',
+        //         'numeric' => 'Please Enter only Numbers'
+        //     )
+        // );
 
-        $data = array();
+
+
+        // if ($this->form_validation->run() == false) {
+
+        //     // very important query "LIFES SAVER"
+        //     $error = strip_tags(validation_errors());
+
+        //     $this->response([
+        //         "status" => False,
+        //         "message" => "Invalid Details",
+        //         "error" => $error
+        //     ], REST_Controller::HTTP_BAD_REQUEST);
+        // } else {
+        // $data = array(
+        //     // "id" => $id,
+
+        //     "first_name" => $first_name ?? '',
+        //     "middle_name" => $middle_name ?? '',
+        //     "last_name" => $last_name ?? '',
+        //     "mobile_no" => $mobileNo ?? '',
+        //     "secondarynumber" => $secondarynumber ?? '',
+        //     "email" => $email ?? '',
+        //     "gender" => $gender ?? '',
+        //     "DOB" => $DOB ?? '',
+        //     "language" => $language ?? '',
+        //     "patienttype" => $patienttype ?? '',
+        //     "address" => $address ?? '',
+        //     "state" => $state ?? '',
+        //     "city" => $city ?? '',
+        //     "pincode" => $pincode ?? '',
+        //     "occupation" => $occupation ?? '',
+        //     "employeeid" => $employeeid ?? '',
+        //     "medicalrecordno" => $medicalrecordno ?? '',
+        //     "governmentid_type" => $governmentid_type ?? '',
+        //     "governmentidno" => $governmentidno ?? '',
+
+        //     "img" => $img ?? '',
+        //     "blood_grp" => $blood_grp ?? '',
+        //     "maritail_status" => $maritail_status ?? '',
+        //     "disabled" => $disabled ?? '',
+        //     "emg_relation" => $emg_relation ?? '',
+        //     "emg_name" => $emg_name ?? '',
+        //     "emg_no" => $emg_no ?? '',
+
+        //     "pat_id" => $pat_id,
+        // );
+        
+          $data = array();
         if (!empty($first_name)) {
             $data['first_name'] = $first_name;
         }
@@ -280,15 +333,6 @@ class Register extends REST_Controller
         }
         if (!empty($DOB)) {
             $data['DOB'] = $DOB;
-        }
-        if (!empty($years)) {
-            $data['years'] = $years;
-        }
-        if (!empty($months)) {
-            $data['months'] = $months;
-        }
-        if (!empty($days)) {
-            $data['days'] = $days;
         }
         if (!empty($language)) {
             $data['language'] = $language;
@@ -345,20 +389,18 @@ class Register extends REST_Controller
             $data['emg_no'] = $emg_no;
         }
 
-        // print_r($data);
-        // die();
 
         if ($data == '') {
         } else {
-            $data = $this->registerpatient_model->updatedata($pat_id, $data);
-            // $given_data = $this->registerpatient_model->getdata($pat_id);
+            $data = $this->Registerpatient_model->updatedata($pat_id ,$data);
+            $given_data = $this->Registerpatient_model->getdata($pat_id);
         }
 
         if ($data) {
             $this->response([
                 'status' => true,
                 'message' => 'Patient Updated Successfully.',
-                // 'data' => $given_data
+                'data' => $given_data
             ], REST_Controller::HTTP_OK);
         } else {
             $this->response([
@@ -371,9 +413,9 @@ class Register extends REST_Controller
 
     public function patient_delete()
     {
-        $id = $this->delete('id');
+        $id = $this->input->get('id');
 
-        $data = $this->registerpatient_model->deletedata($id);
+        $data = $this->Registerpatient_model->deletedata($id);
 
         if ($data == null) {
             $this->response([
