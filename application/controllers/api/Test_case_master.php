@@ -18,10 +18,13 @@ class Test_case_master extends REST_Controller
 
     public function test_master_get()
     {
+
         $master_id = $this->input->get('master_name');
+
 
         $data = array();
         if (!empty($master_id)) {
+
 
             $master_id = $this->db->select('test_master_name')->from($this->tests_master)->where('test_master_name', $master_id)->get()->result();
             $length = count($master_id);
@@ -34,13 +37,16 @@ class Test_case_master extends REST_Controller
         } else {
             $master = $this->db->select('DISTINCT(test_master_name)')->from($this->tests_master)->order_by("test_master_name  ASC")->get()->result();
 
+
             $length = count($master);
 
             for ($i = 0; $i < $length; ++$i) {
 
+
                 $master_id = $master[$i]->test_master_name;
 
                 $data['test_master'][$i] = $this->db->select('master_id,test_id,test_master_name,tests.test,status')->from($this->tests_master)->join('tests',"$this->tests_master.test_id = tests.id")->where("test_master_name", $master_id)->get()->result();
+
             }
         }
 
@@ -60,7 +66,9 @@ class Test_case_master extends REST_Controller
     public function test_master_post()
     {
         $test_id = $this->security->xss_clean($this->input->post('test_id'));
+
         // $master_id =  $this->security->xss_clean($this->input->post('master_id'));
+
         $test_master_name =  $this->security->xss_clean($this->input->post('test_master_name'));
 
         $data = array(
@@ -89,16 +97,20 @@ class Test_case_master extends REST_Controller
     {
         $id = $this->security->xss_clean($this->input->post('id'));
         $test_id = $this->security->xss_clean($this->input->post('test_id'));
+
         // $master_id =  $this->security->xss_clean($this->input->post('master_id'));
+
         $test_master_name =  $this->security->xss_clean($this->input->post('test_master_name'));
 
         $data = array();
         if (!empty($test_id) && !empty($id)) {
             $data['test_id'] = $test_id;
         }
+
         // if (!empty($master_id) && !empty($id)) {
         //     $data['master_id'] = $master_id;
         // }
+
         if (!empty($test_master_name) && !empty($id)) {
             $data['test_master_name'] = $test_master_name;
         }
@@ -119,6 +131,7 @@ class Test_case_master extends REST_Controller
 
     public function test_master_delete()
     {
+
         $id = $this->input->get('id');
         $data = $this->db->delete($this->tests_master, array('id' => $id));
 
