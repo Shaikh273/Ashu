@@ -110,7 +110,9 @@ class Prescription extends REST_Controller
     public function prescription_delete()
     {
         // $C_id = $this->delete('C_id');
-        $id = $this->delete('id');
+
+        $id = $this->input->get('id');
+
 
         $data = $this->db->delete($this->pres, array('id' => $id));
 
