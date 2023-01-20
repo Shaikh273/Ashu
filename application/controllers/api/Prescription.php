@@ -98,6 +98,7 @@ class Prescription extends REST_Controller
             $master = $this->db->select('DISTINCT(C_id)')->from($this->pres)->get()->result();
             $length = count($master);
 
+            // print_r($master);die();
 
             for ($i = 0; $i < $length; ++$i) {
 
