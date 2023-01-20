@@ -89,6 +89,7 @@ class Staff extends REST_Controller {
         $join_date = $this->security->xss_clean($this->input->post('join_date'));
         $role_id = $this->security->xss_clean($this->input->post('role_id'));
         $org_id = $this->security->xss_clean($this->input->post('org_id'));
+        $status = $this->security->xss_clean($this->input->post('status'));
         
         //----------------------Getting Role-------------------//
         
