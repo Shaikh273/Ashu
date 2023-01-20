@@ -275,6 +275,7 @@ class Staff extends REST_Controller {
         $join_date = $this->security->xss_clean($this->input->post('join_date'));
         $role_id = $this->security->xss_clean($this->input->post('role_id'));
         $org_id = $this->security->xss_clean($this->input->post('org_id'));
+        $status = $this->security->xss_clean($this->input->post('status'));
 
         if(!empty($_FILES['img'])) {
             $fileName = $_FILES['img']['name'];
@@ -378,7 +379,20 @@ class Staff extends REST_Controller {
             $data['role_id'] = $role_id;
         }
         if(!empty($status)){
-            $data['status'] = $status;
+            // print_r($status);die();
+            if($status == 'Approved'){
+                $admin_id = $this->db->select('admin')->from($this->staff)->where('u_id',$u_id)->get()->row()->admin ?? '';
+                if(!empty($admin) && $admin == $admin_id){
+                    $data['status'] = $status;
+                }else{
+                    $this->response([
+                        'status'=>false,
+                        'message'=>"You Cannot Approve this Employee \nYou aren't Selected by him/her at the time of registration",
+                    ], REST_Controller::HTTP_BAD_REQUEST);  
+                }
+            }else if($status == 'Pending'){
+                $data['status'] = $status;
+            }
         }
 
         // print_r($data);die();
