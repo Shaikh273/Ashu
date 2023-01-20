@@ -4,7 +4,6 @@ require APPPATH . '/libraries/REST_Controller.php';
 
 use Restserver\Libraries\REST_Controller;
 
-
 class Prescription extends REST_Controller
 {
     public function __construct()
@@ -93,7 +92,6 @@ class Prescription extends REST_Controller
                 $p_id = $prescription[$i]['id'];
                 $data['Prescription'][$i]['Taper'] = $this->db->select("*")->from($this->taper)->where("prescription_id", $p_id)->get()->result_array();
             }
-            // $C_id = $this->db->select('C_id')->from($this->pres)->where('C_id', $C_id)->get()->result();
         } else {
             $master = $this->db->select('DISTINCT(C_id)')->from($this->pres)->get()->result();
             $length = count($master);
@@ -110,16 +108,8 @@ class Prescription extends REST_Controller
                     $p_id = $prescription[$j]['id'];
                     $data[$i]['Prescription'][$j]['Taper'] = $this->db->select("*")->from($this->taper)->where("prescription_id", $p_id)->get()->result_array();
                 }
-                // print_r($data);
-                // die();
-                // }
             }
         }
-
-        // $data['Prescription'] = $this->db->select("*")->from($this->pres)->where("C_id = '$C_id' XOR pat_id = '$C_id'")->get()->result() ?? [];
-
-        // $data['Prescription']['Taper'] = $this->db->select("*")->from($this->taper)->where("C_id ", $C_id)->get()->result();
-
 
         if (!empty($data)) {
             $this->response([
@@ -136,7 +126,6 @@ class Prescription extends REST_Controller
 
     public function prescription_delete()
     {
-        // $C_id = $this->delete('C_id');
         $id = $this->delete('id');
 
         $data = $this->db->delete($this->pres, array('id' => $id));
@@ -218,8 +207,6 @@ class Prescription extends REST_Controller
             }
         }
     }
-
-
 
     public function taper_get()
     {
