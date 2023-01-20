@@ -128,6 +128,7 @@ class Prescription extends REST_Controller
     {
         $id = $this->delete('id');
 
+
         $data = $this->db->delete($this->pres, array('id' => $id));
 
         if ($data) {
