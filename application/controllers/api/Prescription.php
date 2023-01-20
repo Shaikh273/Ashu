@@ -74,7 +74,7 @@ class Prescription extends REST_Controller
             } else {
                 $this->response([
                     'status' => false,
-                    'message' => 'Unsuccessful.'
+                    'message' => 'Unable to add Prescription.'
                 ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
             }
         }
@@ -98,16 +98,16 @@ class Prescription extends REST_Controller
             $master = $this->db->select('DISTINCT(C_id)')->from($this->pres)->get()->result();
             $length = count($master);
 
-            // print_r($master);die();
-
             for ($i = 0; $i < $length; ++$i) {
 
                 $C_id = $master[$i]->C_id;
 
                 $data[$i]['Prescription'] = $this->db->select('*')->from($this->pres)->where("C_id", $C_id)->get()->result_array();
                 $prescription = $this->db->select('id')->from($this->pres)->where("C_id", $C_id)->get()->result_array();
-                $length = count($prescription);
-                for ($j = 0; $j < $length; ++$j) {
+                // print_r($data);die();
+                $length1 = count($prescription);
+
+                for ($j = 0; $j < $length1; ++$j) {
                     $p_id = $prescription[$j]['id'];
                     $data[$i]['Prescription'][$j]['Taper'] = $this->db->select("*")->from($this->taper)->where("prescription_id", $p_id)->get()->result_array();
                     $data[$i]['Prescription'][$j]['instruction'] = $this->db->select("*")->from($this->pro)->where("prescription_id", $p_id)->get()->result_array();
@@ -140,12 +140,12 @@ class Prescription extends REST_Controller
             $this->response([
                 "status" => TRUE,
                 "id" => $id,
-                "message" => "Data Deleted "
+                "message" => "Data Deleted"
             ], REST_Controller::HTTP_OK);
         } else {
             $this->response([
                 "status" => FALSE,
-                "message" => "Unable to Delete"
+                "message" => "Unable to Delete Data"
             ], REST_Controller::HTTP_BAD_REQUEST);
         }
     }
@@ -207,7 +207,7 @@ class Prescription extends REST_Controller
                 } else {
                     $this->response([
                         "status" => False,
-                        "message" => "Some Error Occured",
+                        "message" => "Unable to add Taper",
                     ], REST_Controller::HTTP_BAD_REQUEST);
                 }
             }
@@ -271,7 +271,7 @@ class Prescription extends REST_Controller
         } else {
             $this->response([
                 "status" => false,
-                "message" => "Internal Server Error"
+                "message" => "Data Update Unsuccessful"
             ], REST_Controller::HTTP_BAD_REQUEST);
         }
     }
@@ -306,13 +306,13 @@ class Prescription extends REST_Controller
                 if ($insert == True) {
                     $this->response([
                         "status" => TRUE,
-                        "message" => "instruction Added Successfully",
+                        "message" => "Instruction Added Successfully",
                         "data" => $data,
                     ], REST_CONTROLLER::HTTP_OK);
                 } else {
                     $this->response([
                         "status" => False,
-                        "message" => "Some Error Occured",
+                        "message" => "Unable to add Instructions",
                     ], REST_Controller::HTTP_BAD_REQUEST);
                 }
             }
@@ -344,7 +344,7 @@ class Prescription extends REST_Controller
         } else {
             $this->response([
                 "status" => false,
-                "message" => "Internal Server Error"
+                "message" => "Data Update Unsuccessful"
             ], REST_Controller::HTTP_BAD_REQUEST);
         }
     }
