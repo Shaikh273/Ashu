@@ -1,7 +1,7 @@
 <?php
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-class registerpatient_model extends CI_Model
+class Registerpatient_model extends CI_Model
 {
     public function __construct()
     {
