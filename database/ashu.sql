@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 12, 2023 at 12:29 PM
+-- Generation Time: Jan 20, 2023 at 12:40 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.0.19
 
@@ -331,6 +331,27 @@ INSERT INTO `history_vital_signs` (`id`, `C_id`, `temperature`, `pulse`, `blood_
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `instructions`
+--
+
+CREATE TABLE `instructions` (
+  `id` int(55) NOT NULL,
+  `prescription_id` varchar(55) NOT NULL,
+  `instruction` varchar(556) NOT NULL,
+  `created_at` varchar(55) NOT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `instructions`
+--
+
+INSERT INTO `instructions` (`id`, `prescription_id`, `instruction`, `created_at`, `updated_at`) VALUES
+(1, '6', 'test', '2023-01-19 08:02:01', '2023-01-20 09:36:54');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `organization`
 --
 
@@ -378,8 +399,9 @@ CREATE TABLE `patients` (
   `email` varchar(100) NOT NULL,
   `gender` varchar(10) CHARACTER SET utf8 NOT NULL,
   `DOB` varchar(15) CHARACTER SET utf8 NOT NULL,
-  `year` varchar(11) CHARACTER SET utf8 COLLATE utf8_estonian_ci NOT NULL,
+  `years` varchar(11) CHARACTER SET utf8 COLLATE utf8_estonian_ci NOT NULL,
   `months` varchar(11) CHARACTER SET utf8 NOT NULL,
+  `days` varchar(55) NOT NULL,
   `language` varchar(100) NOT NULL,
   `patienttype` varchar(100) NOT NULL,
   `address` varchar(100) NOT NULL,
@@ -392,6 +414,7 @@ CREATE TABLE `patients` (
   `governmentid_type` varchar(100) NOT NULL,
   `governmentidno` varchar(100) NOT NULL,
   `img` varchar(100) NOT NULL,
+  `qr` varchar(55) NOT NULL,
   `blood_grp` varchar(100) NOT NULL,
   `maritail_status` varchar(100) NOT NULL,
   `disabled` varchar(100) NOT NULL,
@@ -406,12 +429,46 @@ CREATE TABLE `patients` (
 -- Dumping data for table `patients`
 --
 
-INSERT INTO `patients` (`id`, `pat_id`, `org_id`, `first_name`, `middle_name`, `last_name`, `mobile_no`, `secondarynumber`, `email`, `gender`, `DOB`, `year`, `months`, `language`, `patienttype`, `address`, `state`, `city`, `pincode`, `occupation`, `employeeid`, `medicalrecordno`, `governmentid_type`, `governmentidno`, `img`, `blood_grp`, `maritail_status`, `disabled`, `emg_relation`, `emg_name`, `emg_no`, `created_at`, `updated_at`) VALUES
-(1, 'BIL-P_01', 'Ash_01', 'BILAL', 'SALIM', 'SHAIKH', '', '', 'bilal.softdigit@gmail.com', 'male', '27-03-2001', '', '', 'Hindi', 'VIP', 'Test', 'Maharashtra', 'Mumbai', '400072', 'Developer', '', '', 'Aadhar Card', '984807422721', 'image_picker90490953161931933023.jpg', 'O', 'Unmarried', 'No', 'Brother', 'Test', '123456789', '2023-01-05 10:49:47.000000', '2023-01-05 15:19:47.113639'),
-(3, 'BIL-P_03', 'Ash_01', 'Saqib', 'Salim', 'Shaikh', '+918286012383', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'Yes', '', '', '', '', '2023-01-05 10:59:02.000000', '2023-01-05 15:29:02.381903'),
-(4, 'BIL-P_04', 'INC_02', 'BILAL', 'SALIM', 'SHAIKH', '', '', 'bilal.softdigit@gmail.com', 'male', '27-03-2001', '', '', 'Hindi', 'VIP', 'Test', 'Maharashtra', 'Mumbai', '400072', 'Developer', '', '', 'Aadhar Card', '984807422721', 'image_picker9049095316193193302.jpg', 'O', 'Unmarried', 'No', 'Brother', 'Test', '123456789', '2023-01-05 11:01:32.000000', '2023-01-05 15:31:32.224345'),
-(5, 'TES-P_05', 'INC_02', 'TEST', 'SALIM', 'SHAIKH', '', '', 'bilal.softdigit@gmail.com', 'male', '27-03-2001', '', '', 'Hindi', 'VIP', 'Test', 'Maharashtra', 'Mumbai', '400072', 'Developer', '', '', 'Aadhar Card', '984807422721', 'image_picker90490953161931933022.jpg', 'O', 'Unmarried', 'No', 'Brother', 'Test', '123456789', '2023-01-09 13:00:23.000000', '2023-01-09 17:30:23.847281'),
-(8, 'BIL-P_06', 'INC_02', 'BILAL', 'SALIM', 'SHAIKH', '9870029314', '', 'bilal.softdigit@gmail.com', 'male', '27-03-2001', '', '', 'Hindi', 'VIP', 'Test', 'Maharashtra', 'Mumbai', '400072', 'Developer', '', '', 'Aadhar Card', '984807422721', 'image_picker90490953161931933024.jpg', 'O', 'Unmarried', 'No', 'Brother', 'Test', '123456789', '2023-01-10 06:53:30.000000', '2023-01-10 11:23:30.047881');
+INSERT INTO `patients` (`id`, `pat_id`, `org_id`, `first_name`, `middle_name`, `last_name`, `mobile_no`, `secondarynumber`, `email`, `gender`, `DOB`, `years`, `months`, `days`, `language`, `patienttype`, `address`, `state`, `city`, `pincode`, `occupation`, `employeeid`, `medicalrecordno`, `governmentid_type`, `governmentidno`, `img`, `qr`, `blood_grp`, `maritail_status`, `disabled`, `emg_relation`, `emg_name`, `emg_no`, `created_at`, `updated_at`) VALUES
+(1, 'BIL-P_01', 'Ash_01', 'BILAL', 'SALIM', 'SHAIKH', '', '', 'bilal.softdigit@gmail.com', 'male', '27-03-2001', '', '', '', 'Hindi', 'VIP', 'Test', 'Maharashtra', 'Mumbai', '400072', 'Developer', '', '', 'Aadhar Card', '984807422721', 'image_picker90490953161931933023.jpg', '', 'O', 'Unmarried', 'No', 'Brother', 'Test', '123456789', '2023-01-05 10:49:47.000000', '2023-01-05 15:19:47.113639'),
+(3, 'BIL-P_03', 'Ash_01', 'Saqib', 'Salim', 'Shaikh', '+918286012383', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'Yes', '', '', '', '', '2023-01-05 10:59:02.000000', '2023-01-05 15:29:02.381903'),
+(4, 'BIL-P_04', 'INC_02', 'BILAL', 'SALIM', 'SHAIKH', '', '', 'bilal.softdigit@gmail.com', 'male', '27-03-2001', '', '', '', 'Hindi', 'VIP', 'Test', 'Maharashtra', 'Mumbai', '400072', 'Developer', '', '', 'Aadhar Card', '984807422721', 'image_picker9049095316193193302.jpg', '', 'O', 'Unmarried', 'No', 'Brother', 'Test', '123456789', '2023-01-05 11:01:32.000000', '2023-01-05 15:31:32.224345'),
+(5, 'TES-P_05', 'INC_02', 'TEST', 'SALIM', 'SHAIKH', '', '', 'bilal.softdigit@gmail.com', 'male', '27-03-2001', '', '', '', 'Hindi', 'VIP', 'Test', 'Maharashtra', 'Mumbai', '400072', 'Developer', '', '', 'Aadhar Card', '984807422721', 'image_picker90490953161931933022.jpg', '', 'O', 'Unmarried', 'No', 'Brother', 'Test', '123456789', '2023-01-09 13:00:23.000000', '2023-01-09 17:30:23.847281'),
+(16, 'BIL-P_06', 'Ash_01', 'BILAL', 'SALIM', 'Ansari', '8286012383', '', 'saqib..softdigit@gmail.com', 'male', '15-02-1998', '21', '10', '', 'Hindi', 'VIP', 'Test', 'Maharashtra', 'Mumbai', '400089', 'Developer', '', '', 'Aadhar Card', '123456789', 'image_picker90490953161931933023.jpg', 'image_picker90490953161931933022.jpg', 'A+', 'Unmarried', 'No', 'Brother', 'Test', '123456789', '2023-01-18 06:57:33.000000', '2023-01-18 11:27:33.389074'),
+(17, 'BIL-P_07', 'Ash_01', 'BILAL', 'SALIM', 'Ansari', '8286012383', '', 'saqib..softdigit@gmail.com', 'male', '15-02-1998', '21', '10', '', 'Hindi', 'VIP', 'Test', 'Maharashtra', 'Mumbai', '400089', 'Developer', '', '', 'Aadhar Card', '123456789', 'image_picker90490953161931933025.jpg', 'image_picker90490953161931933024.jpg', 'A+', 'Unmarried', 'No', 'Brother', 'Test', '123456789', '2023-01-18 07:34:57.000000', '2023-01-18 12:04:57.270732');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `prescription`
+--
+
+CREATE TABLE `prescription` (
+  `id` int(22) NOT NULL,
+  `pat_id` varchar(55) NOT NULL,
+  `staff_id` varchar(55) NOT NULL,
+  `C_id` varchar(55) NOT NULL,
+  `name` varchar(55) NOT NULL,
+  `type` varchar(55) NOT NULL,
+  `quantity` varchar(55) NOT NULL,
+  `frequency` varchar(55) NOT NULL,
+  `duration` varchar(55) NOT NULL,
+  `duration_unit` varchar(55) NOT NULL,
+  `taper_id` varchar(55) NOT NULL,
+  `instruction_id` varchar(55) NOT NULL,
+  `created_at` varchar(55) NOT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `prescription`
+--
+
+INSERT INTO `prescription` (`id`, `pat_id`, `staff_id`, `C_id`, `name`, `type`, `quantity`, `frequency`, `duration`, `duration_unit`, `taper_id`, `instruction_id`, `created_at`, `updated_at`) VALUES
+(1, 'BIL-P_01', '', 'Case_2022-2023_01', 'Test', 'Test', 'Test', 'Test', 'Test', 'Test', 'Test', 'Test', '2023-01-17 12:06:17', '2023-01-20 10:32:28'),
+(2, 'BIL-P_01', '', 'Case_2022-2023_02', 'Test', 'Test', 'Test', 'Test', 'Test', 'Test', 'Test', 'Test', '2023-01-17 12:06:17', '2023-01-20 10:33:16'),
+(3, 'BIL-P_01', '', 'Case_2022-2023_03', 'Test', 'Test', 'Test', 'Test', 'Test', 'Test', 'Test', 'Test', '2023-01-17 12:06:17', '2023-01-20 10:32:53'),
+(6, 'BIL-P_01', 'Maa-Maj-A_01', 'Case_2022-2023_01', 'Test', 'Test', 'Test', 'Test', 'Test', 'Test', 'Test', 'Test', '2023-01-18 12:59:40', '2023-01-18 11:59:40');
 
 -- --------------------------------------------------------
 
@@ -472,12 +529,41 @@ CREATE TABLE `staff` (
 --
 
 INSERT INTO `staff` (`id`, `u_id`, `admin`, `org_id`, `name`, `email`, `password`, `gender`, `d_o_b`, `age`, `address`, `mobile_no`, `img`, `qualification`, `speciality`, `ID_proof`, `ID_img`, `join_date`, `role_id`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'Maa-S_01', '', '', 'Maaz', 'maazoly1@gmail.com', '123456', 'male', '2001-10-02', 21, 'chdcfcgsdcghh', 2147483647, '', '15', 'Backend', '', '', '0000-00-00', 1, 0, '2023-01-03 12:30:44', '2023-01-07 07:21:42'),
-(2, 'Maa-Maj-A_01', 'Maa-S_01', '', 'Majid Ansari', 'majid@gmail.com', '7c4a8d09ca3762af61e59520943dc26494f8941b', 'male', '2001-10-02', 21, 'chdcfcgsdcghh', 2147483647, '', '15', 'Backend', '', '', '0000-00-00', 2, 0, '2023-01-04 10:08:14', '2023-01-04 10:08:32'),
+(1, 'Maa-S_01', '', '', 'Maaz', 'maazoly1@gmail.com', '7c4a8d09ca3762af61e59520943dc26494f8941b', 'male', '2001-10-02', 21, 'chdcfcgsdcghh', 2147483647, '', '15', 'Backend', '', '', '0000-00-00', 1, 1, '2023-01-03 12:30:44', '2023-01-18 06:49:23'),
+(2, 'Maa-Maj-A_01', 'Maa-S_01', '', 'Majid Ansari', 'majid@gmail.com', '7c4a8d09ca3762af61e59520943dc26494f8941b', 'male', '2001-10-02', 21, 'chdcfcgsdcghh', 2147483647, '', '15', 'Backend', '', '', '0000-00-00', 2, 1, '2023-01-04 10:08:14', '2023-01-18 06:30:27'),
 (4, 'Maj-Zai-D_01', 'Maa-Maj-A_01', 'Ash_01', 'Zaid Ansari', 'shaikhmohdzaid5@gmail.com', '7c4a8d09ca3762af61e59520943dc26494f8941b', 'male', '2001-10-02', 21, 'chdcfcgsdcghh', 2147483647, '', '15', 'Backend', '', '', '0000-00-00', 3, 0, '2023-01-04 10:19:10', '2023-01-04 10:56:54'),
 (7, 'Maj-Noo-C_01', 'Maa-Maj-A_01', 'Ash_01', 'Noor Alam', 'nooralam@gmail.com', '7c4a8d09ca3762af61e59520943dc26494f8941b', 'male', '2001-10-02', 21, 'chdcfcgsdcghh', 2147483647, '', '15', 'Backend', '', '', '0000-00-00', 4, 0, '2023-01-04 10:56:44', '2023-01-04 10:56:44'),
 (8, 'Bil-S_02', '', '', 'Bilal', 'bilal.softdigit@gmail.com', 'e51550191f55e5b2ad7e0469ab365b58fe33a52e', 'male', '2001-03-27', 21, 'TEST', 2147483647, '', 'Graduate', 'Backend-Dev', '', '', '0000-00-00', 1, 0, '2023-01-11 06:55:28', '2023-01-11 07:11:56'),
 (16, 'Bil-S_03', '', '', 'BilalTEST', 'bilal.softdigit@gmail.com', '5cccd787d78d3a982524a209d8c1e4ab7e26cd2d', 'male', '2001-03-27', 21, 'chdcfcgsdcghh', 2147483647, '', 'Graduate', 'Backend', '', '', '0000-00-00', 1, 0, '2023-01-12 10:29:23', '2023-01-12 10:29:23');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `taper`
+--
+
+CREATE TABLE `taper` (
+  `id` int(11) NOT NULL,
+  `prescription_id` bigint(15) NOT NULL,
+  `medicine_name` varchar(55) NOT NULL,
+  `no_of_days` varchar(55) NOT NULL,
+  `start_date` varchar(55) NOT NULL,
+  `start_time` varchar(55) NOT NULL,
+  `end_time` varchar(55) NOT NULL,
+  `frequency` varchar(55) NOT NULL,
+  `frequency_unit` varchar(55) NOT NULL,
+  `interval` varchar(55) NOT NULL,
+  `interval_unit` varchar(55) NOT NULL,
+  `created_at` varchar(55) NOT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `taper`
+--
+
+INSERT INTO `taper` (`id`, `prescription_id`, `medicine_name`, `no_of_days`, `start_date`, `start_time`, `end_time`, `frequency`, `frequency_unit`, `interval`, `interval_unit`, `created_at`, `updated_at`) VALUES
+(1, 6, 'Paracetamol', '10', '19-01-23', '6:00 AM', '', '2', 'days', '2 ', 'hours', '2023-01-19 08:02:01', '2023-01-19 09:52:27');
 
 -- --------------------------------------------------------
 
@@ -525,9 +611,62 @@ CREATE TABLE `tests` (
 --
 
 INSERT INTO `tests` (`id`, `test`, `status`) VALUES
-(1, 'Ovulation', 'Basic'),
-(2, 'Blood Hemoglobin', 'Basic'),
-(3, 'Blood Pressure', 'Basic');
+(1, 'Blood Hemoglobin', 'Basic'),
+(2, 'Temperature', 'Basic'),
+(3, 'Blood Glucose', 'Basic'),
+(4, 'Blood Pressure', 'Basic'),
+(5, 'Pulse Oximeter', 'Basic'),
+(6, 'Weight', 'Basic'),
+(7, 'Height', 'Basic'),
+(8, 'Ecg', 'Advance'),
+(9, 'Stethoscope', 'Advance'),
+(10, 'Spirometer', 'Advance'),
+(11, 'Otoscope', 'Advance'),
+(12, 'Intraoralcam', 'Advance'),
+(13, 'Dermoscope', 'Advance'),
+(14, 'Tonometer', 'Eye'),
+(15, 'Opthalmoscope', 'Eye'),
+(16, 'Refractometer', 'Eye'),
+(17, 'Ovulation', 'Rapid'),
+(18, 'Maleria AG', 'Rapid'),
+(19, 'Troponin', 'Rapid'),
+(20, 'Hepatitis C', 'Rapid'),
+(21, 'Pregnancy', 'Rapid'),
+(22, 'HIV Triline', 'Rapid'),
+(23, 'Dengue', 'Rapid'),
+(24, 'HIV I II', 'Rapid'),
+(25, 'Hepatitis B', 'Rapid'),
+(26, 'Maleria AB', 'Rapid'),
+(27, 'Syphilis', 'Rapid');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tests_master`
+--
+
+CREATE TABLE `tests_master` (
+  `id` int(11) NOT NULL,
+  `test_id` varchar(55) NOT NULL,
+  `master_id` varchar(55) NOT NULL,
+  `test_master_name` varchar(110) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `tests_master`
+--
+
+INSERT INTO `tests_master` (`id`, `test_id`, `master_id`, `test_master_name`, `created_at`, `updated_at`) VALUES
+(1, '1', 'M_01', 'Test1', '2023-01-16 12:22:22', '2023-01-17 05:48:28'),
+(2, '1', 'M_01', 'Test1', '2023-01-16 12:22:26', '2023-01-17 05:48:33'),
+(3, '2', 'M_01', 'Test1', '2023-01-16 12:22:31', '2023-01-17 05:48:40'),
+(4, '3', 'M_04', 'test', '2023-01-16 12:22:34', '2023-01-16 11:22:34'),
+(5, '3', 'M_04', 'test', '2023-01-16 12:24:34', '2023-01-16 12:28:51'),
+(6, '5', 'M_02', 'Test2', '2023-01-17 06:48:43', '2023-01-17 05:49:57'),
+(7, '9', 'M_03', 'Test2', '2023-01-17 06:48:43', '2023-01-17 05:49:54'),
+(8, '55', 'M_02', 'Test2', '2023-01-17 06:50:05', '2023-01-17 06:03:51');
 
 -- --------------------------------------------------------
 
@@ -538,6 +677,7 @@ INSERT INTO `tests` (`id`, `test`, `status`) VALUES
 CREATE TABLE `test_cases` (
   `id` bigint(15) NOT NULL,
   `C_id` varchar(64) NOT NULL,
+  `pat_id` varchar(55) NOT NULL,
   `problem` varchar(128) NOT NULL,
   `description` varchar(256) NOT NULL,
   `test_id` varchar(64) NOT NULL,
@@ -550,8 +690,11 @@ CREATE TABLE `test_cases` (
 -- Dumping data for table `test_cases`
 --
 
-INSERT INTO `test_cases` (`id`, `C_id`, `problem`, `description`, `test_id`, `reading`, `doctor_id`, `status`) VALUES
-(1, 'Case_2022-2023_01', 'Fever', 'Bahut zyaada hai', '1', '101 F', 'Maj-Zai-D_01', 'Completed');
+INSERT INTO `test_cases` (`id`, `C_id`, `pat_id`, `problem`, `description`, `test_id`, `reading`, `doctor_id`, `status`) VALUES
+(4, 'Case_2022-2023_04', 'BIL-P_06', 'Fever', 'This is a test', '1', '100 F', 'Maj-Zai-D_01', 'Completed'),
+(5, 'Case_2022-2023_05', 'BIL-P_06', 'Fever', 'This is a test', '1', '100 F', 'Maj-Zai-D_01', 'Completed'),
+(6, 'Case_2022-2023_06', 'BIL-P_06', 'Fever', 'This is a test', '1', '100 F', 'Maj-Zai-D_01', 'Completed'),
+(7, 'Case_2022-2023_08', '', 'Fever', 'This is a test', '1', '100 F', 'Maj-Zai-D_01', 'Completed');
 
 --
 -- Indexes for dumped tables
@@ -618,6 +761,12 @@ ALTER TABLE `history_vital_signs`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `instructions`
+--
+ALTER TABLE `instructions`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `organization`
 --
 ALTER TABLE `organization`
@@ -627,6 +776,12 @@ ALTER TABLE `organization`
 -- Indexes for table `patients`
 --
 ALTER TABLE `patients`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `prescription`
+--
+ALTER TABLE `prescription`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -642,6 +797,12 @@ ALTER TABLE `staff`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `taper`
+--
+ALTER TABLE `taper`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `telemedicine`
 --
 ALTER TABLE `telemedicine`
@@ -651,6 +812,12 @@ ALTER TABLE `telemedicine`
 -- Indexes for table `tests`
 --
 ALTER TABLE `tests`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `tests_master`
+--
+ALTER TABLE `tests_master`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -724,6 +891,12 @@ ALTER TABLE `history_vital_signs`
   MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
+-- AUTO_INCREMENT for table `instructions`
+--
+ALTER TABLE `instructions`
+  MODIFY `id` int(55) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT for table `organization`
 --
 ALTER TABLE `organization`
@@ -733,7 +906,13 @@ ALTER TABLE `organization`
 -- AUTO_INCREMENT for table `patients`
 --
 ALTER TABLE `patients`
-  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+
+--
+-- AUTO_INCREMENT for table `prescription`
+--
+ALTER TABLE `prescription`
+  MODIFY `id` int(22) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `role`
@@ -748,6 +927,12 @@ ALTER TABLE `staff`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
+-- AUTO_INCREMENT for table `taper`
+--
+ALTER TABLE `taper`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT for table `telemedicine`
 --
 ALTER TABLE `telemedicine`
@@ -757,13 +942,19 @@ ALTER TABLE `telemedicine`
 -- AUTO_INCREMENT for table `tests`
 --
 ALTER TABLE `tests`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+
+--
+-- AUTO_INCREMENT for table `tests_master`
+--
+ALTER TABLE `tests_master`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `test_cases`
 --
 ALTER TABLE `test_cases`
-  MODIFY `id` bigint(15) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(15) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
