@@ -8,7 +8,6 @@ use Restserver\Libraries\REST_Controller;
 
 class Register extends REST_Controller
 {
-
     public function __construct()
     {
         parent::__construct();
@@ -60,8 +59,7 @@ class Register extends REST_Controller
         $medicalrecordno = $this->security->xss_clean($this->input->post("medicalrecordno"));
         $governmentid_type = $this->security->xss_clean($this->input->post("governmentid_type"));
         $governmentidno = $this->security->xss_clean($this->input->post("governmentidno"));
-        
-        
+
         $img = $this->input->post("img");
         $qr = $this->input->post("qr");
         $blood_grp = $this->security->xss_clean($this->input->post("blood_grp"));
@@ -71,11 +69,9 @@ class Register extends REST_Controller
         $emg_name = $this->security->xss_clean($this->input->post("emg_name"));
         $emg_no = $this->security->xss_clean($this->input->post("emg_no"));
 
-
         $org_id = $this->security->xss_clean($this->input->post('org_id'));
 
         $patient_id = $this->db->select('pat_id')->from($this->pat)->order_by("$this->pat.id", 'DESC')->get()->row()->pat_id ?? '_0';
-
 
         if (!empty($patient_id)) {
             if (!empty($org_id)) {
@@ -88,9 +84,6 @@ class Register extends REST_Controller
                 ], REST_Controller::HTTP_BAD_REQUEST);
             }
         }
-
-        // print($pat_id);die();  
-
 
         if (!empty($_FILES['qr'])) {
             $fileName = $_FILES['qr']['name'];
@@ -194,7 +187,7 @@ class Register extends REST_Controller
             "emg_relation" => $emg_relation ?? '',
             "emg_name" => $emg_name ?? '',
             "emg_no" => $emg_no ?? '',
-            
+
             "org_id" => $org_id,
             "pat_id" => $pat_id,
 
@@ -202,6 +195,7 @@ class Register extends REST_Controller
         );
 
         $insertData = $this->Registerpatient_model->insertdata($data);
+
         if ($insertData) {
             $this->response([
                 'status' => TRUE,
@@ -214,9 +208,7 @@ class Register extends REST_Controller
                 "Message" => "Registration Failed"
             ], REST_Controller::HTTP_BAD_REQUEST);
         }
-
         // }
-
     }
 
     public function patientupdate_post()
@@ -242,7 +234,6 @@ class Register extends REST_Controller
         $medicalrecordno = $this->security->xss_clean($this->input->post("medicalrecordno"));
         $governmentid_type = $this->security->xss_clean($this->input->post("governmentid_type"));
         $governmentidno = $this->security->xss_clean($this->input->post("governmentidno"));
-
 
         $img = $this->input->post("img");
         $qr = $this->input->post("qr");
@@ -364,8 +355,8 @@ class Register extends REST_Controller
 
         //     "pat_id" => $pat_id,
         // );
-        
-          $data = array();
+
+        $data = array();
         if (!empty($first_name)) {
             $data['first_name'] = $first_name;
         }
@@ -448,10 +439,9 @@ class Register extends REST_Controller
             $data['emg_no'] = $emg_no;
         }
 
-
         if ($data == '') {
         } else {
-            $data = $this->Registerpatient_model->updatedata($pat_id ,$data);
+            $data = $this->Registerpatient_model->updatedata($pat_id, $data);
             $given_data = $this->Registerpatient_model->getdata($pat_id);
         }
 

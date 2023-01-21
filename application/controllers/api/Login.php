@@ -35,7 +35,6 @@ class Login extends REST_Controller
             $user = $this->Users_model->getRows($con);
 
             if ($user) {
-
                 $this->response([
                     'status' => TRUE,
                     'message' => 'User login successful.',

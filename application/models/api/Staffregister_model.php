@@ -7,14 +7,12 @@ class Staffregister_model extends CI_Model
     {
         $this->load->database();
     }
-    // 															
 
     function register()
     {
         $data = array(
             'name' => $this->input->post('name'),
             'email' => $this->input->post('email'),
-            // 'username' => $this->input->post('username'),
             'password' => $this->input->post('password'),
             'gender' => $this->input->post('gender'),
             'DOB' => $this->input->post('DOB'),
@@ -28,8 +26,8 @@ class Staffregister_model extends CI_Model
             'ID_img' => $this->input->post('ID_img'),
             'joined_at' => $this->input->post('joined_at'),
             'role_id' => $this->input->post('role_id'),
-            // 'status' => $this->input->post('status'),
             'status' => '1',
+            
             'created_at' => date('Y-m-d H:i:s'),
         );
         $this->db->insert('staff', $data);
