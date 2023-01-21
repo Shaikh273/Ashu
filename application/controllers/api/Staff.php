@@ -12,7 +12,6 @@ class Staff extends REST_Controller
     {
         parent::__construct();
         $this->load->database();
-        $this->load->model('api/Staffregister_model', 'staff');
         $this->role = 'role';
         $this->staff = 'staff';
         $this->org = 'admin_org';
