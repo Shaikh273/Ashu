@@ -631,7 +631,6 @@ class History extends REST_Controller
 
     public function history_delete()
     {
-
         $case_id = $this->input->get('case_id');
         $data = $this->History_model->deletedata($case_id);
 
@@ -684,6 +683,8 @@ class History extends REST_Controller
                 'reading' => $reading,
                 'doctor_id' => $doctor_id,
                 'status' => $status,
+
+                'created_at' => date('Y-m-d H:i:s'),
             );
 
             $insert = $this->db->insert('test_cases', $data);
