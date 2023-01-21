@@ -3,14 +3,10 @@ if (!defined('BASEPATH')) exit('No direct script access allowed');
 
 class Users_model extends CI_Model
 {
-
     public function __construct()
     {
         parent::__construct();
-
-        // Load the database library
         $this->load->database();
-
         $this->userTbl = 'staff';
     }
 
@@ -55,5 +51,4 @@ class Users_model extends CI_Model
         //return fetched data
         return $result;
     }
-
 }
