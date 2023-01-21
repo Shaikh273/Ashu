@@ -145,6 +145,7 @@ class Organization extends REST_Controller
             "org_email" => $org_email ?? '',
             "org_No" => $org_No ?? '',
             "org_addedby" => $org_addedby,
+
             'created_at' => date('Y-m-d H:i:s'),
         );
 
@@ -176,6 +177,7 @@ class Organization extends REST_Controller
             "org_email" => $org_email ?? '',
             "org_No" => $org_No ?? '',
             "org_addedby" => $org_addedby,
+            
             'created_at' => date('Y-m-d H:i:s'),
         );
 
