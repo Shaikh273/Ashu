@@ -660,11 +660,11 @@ class History extends REST_Controller
         $doctor_id =  $this->security->xss_clean($this->input->post('doctor_id'));
         $status =  $this->security->xss_clean($this->input->post('status'));
 
-        $this->form_validation->set_rules('C_id', 'Cases Id', 'required', array(
-            'required' => 'Case Id is Missing'
+        $this->form_validation->set_rules('C_id', 'Cases ID', 'required', array(
+            'required' => 'Case ID is Missing'
         ));
-        $this->form_validation->set_rules('test_id', 'Cases Id', 'required', array(
-            'required' => 'Test Id is Missing'
+        $this->form_validation->set_rules('test_id', 'Cases ID', 'required', array(
+            'required' => 'Test ID is Missing'
         ));
 
         if ($this->form_validation->run() == false) {

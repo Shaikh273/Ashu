@@ -18,6 +18,7 @@ class Prescription extends REST_Controller
     public function prescription_post()
     {
         $pat_id = $this->security->xss_clean($this->input->post('pat_id'));
+        
         $C_id = $this->security->xss_clean($this->input->post('C_id'));
         $staff_id = $this->security->xss_clean($this->input->post('staff_id'));
         $name = $this->security->xss_clean($this->input->post('medicine_name'));
@@ -29,14 +30,14 @@ class Prescription extends REST_Controller
         $taper_id = $this->security->xss_clean($this->input->post('taper_id'));
         $instruction_id = $this->security->xss_clean($this->input->post('instruction_id'));
 
-        $this->form_validation->set_rules('C_id', 'Cases Id', 'required', array(
-            'required' => 'Case Id is Missing'
+        $this->form_validation->set_rules('C_id', 'Cases ID', 'required', array(
+            'required' => 'Case ID is Missing'
         ));
-        $this->form_validation->set_rules('pat_id', 'Patient Id', 'required', array(
-            'required' => 'Patient Id is Missing'
+        $this->form_validation->set_rules('pat_id', 'Patient ID', 'required', array(
+            'required' => 'Patient ID is Missing'
         ));
-        $this->form_validation->set_rules('staff_id', 'Doctor Id', 'required', array(
-            'required' => 'Doctor Id is Missing'
+        $this->form_validation->set_rules('staff_id', 'Doctor ID', 'required', array(
+            'required' => 'Doctor ID is Missing'
         ));
 
         if ($this->form_validation->run() == false) {
@@ -172,8 +173,8 @@ class Prescription extends REST_Controller
 
         $prescription_id = $this->security->xss_clean($this->input->post('prescription_id'));
 
-        $this->form_validation->set_rules('prescription_id', 'Prescription Id', 'required', array(
-            'required' => 'Prescription Id is Missing'
+        $this->form_validation->set_rules('prescription_id', 'Prescription ID', 'required', array(
+            'required' => 'Prescription ID is Missing'
         ));
 
         $this->form_validation->set_rules('medicine_name', 'Medicine Name', 'required', array(
@@ -291,8 +292,8 @@ class Prescription extends REST_Controller
 
         $prescription_id = $this->security->xss_clean($this->input->post('prescription_id'));
 
-        $this->form_validation->set_rules('prescription_id', 'Prescription Id', 'required', array(
-            'required' => 'Prescription Id is Missing'
+        $this->form_validation->set_rules('prescription_id', 'Prescription ID', 'required', array(
+            'required' => 'Prescription ID is Missing'
         ));
 
         if ($this->form_validation->run() == false) {
