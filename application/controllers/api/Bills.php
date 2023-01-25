@@ -90,6 +90,7 @@ class Bills extends REST_Controller
         $data = array();
         if (!empty($pat_id)) {
             $data['Bills'] = $this->db->select('id AS ID')->from($this->bills)->where('pat_id', $pat_id)->get()->result();
+
             $patient = $this->db->select('*')->from($this->bills)->where('pat_id', $pat_id)->get()->result();
 
             $length = count($patient);
