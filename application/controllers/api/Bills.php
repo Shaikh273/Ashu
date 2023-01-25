@@ -83,7 +83,7 @@ class Bills extends REST_Controller
         }
     }
 
-    public function bills_get()
+    public function bill_get()
     {
         $pat_id = $this->input->get('pat_id');
 
