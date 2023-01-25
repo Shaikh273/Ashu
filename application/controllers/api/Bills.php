@@ -11,6 +11,10 @@ class Bills extends REST_Controller
         parent::__construct();
         $this->load->database();
         $this->bills = 'bills';
+        // $this->pat = 'patients';
+        $this->staff = 'staff';
+        $this->test = 'test_cases';
+        $this->tele = 'telemedicine';
     }
 
     public function bill_post()
@@ -85,14 +89,24 @@ class Bills extends REST_Controller
 
         $data = array();
         if (!empty($pat_id)) {
-            $pat_id = $this->db->select('pat_id')->from($this->bills)->where('pat_id', $pat_id)->get()->result();
+            $data['Bills'] = $this->db->select('id AS ID')->from($this->bills)->where('pat_id', $pat_id)->get()->result();
+            $patient = $this->db->select('*')->from($this->bills)->where('pat_id', $pat_id)->get()->result();
 
-            $length = count($pat_id);
+            $length = count($patient);
 
             for ($i = 0; $i < $length; ++$i) {
-                $master = $pat_id[$i]->pat_id;
+                $pat_id = $patient[$i]->pat_id;
+                $doc_id = $patient[$i]->doc_id;
+                $C_id = $patient[$i]->C_id;
+                $tele_id = $patient[$i]->tele_id;
 
-                $data['Bills'] = $this->db->select('pat_id,C_id,tele_id,doc_id,amount,payment_method,created_at')->from($this->bills)->where("pat_id", $master)->get()->result();
+                $data['Bills'][$i]->Bill = $this->db->select('*')->from($this->bills)->where("pat_id = '$pat_id' && C_id = '$C_id'")->get()->result();
+
+                $data['Bills'][$i]->Doctor = $this->db->select('name,speciality')->from($this->staff)->where("u_id", $doc_id)->get()->result();
+
+                $data['Bills'][$i]->Case = $this->db->select('*')->from($this->test)->where("C_id", $C_id)->get()->result();
+
+                $data['Bills'][$i]->telemedicine = $this->db->select('*')->from($this->tele)->where("tele_id", $tele_id)->get()->result();
             }
         } else {
             $master = $this->db->select('DISTINCT(pat_id)')->from($this->bills)->order_by("pat_id  ASC")->get()->result();
@@ -102,7 +116,27 @@ class Bills extends REST_Controller
             for ($i = 0; $i < $length; ++$i) {
                 $pat_id = $master[$i]->pat_id;
 
-                $data['Bills'][$i] = $this->db->select('pat_id,C_id,tele_id,doc_id,amount,payment_method,created_at')->from($this->bills)->where("pat_id", $pat_id)->get()->result();
+                // $data['Bills'][$i] = $this->db->select('pat_id,C_id,tele_id,doc_id,amount,payment_method,created_at')->from($this->bills)->where("pat_id", $pat_id)->get()->result();
+
+                $data['Bills'][$i] = $this->db->select('id AS ID')->from($this->bills)->where('pat_id', $pat_id)->get()->result();
+
+                $patient = $this->db->select('*')->from($this->bills)->where('pat_id', $pat_id)->get()->result();
+
+                for ($j = 0; $j < count($patient); ++$j) {
+                    $pat_id = $patient[$j]->pat_id;
+                    $C_id = $patient[$j]->C_id;
+                    $doc_id = $patient[$j]->doc_id;
+                    $tele_id = $patient[$j]->tele_id;
+
+                    $data['Bills'][$i][$j]->Bill = $this->db->select('*')->from($this->bills)->where("pat_id = '$pat_id' && C_id = '$C_id'")->get()->result();
+
+
+                    $data['Bills'][$i][$j]->Doctor = $this->db->select('name,speciality')->from($this->staff)->where("u_id", $doc_id)->get()->result();
+
+                    $data['Bills'][$i][$j]->Case = $this->db->select('*')->from($this->test)->where("C_id", $C_id)->get()->result();
+
+                    $data['Bills'][$i][$j]->telemedicine = $this->db->select('*')->from($this->tele)->where("tele_id", $tele_id)->get()->result();
+                }
             }
         }
 
