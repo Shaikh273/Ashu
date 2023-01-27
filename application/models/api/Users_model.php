@@ -48,6 +48,10 @@ class Users_model extends CI_Model
             }
         }
 
+        $is_admin = $this->db->select('u_id')->from($this->userTbl)->where(['email'=>$params['conditions']['email'],'role_id'=>2])->get()->row()->u_id ?? '';
+        if(!empty($is_admin)){
+            $result['org_id'] = $this->db->select('org_id')->from($this->org)->where(['admin_id'=>$is_admin])->get()->row()->org_id ?? '';
+        }
         //return fetched data
         return $result;
     }
