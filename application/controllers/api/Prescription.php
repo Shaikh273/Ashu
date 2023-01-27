@@ -29,7 +29,7 @@ class Prescription extends REST_Controller
         $duration_unit = $this->security->xss_clean($this->input->post('duration_unit'));
         $taper_id = $this->security->xss_clean($this->input->post('taper_id'));
         $instruction = $this->security->xss_clean($this->input->post('instruction'));
-        
+
         // $instruction_id = $this->security->xss_clean($this->input->post('instruction_id'));
 
         $this->form_validation->set_rules('C_id', 'Cases ID', 'required', array(
@@ -64,7 +64,7 @@ class Prescription extends REST_Controller
                 "duration_unit" => $duration_unit ?? '',
                 "taper_id" => $taper_id ?? '',
                 "instruction" => $instruction,
-                // // "instruction_id" => $instruction_id ?? '',
+                // "instruction_id" => $instruction_id ?? '',
 
                 "created_at" => date('Y-m-d H:i:s'),
             );
