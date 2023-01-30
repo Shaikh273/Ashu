@@ -11,8 +11,11 @@ class Prescription extends REST_Controller
         parent::__construct();
         $this->load->database();
         $this->pres = 'prescription';
+        $this->lab = 'labtest';
+        $this->advice = 'advice';
+        $this->notes = 'notes';
         // $this->taper = 'taper';
-        $this->instruction = 'instructions';
+        // $this->instructions = 'instructions';
     }
 
     public function prescription_post()
@@ -124,7 +127,7 @@ class Prescription extends REST_Controller
             );
         }
         if (!empty($data)) {
-            $data = $this->db->insert($this->pres, $data);
+            $data = $this->db->insert($this->lab, $data);
 
             if ($data == true) {
                 $this->response([
@@ -136,6 +139,114 @@ class Prescription extends REST_Controller
             $this->response([
                 'status' => false,
                 'message' => 'Unable to add Lab Test.'
+            ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function advice_post()
+    {
+        $pat_id = $this->security->xss_clean($this->input->post('pat_id'));
+
+        $C_id = $this->security->xss_clean($this->input->post('C_id'));
+        $staff_id = $this->security->xss_clean($this->input->post('staff_id'));
+
+        $advice = $this->security->xss_clean($this->input->post('advice'));
+        $description = $this->security->xss_clean($this->input->post('description'));
+
+        $this->form_validation->set_rules('pat_id', 'Patient ID', 'required', array(
+            'required' => 'Patient ID is Missing'
+        ));
+        $this->form_validation->set_rules('C_id', 'Cases ID', 'required', array(
+            'required' => 'Case ID is Missing'
+        ));
+        $this->form_validation->set_rules('staff_id', 'Doctor ID', 'required', array(
+            'required' => 'Doctor ID is Missing'
+        ));
+
+        if ($this->from_validation->run() == False) {
+            $error = strip_tags(validation_errors());
+            $this->response([
+                "status" => False,
+                "message" => $error,
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        } else {
+            $data = array(
+                "pat_id" => $pat_id,
+                "C_id" => $C_id,
+                "staff_id" => $staff_id,
+                "advice" => $advice ?? '',
+                "description" => $description ?? '',
+
+                "created_at" => date('Y-m-d H:i:s'),
+            );
+        }
+        if (!empty($data)) {
+            $data = $this->db->insert($this->advice, $data);
+
+            if ($data == true) {
+                $this->response([
+                    'status' => true,
+                    'message' => 'Advice Added Successfully.',
+                ], REST_Controller::HTTP_OK);
+            }
+        } else {
+            $this->response([
+                'status' => false,
+                'message' => 'Unable to add Advice.'
+            ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function notes_post()
+    {
+        $pat_id = $this->security->xss_clean($this->input->post('pat_id'));
+
+        $C_id = $this->security->xss_clean($this->input->post('C_id'));
+        $staff_id = $this->security->xss_clean($this->input->post('staff_id'));
+
+        $notes = $this->security->xss_clean($this->input->post('notes'));
+        // $description = $this->security->xss_clean($this->input->post('description'));
+
+        $this->form_validation->set_rules('pat_id', 'Patient ID', 'required', array(
+            'required' => 'Patient ID is Missing'
+        ));
+        $this->form_validation->set_rules('C_id', 'Cases ID', 'required', array(
+            'required' => 'Case ID is Missing'
+        ));
+        $this->form_validation->set_rules('staff_id', 'Doctor ID', 'required', array(
+            'required' => 'Doctor ID is Missing'
+        ));
+
+        if ($this->from_validation->run() == False) {
+            $error = strip_tags(validation_errors());
+            $this->response([
+                "status" => False,
+                "message" => $error,
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        } else {
+            $data = array(
+                "pat_id" => $pat_id,
+                "C_id" => $C_id,
+                "staff_id" => $staff_id,
+                "notes" => $notes ?? '',
+                // "description" => $description ?? '',
+
+                "created_at" => date('Y-m-d H:i:s'),
+            );
+        }
+        if (!empty($data)) {
+            $data = $this->db->insert($this->notes, $data);
+
+            if ($data == true) {
+                $this->response([
+                    'status' => true,
+                    'message' => 'Notes Added Successfully.',
+                ], REST_Controller::HTTP_OK);
+            }
+        } else {
+            $this->response([
+                'status' => false,
+                'message' => 'Unable to add Notes.'
             ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -157,7 +268,7 @@ class Prescription extends REST_Controller
 
                 // $data['Prescription'][$i]['Taper'] = $this->db->select("*")->from($this->taper)->where("prescription_id", $p_id)->get()->result_array();
 
-                $data['Prescription'][$i]['instruction'] = $this->db->select("*")->from($this->instruction)->where("prescription_id", $p_id)->get()->result_array();
+                $data['Prescription'][$i]['instruction'] = $this->db->select("*")->from($this->advice)->where("prescription_id", $p_id)->get()->result_array();
             }
         } else {
             $master = $this->db->select('DISTINCT(C_id)')->from($this->pres)->get()->result();
@@ -178,7 +289,7 @@ class Prescription extends REST_Controller
 
                     // $data[$i]['Prescription'][$j]['Taper'] = $this->db->select("*")->from($this->taper)->where("prescription_id", $p_id)->get()->result_array();
 
-                    $data[$i]['Prescription'][$j]['instruction'] = $this->db->select("*")->from($this->instruction)->where("prescription_id", $p_id)->get()->result_array();
+                    $data[$i]['Prescription'][$j]['instruction'] = $this->db->select("*")->from($this->advice)->where("prescription_id", $p_id)->get()->result_array();
                 }
             }
         }
@@ -202,7 +313,7 @@ class Prescription extends REST_Controller
 
         $data = $this->db->delete($this->pres, array('id' => $id));
         // $this->db->delete($this->taper, array('prescription_id' => $id));
-        $this->db->delete($this->instruction, array('prescription_id' => $id));
+        $this->db->delete($this->advice, array('prescription_id' => $id));
 
         if ($data) {
             $this->response([
@@ -217,8 +328,9 @@ class Prescription extends REST_Controller
             ], REST_Controller::HTTP_BAD_REQUEST);
         }
     }
+}
 
-    // public function taper_post()
+ // public function taper_post()
     // {
     //     $medicine_name = $this->security->xss_clean($this->input->post('medicine_name'));
     //     $no_of_days = $this->security->xss_clean($this->input->post('no_of_days'));
@@ -344,78 +456,3 @@ class Prescription extends REST_Controller
     //         ], REST_Controller::HTTP_BAD_REQUEST);
     //     }
     // }
-
-    // public function instruction_post()
-    // {
-    //     $instruction = $this->security->xss_clean($this->input->post('instruction'));
-
-    //     $prescription_id = $this->security->xss_clean($this->input->post('prescription_id'));
-
-    //     $this->form_validation->set_rules('prescription_id', 'Prescription ID', 'required', array(
-    //         'required' => 'Prescription ID is Missing'
-    //     ));
-
-    //     if ($this->form_validation->run() == false) {
-    //         $error = strip_tags(validation_errors());
-    //         $this->response([
-    //             "status" => False,
-    //             "mesage" => $error
-    //         ], REST_Controller::HTTP_BAD_REQUEST);
-    //     } else {
-    //         $data = array(
-    //             "prescription_id" => $prescription_id,
-    //             "instruction" => $instruction,
-
-    //             "created_at" => date('Y-m-d H:i:s'),
-    //         );
-
-    //         if (!empty($data)) {
-    //             $insert = $this->db->insert($this->instruction, $data);
-
-    //             if ($insert == True) {
-    //                 $this->response([
-    //                     "status" => TRUE,
-    //                     "message" => "Instruction Added Successfully",
-    //                     "data" => $data,
-    //                 ], REST_CONTROLLER::HTTP_OK);
-    //             } else {
-    //                 $this->response([
-    //                     "status" => False,
-    //                     "message" => "Unable to add Instructions",
-    //                 ], REST_Controller::HTTP_BAD_REQUEST);
-    //             }
-    //         }
-    //     }
-    // }
-
-    // public function instruction_update_post()
-    // {
-    //     $id = $this->security->xss_clean($this->input->post('id'));
-
-    //     $instruction = $this->security->xss_clean($this->input->post('instruction'));
-
-    //     $prescription_id = $this->security->xss_clean($this->input->post('prescription_id'));
-
-    //     $data = array();
-    //     if (!empty($instruction) && !empty($id)) {
-    //         $data['instruction'] = $instruction;
-    //     }
-    //     if (!empty($prescription_id) && !empty($id)) {
-    //         $data['prescription_id'] = $prescription_id;
-    //     }
-
-    //     $update = $this->db->update($this->instruction, $data, array('id' => $id));
-
-    //     if ($update) {
-    //         $this->response([
-    //             "status" => true,
-    //             "message" => "Data Updated Successfully"
-    //         ], REST_Controller::HTTP_OK);
-    //     } else {
-    //         $this->response([
-    //             "status" => false,
-    //             "message" => "Data Update Unsuccessful"
-    //         ], REST_Controller::HTTP_BAD_REQUEST);
-    //     }
-    // }
-}
