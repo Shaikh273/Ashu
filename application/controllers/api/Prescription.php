@@ -11,8 +11,8 @@ class Prescription extends REST_Controller
         parent::__construct();
         $this->load->database();
         $this->pres = 'prescription';
-        $this->taper = 'taper';
-        $this->pro = 'instructions';
+        // $this->taper = 'taper';
+        $this->instruction = 'instructions';
     }
 
     public function prescription_post()
@@ -27,7 +27,7 @@ class Prescription extends REST_Controller
         $frequency = $this->security->xss_clean($this->input->post('frequency'));
         $duration = $this->security->xss_clean($this->input->post('duration'));
         $duration_unit = $this->security->xss_clean($this->input->post('duration_unit'));
-        $taper_id = $this->security->xss_clean($this->input->post('taper_id'));
+        // $taper_id = $this->security->xss_clean($this->input->post('taper_id'));
         $instruction = $this->security->xss_clean($this->input->post('instruction'));
 
         // $instruction_id = $this->security->xss_clean($this->input->post('instruction_id'));
@@ -62,7 +62,7 @@ class Prescription extends REST_Controller
                 "frequency" => $frequency ?? '',
                 "duration" => $duration ?? '',
                 "duration_unit" => $duration_unit ?? '',
-                "taper_id" => $taper_id ?? '',
+                // "taper_id" => $taper_id ?? '',
                 "instruction" => $instruction,
                 // "instruction_id" => $instruction_id ?? '',
 
@@ -87,6 +87,59 @@ class Prescription extends REST_Controller
         }
     }
 
+    public function labtest_post()
+    {
+        $pat_id = $this->security->xss_clean($this->input->post('pat_id'));
+
+        $C_id = $this->security->xss_clean($this->input->post('C_id'));
+        $staff_id = $this->security->xss_clean($this->input->post('staff_id'));
+        $test = $this->security->xss_clean($this->input->post('test'));
+        $description = $this->security->xss_clean($this->input->post('description'));
+
+        $this->form_validation->set_rules('C_id', 'Cases ID', 'required', array(
+            'required' => 'Case ID is Missing'
+        ));
+        $this->form_validation->set_rules('pat_id', 'Patient ID', 'required', array(
+            'required' => 'Patient ID is Missing'
+        ));
+        $this->form_validation->set_rules('staff_id', 'Doctor ID', 'required', array(
+            'required' => 'Doctor ID is Missing'
+        ));
+
+        if ($this->from_validation->run() == False) {
+            $error = strip_tags(validation_errors());
+            $this->response([
+                "status" => False,
+                "message" => $error,
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        } else {
+            $data = array(
+                "pat_id" => $pat_id,
+                "C_id" => $C_id,
+                "staff_id" => $staff_id,
+                "test" => $test ?? '',
+                "description" => $description ?? '',
+
+                "created_at" => date('Y-m-d H:i:s'),
+            );
+        }
+        if (!empty($data)) {
+            $data = $this->db->insert($this->pres, $data);
+
+            if ($data == true) {
+                $this->response([
+                    'status' => true,
+                    'message' => 'Lab Test Added Successfully.',
+                ], REST_Controller::HTTP_OK);
+            }
+        } else {
+            $this->response([
+                'status' => false,
+                'message' => 'Unable to add Lab Test.'
+            ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
     public function prescription_get()
     {
         $C_id = $this->input->get('C_id');
@@ -102,9 +155,9 @@ class Prescription extends REST_Controller
             for ($i = 0; $i < $length; ++$i) {
                 $p_id = $prescription[$i]['id'];
 
-                $data['Prescription'][$i]['Taper'] = $this->db->select("*")->from($this->taper)->where("prescription_id", $p_id)->get()->result_array();
+                // $data['Prescription'][$i]['Taper'] = $this->db->select("*")->from($this->taper)->where("prescription_id", $p_id)->get()->result_array();
 
-                $data['Prescription'][$i]['instruction'] = $this->db->select("*")->from($this->pro)->where("prescription_id", $p_id)->get()->result_array();
+                $data['Prescription'][$i]['instruction'] = $this->db->select("*")->from($this->instruction)->where("prescription_id", $p_id)->get()->result_array();
             }
         } else {
             $master = $this->db->select('DISTINCT(C_id)')->from($this->pres)->get()->result();
@@ -123,9 +176,9 @@ class Prescription extends REST_Controller
                 for ($j = 0; $j < $length1; ++$j) {
                     $p_id = $prescription[$j]['id'];
 
-                    $data[$i]['Prescription'][$j]['Taper'] = $this->db->select("*")->from($this->taper)->where("prescription_id", $p_id)->get()->result_array();
+                    // $data[$i]['Prescription'][$j]['Taper'] = $this->db->select("*")->from($this->taper)->where("prescription_id", $p_id)->get()->result_array();
 
-                    $data[$i]['Prescription'][$j]['instruction'] = $this->db->select("*")->from($this->pro)->where("prescription_id", $p_id)->get()->result_array();
+                    $data[$i]['Prescription'][$j]['instruction'] = $this->db->select("*")->from($this->instruction)->where("prescription_id", $p_id)->get()->result_array();
                 }
             }
         }
@@ -148,8 +201,8 @@ class Prescription extends REST_Controller
         $id = $this->delete('id');
 
         $data = $this->db->delete($this->pres, array('id' => $id));
-        $this->db->delete($this->taper, array('prescription_id' => $id));
-        $this->db->delete($this->pro, array('prescription_id' => $id));
+        // $this->db->delete($this->taper, array('prescription_id' => $id));
+        $this->db->delete($this->instruction, array('prescription_id' => $id));
 
         if ($data) {
             $this->response([
@@ -317,7 +370,7 @@ class Prescription extends REST_Controller
     //         );
 
     //         if (!empty($data)) {
-    //             $insert = $this->db->insert($this->pro, $data);
+    //             $insert = $this->db->insert($this->instruction, $data);
 
     //             if ($insert == True) {
     //                 $this->response([
@@ -351,7 +404,7 @@ class Prescription extends REST_Controller
     //         $data['prescription_id'] = $prescription_id;
     //     }
 
-    //     $update = $this->db->update($this->pro, $data, array('id' => $id));
+    //     $update = $this->db->update($this->instruction, $data, array('id' => $id));
 
     //     if ($update) {
     //         $this->response([
