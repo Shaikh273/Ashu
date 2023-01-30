@@ -19,6 +19,9 @@ class Register extends REST_Controller
     public function patients_get()
     {
         $data = $this->db->select('*')->from($this->pat)->get()->result();
+        if(!empty($pat_id)){
+            $data = $this->db->select('*')->from($this->pat)->where('pat_id',$pat_id)->get()->result();
+        }
         if (!empty($data)) {
             $this->response([
                 'status' => true,
