@@ -16,7 +16,7 @@ class Register extends REST_Controller
         $this->pat = "patients";
     }
 
-    public function patients_get()
+    public function patients_get($pat_id = '')
     {
         $data = $this->db->select('*')->from($this->pat)->get()->result();
         if(!empty($pat_id)){
