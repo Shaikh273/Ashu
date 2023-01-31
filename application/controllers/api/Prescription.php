@@ -266,11 +266,11 @@ class Prescription extends REST_Controller
             for ($i = 0; $i < $length; ++$i) {
                 $p_id = $prescription[$i]['id'];
 
-                $data['Prescription'][$i]['Labtest'] = $this->db->select("test,description")->from($this->lab)->where("C_id", $C_id)->get()->result_array();
+                $data['Prescription'][$i]['Labtest'] = $this->db->select("id,test,description")->from($this->lab)->where("C_id == '$C_id' && pat_id == '$pat_id'")->get()->result_array() ?? [];
 
-                $data['Prescription'][$i]['Advice'] = $this->db->select("advice")->from($this->advice)->where("C_id", $C_id)->get()->result_array();
+                $data['Prescription'][$i]['Advice'] = $this->db->select("id,advice")->from($this->advice)->where("C_id", $C_id)->get()->result_array() ?? [];
 
-                $data['Prescription'][$i]['Notes'] = $this->db->select("notes")->from($this->notes)->where("C_id", $C_id)->get()->result_array();
+                $data['Prescription'][$i]['Notes'] = $this->db->select("id,notes")->from($this->notes)->where("C_id", $C_id)->get()->result_array() ?? [];
             }
         } else {
             $master = $this->db->select('DISTINCT(C_id)')->from($this->pres)->get()->result();
@@ -282,19 +282,19 @@ class Prescription extends REST_Controller
 
                 $data[$i]['Prescription'] = $this->db->select('*')->from($this->pres)->where("C_id", $C_id)->get()->result_array();
 
-                $prescription = $this->db->select('id')->from($this->pres)->where("C_id", $C_id)->get()->result_array();
+                $prescription = $this->db->select('pat_id')->from($this->pres)->where("C_id", $C_id)->get()->result_array();
 
                 $length1 = count($prescription);
 
                 for ($j = 0; $j < $length1; ++$j) {
-                    $p_id = $prescription[$j]['id'];
+                    $p_id = $prescription[$j]['pat_id'];
 
                     // $data[$i]['Prescription'][$j]['Labtest'] = $this->db->select("*")->from($this->lab)->where("C_id", $C_id)->get()->result_array();
-                    $data[$i]['Prescription'][$j]['Labtest'] = $this->db->select("test,description")->from($this->lab)->where("C_id", $C_id)->get()->result_array();
+                    $data[$i]['Prescription'][$j]['Labtest'] = $this->db->select("id,test,description")->from($this->lab)->where("C_id = '$C_id' && pat_id = '$p_id'")->get()->result_array() ?? [];
 
-                    $data[$i]['Prescription'][$j]['Advice'] = $this->db->select("advice")->from($this->advice)->where("C_id", $C_id)->get()->result_array();
+                    $data[$i]['Prescription'][$j]['Advice'] = $this->db->select("id,advice")->from($this->advice)->where("C_id = '$C_id' && pat_id = '$p_id'")->get()->result_array() ?? [];
 
-                    $data[$i]['Prescription'][$j]['Notes'] = $this->db->select("notes")->from($this->notes)->where("C_id", $C_id)->get()->result_array();
+                    $data[$i]['Prescription'][$j]['Notes'] = $this->db->select("id,notes")->from($this->notes)->where("C_id = '$C_id' && pat_id = '$p_id'")->get()->result_array() ?? [];
 
                     // $data[$i]['Prescription'][$j]['instruction'] = $this->db->select("*")->from($this->advice)->where("prescription_id", $p_id)->get()->result_array();
                 }
@@ -320,7 +320,9 @@ class Prescription extends REST_Controller
 
         $data = $this->db->delete($this->pres, array('id' => $id));
         // $this->db->delete($this->taper, array('prescription_id' => $id));
-        $this->db->delete($this->advice, array('prescription_id' => $id));
+        $this->db->delete($this->lab, array('id' => $id));
+        $this->db->delete($this->advice, array('id' => $id));
+        $this->db->delete($this->notes, array('id' => $id));
 
         if ($data) {
             $this->response([
