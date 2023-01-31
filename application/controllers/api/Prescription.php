@@ -11,9 +11,9 @@ class Prescription extends REST_Controller
         parent::__construct();
         $this->load->database();
         $this->pres = 'prescription';
-        $this->lab = 'labtest';
-        $this->advice = 'advice';
-        $this->notes = 'notes';
+        $this->lab = 'pres_labtest';
+        $this->advice = 'pres_advice';
+        $this->notes = 'pres_notes';
         // $this->taper = 'taper';
         // $this->instructions = 'instructions';
     }
@@ -151,7 +151,7 @@ class Prescription extends REST_Controller
         $staff_id = $this->security->xss_clean($this->input->post('staff_id'));
 
         $advice = $this->security->xss_clean($this->input->post('advice'));
-        $description = $this->security->xss_clean($this->input->post('description'));
+        // $description = $this->security->xss_clean($this->input->post('description'));
 
         $this->form_validation->set_rules('pat_id', 'Patient ID', 'required', array(
             'required' => 'Patient ID is Missing'
@@ -175,7 +175,7 @@ class Prescription extends REST_Controller
                 "C_id" => $C_id,
                 "staff_id" => $staff_id,
                 "advice" => $advice ?? '',
-                "description" => $description ?? '',
+                // "description" => $description ?? '',
 
                 "created_at" => date('Y-m-d H:i:s'),
             );
@@ -266,9 +266,11 @@ class Prescription extends REST_Controller
             for ($i = 0; $i < $length; ++$i) {
                 $p_id = $prescription[$i]['id'];
 
-                // $data['Prescription'][$i]['Taper'] = $this->db->select("*")->from($this->taper)->where("prescription_id", $p_id)->get()->result_array();
+                $data['Prescription'][$i]['Labtest'] = $this->db->select("id,test,description")->from($this->lab)->where("C_id == '$C_id' && pat_id == '$pat_id'")->get()->result_array() ?? [];
 
-                $data['Prescription'][$i]['instruction'] = $this->db->select("*")->from($this->advice)->where("prescription_id", $p_id)->get()->result_array();
+                $data['Prescription'][$i]['Advice'] = $this->db->select("id,advice")->from($this->advice)->where("C_id", $C_id)->get()->result_array() ?? [];
+
+                $data['Prescription'][$i]['Notes'] = $this->db->select("id,notes")->from($this->notes)->where("C_id", $C_id)->get()->result_array() ?? [];
             }
         } else {
             $master = $this->db->select('DISTINCT(C_id)')->from($this->pres)->get()->result();
@@ -280,16 +282,21 @@ class Prescription extends REST_Controller
 
                 $data[$i]['Prescription'] = $this->db->select('*')->from($this->pres)->where("C_id", $C_id)->get()->result_array();
 
-                $prescription = $this->db->select('id')->from($this->pres)->where("C_id", $C_id)->get()->result_array();
+                $prescription = $this->db->select('pat_id')->from($this->pres)->where("C_id", $C_id)->get()->result_array();
 
                 $length1 = count($prescription);
 
                 for ($j = 0; $j < $length1; ++$j) {
-                    $p_id = $prescription[$j]['id'];
+                    $p_id = $prescription[$j]['pat_id'];
 
-                    // $data[$i]['Prescription'][$j]['Taper'] = $this->db->select("*")->from($this->taper)->where("prescription_id", $p_id)->get()->result_array();
+                    // $data[$i]['Prescription'][$j]['Labtest'] = $this->db->select("*")->from($this->lab)->where("C_id", $C_id)->get()->result_array();
+                    $data[$i]['Prescription'][$j]['Labtest'] = $this->db->select("id,test,description")->from($this->lab)->where("C_id = '$C_id' && pat_id = '$p_id'")->get()->result_array() ?? [];
 
-                    $data[$i]['Prescription'][$j]['instruction'] = $this->db->select("*")->from($this->advice)->where("prescription_id", $p_id)->get()->result_array();
+                    $data[$i]['Prescription'][$j]['Advice'] = $this->db->select("id,advice")->from($this->advice)->where("C_id = '$C_id' && pat_id = '$p_id'")->get()->result_array() ?? [];
+
+                    $data[$i]['Prescription'][$j]['Notes'] = $this->db->select("id,notes")->from($this->notes)->where("C_id = '$C_id' && pat_id = '$p_id'")->get()->result_array() ?? [];
+
+                    // $data[$i]['Prescription'][$j]['instruction'] = $this->db->select("*")->from($this->advice)->where("prescription_id", $p_id)->get()->result_array();
                 }
             }
         }
@@ -313,7 +320,9 @@ class Prescription extends REST_Controller
 
         $data = $this->db->delete($this->pres, array('id' => $id));
         // $this->db->delete($this->taper, array('prescription_id' => $id));
-        $this->db->delete($this->advice, array('prescription_id' => $id));
+        $this->db->delete($this->lab, array('id' => $id));
+        $this->db->delete($this->advice, array('id' => $id));
+        $this->db->delete($this->notes, array('id' => $id));
 
         if ($data) {
             $this->response([
