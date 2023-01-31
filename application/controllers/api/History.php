@@ -293,11 +293,11 @@ class History extends REST_Controller
 
         $data = array();
         if (!empty($org_id)) {
-            $organization = $this->db->select('org_id')->from($this->history)->where("history_visit.org_id = '$org_id' XOR history_visit.C_id = '$org_id' XOR history_visit.pat_id = '$org_id'")->get()->row()->org_id ?? '';
+            $organization = $this->db->select('org_id')->from($this->history)->where("$this->history.org_id = '$org_id' XOR $this->history.C_id = '$org_id' XOR $this->history.pat_id = '$org_id'")->get()->row()->org_id ?? '';
 
-            $data['organization'] = $this->db->select("organization.*")->from($this->org)->where('org_id', $organization)->get()->row() ?? [];
+            $data['organization'] = $this->db->select("$this->org.*")->from($this->org)->where('org_id', $organization)->get()->row() ?? [];
 
-            $patients = $this->db->select("DISTINCT(pat_id)")->from($this->history)->where("history_visit.org_id = '$org_id' XOR history_visit.C_id = '$org_id' XOR history_visit.pat_id = '$org_id'")->get()->result();
+            $patients = $this->db->select("DISTINCT(pat_id)")->from($this->history)->where("$this->history.org_id = '$org_id' XOR $this->history.C_id = '$org_id' XOR $this->history.pat_id = '$org_id'")->get()->result();
 
             $is_cases = $this->db->select('C_id')->from($this->history)->where("C_id = '$org_id'")->get()->num_rows();
 
@@ -306,9 +306,9 @@ class History extends REST_Controller
             for ($j = 0; $j < $length; ++$j) {
                 $pat_id = $patients[$j]->pat_id;
 
-                $data['patients'][$j]['patient'] = $this->db->select("patients.*")->from($this->pat)->where('pat_id', $pat_id)->get()->row();
+                $data['patients'][$j]['patient'] = $this->db->select("$this->pat.*")->from($this->pat)->where('pat_id', $pat_id)->get()->row();
 
-                $case_id = $this->db->select("DISTINCT(C_id)")->from($this->history)->where("history_visit.org_id = '$org_id' XOR history_visit.C_id = '$org_id' XOR history_visit.pat_id = '$org_id'")->get()->result();
+                $case_id = $this->db->select("DISTINCT(C_id)")->from($this->history)->where("$this->history.org_id = '$org_id' XOR $this->history.C_id = '$org_id' XOR $this->history.pat_id = '$org_id'")->get()->result();
 
                 $length1 = count($case_id);
 
@@ -318,13 +318,13 @@ class History extends REST_Controller
 
                     $data2[$i]['visit'] =
                         $this->db->select("
-                        history_visit.id AS ID,
-                        history_visit.c_id,
-                        history_visit.visit_type,
-                        history_visit.created_by,
-                        history_visit.created_at,
-                        history_visit.updated_at,
-                    ")->from($this->history)->where("history_visit.C_id = '$c_id'")->get()->result();
+                        $this->history.id AS ID,
+                        $this->history.c_id,
+                        $this->history.visit_type,
+                        $this->history.created_by,
+                        $this->history.created_at,
+                        $this->history.updated_at,
+                    ")->from($this->history)->where("$this->history.C_id = '$c_id'")->get()->result();
 
                     $data2[$i]['chief_complaints'] = $this->db->select("*")->from('history_chief_complaints')->where("C_id = '$c_id'")->get()->result();
 
@@ -340,7 +340,7 @@ class History extends REST_Controller
 
                     $data2[$i]['test_cases'] = $this->db->select("test_cases.id,test_cases.problem,test_cases.description,test_cases.reading,test_cases.doctor_id,test_cases.status")->from('test_cases')->join('tests', 'test_cases.test_id = tests.id')->where("C_id = '$c_id'")->get()->result();
                 }
-                $data['patients'][$j]['history_visit'] = $data2;
+                $data['patients'][$j]['$this->history'] = $data2;
             }
         }
 
