@@ -79,7 +79,7 @@ class History extends REST_Controller
             'duration_unit' => $duration_unit ?? '',
             'comments1' => $comments2 ?? '',
             'options' => $options ?? '',
-            'comments2' => $comment3 ?? '',
+            'comments2' => $comments3 ?? '',
 
             'created_at' => date('Y-m-d H:i:s'),
         );
@@ -224,8 +224,8 @@ class History extends REST_Controller
 
 
         // '$created_at' => date('Y-m-d H:i:s);
-        // $this->form_validation->set_rules('comments1', 'Comment Type', 'trim|required');
-        // $this->form_validation->set_rules('comments2', 'Comment Type', 'trim|required');
+        // $this->form_validation->set_rules('comments1', ' Type', 'trim|required');
+        // $this->form_validation->set_rules('comments2', 'Type', 'trim|required');
         // if ($this->form_validation->run() == FALSE) {
         //     $this->response([
         //         'status' => false,
