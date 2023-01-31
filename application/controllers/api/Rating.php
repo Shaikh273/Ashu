@@ -70,7 +70,7 @@ class Rating extends REST_Controller
                 $this->response([
                     "status" => true,
                     "message" => 'Ratings Given Successfully',
-                ], REST_Controller::HTTP_BAD_REQUEST);
+                ], REST_Controller::HTTP_OK);
             } else {
                 $this->response([
                     "status" => false,
