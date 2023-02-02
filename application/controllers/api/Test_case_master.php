@@ -12,6 +12,24 @@ class Test_case_master extends REST_Controller
         parent::__construct();
         $this->load->database();
         $this->tests_master = 'tests_master';
+        $this->tests = 'tests';
+    }
+
+    public function tests_get()
+    {
+        $data = $this->db->select('*')->from($this->tests)->order_by("id  ASC")->get()->result();
+
+        if (!empty($data)) {
+            $this->response([
+                'status' => true,
+                'data' => $data
+            ], REST_Controller::HTTP_OK);
+        } else {
+            $this->response([
+                'status' => false,
+                'data' => 'Data Not Found.'
+            ], REST_Controller::HTTP_NOT_FOUND);
+        }
     }
 
     public function test_master_get()
