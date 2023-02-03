@@ -346,7 +346,7 @@ class History extends REST_Controller
                 $data2 = array();
                 for ($i = 0; $i < $length1; ++$i) {
                     $c_id = $case_id[$i]->C_id;
-                    
+
                     $data2[$i]['visit'] =
                         $this->db->select("
                         $this->history.id AS ID,
