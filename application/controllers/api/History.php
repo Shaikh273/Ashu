@@ -357,7 +357,6 @@ class History extends REST_Controller
                         $this->history.updated_at,
                     ")->from($this->history)->where("$this->history.C_id = '$c_id'")->get()->result();
 
-
                     $data2[$i]['chief_complaints'] = $this->db->select("*")->from('history_chief_complaints')->where("C_id = '$c_id'")->get()->result();
 
                     $data2[$i]['systemic_history'] = $this->db->select("*")->from('history_systemic_history')->where("C_id = '$c_id'")->get()->result();
