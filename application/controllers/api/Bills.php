@@ -131,7 +131,6 @@ class Bills extends REST_Controller
 
                     $data['Bills'][$i][$j]->Bill = $this->db->select('*')->from($this->bills)->where("pat_id = '$pat_id' && C_id = '$C_id'")->get()->result();
 
-
                     $data['Bills'][$i][$j]->Doctor = $this->db->select('name,speciality')->from($this->staff)->where("u_id", $doc_id)->get()->result();
 
                     $data['Bills'][$i][$j]->Case = $this->db->select('*')->from($this->test)->where("C_id", $C_id)->get()->result();

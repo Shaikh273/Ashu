@@ -238,7 +238,11 @@ class History extends REST_Controller
         //     ], REST_Controller::HTTP_BAD_REQUEST);
         // } else {
 
-        if ($data1 == '') {
+        if (empty($data1)) {
+            $this->response([
+                'status' => false,
+                'message' => 'Unsuccessful.'
+            ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
         } else {
             $data = $this->History_model->insertdata(
                 $data1,
@@ -250,28 +254,28 @@ class History extends REST_Controller
                 $data7,
                 $data8
             );
-        }
 
-        if ($data == true) {
-            $this->response([
-                'status' => true,
-                'message' => 'History Added Successfully.',
-                // 'data' => array(
-                //     "Visit History" => $data1,
-                //     "Chief Complaints" => $data2,
-                //     "Systemic History" => $data3,
-                //     "Drug Allergies" => $data4,
-                //     "Contact Allergies" => $data5,
-                //     "Food Allergies" => $data6,
-                //     "Vital Signs" => $data7,
-                //     "Anthropometry" => $data8
-                // )
-            ], REST_Controller::HTTP_OK);
-        } else {
-            $this->response([
-                'status' => false,
-                'message' => 'Unsuccessful.'
-            ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+            if ($data == true) {
+                $this->response([
+                    'status' => true,
+                    'message' => 'History Added Successfully.',
+                    // 'data' => array(
+                    //     "Visit History" => $data1,
+                    //     "Chief Complaints" => $data2,
+                    //     "Systemic History" => $data3,
+                    //     "Drug Allergies" => $data4,
+                    //     "Contact Allergies" => $data5,
+                    //     "Food Allergies" => $data6,
+                    //     "Vital Signs" => $data7,
+                    //     "Anthropometry" => $data8
+                    // )
+                ], REST_Controller::HTTP_OK);
+            } else {
+                $this->response([
+                    'status' => false,
+                    'message' => 'Unsuccessful.'
+                ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+            }
         }
         // } else {
         // $getadd = $this->Other_model->getadddata($emp_id, $month, $year);
@@ -342,6 +346,7 @@ class History extends REST_Controller
                 $data2 = array();
                 for ($i = 0; $i < $length1; ++$i) {
                     $c_id = $case_id[$i]->C_id;
+                    
                     $data2[$i]['visit'] =
                         $this->db->select("
                         $this->history.id AS ID,
@@ -354,11 +359,17 @@ class History extends REST_Controller
 
 
                     $data2[$i]['chief_complaints'] = $this->db->select("*")->from('history_chief_complaints')->where("C_id = '$c_id'")->get()->result();
+
                     $data2[$i]['systemic_history'] = $this->db->select("*")->from('history_systemic_history')->where("C_id = '$c_id'")->get()->result();
+
                     $data2[$i]['drug_allergies'] = $this->db->select("*")->from('history_drug_allergies')->where("C_id = '$c_id'")->get()->result();
+
                     $data2[$i]['contact_allergies'] = $this->db->select("*")->from('history_contact_allergies')->where("C_id = '$c_id'")->get()->result();
+
                     $data2[$i]['vital_signs'] = $this->db->select("*")->from('history_vital_signs')->where("C_id = '$c_id'")->get()->result();
+
                     $data2[$i]['anthropometry'] = $this->db->select("*")->from('history_anthropometry')->where("C_id = '$c_id'")->get()->result();
+
                     $data2[$i]['test_cases'] = $this->db->select("test_cases.id,test_cases.problem,test_cases.description,test_cases.title,test_cases.reading,test_cases.doctor_id,test_cases.status")->from('test_cases')->join('tests', 'test_cases.test_id = tests.id')->where("C_id = '$c_id'")->get()->result();
                 }
                 $data['patients'][$j][$this->history] = $data2;
