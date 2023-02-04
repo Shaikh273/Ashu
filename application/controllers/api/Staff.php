@@ -78,8 +78,41 @@ class Staff extends REST_Controller
         } else {
             $this->response([
                 'status' => false,
-                'message' => 'Role is not Assigned',
+                'message' => 'User Not Found',
             ], REST_Controller::HTTP_BAD_REQUEST);
+            // $data = $this->db->select('*')->from($this->staff)->order_by("u_id ASC")->get()->result() ?? '';
+
+            // if (!empty($data)) {
+            //     $this->response([
+            //         'status' => true,
+            //         'img_url' => 'https://www./Ashu/assets/uploads/patients/',
+            //         'data' => $data,
+            //     ], REST_Controller::HTTP_OK);
+            // } else {
+            //     $this->response([
+            //         'status' => false,
+            //         'message' => "Data Not Found",
+            //     ], REST_Controller::HTTP_BAD_REQUEST);
+            // }
+        }
+    }
+
+    public function mobile_number_get()
+    {
+        $mobile_no = $this->input->get('mobile_no');
+
+        $data = $this->db->select('mobile_no')->from($this->staff)->where("mobile_no = '$mobile_no'")->get()->row()->mobile_no ?? '';
+
+        if ($data == $mobile_no) {
+            $this->response([
+                'status' => true,
+                'data' => $data
+            ], REST_Controller::HTTP_OK);
+        } else {
+            $this->response([
+                'status' => false,
+                'message' => 'Data Not Found.'
+            ], REST_Controller::HTTP_NOT_FOUND);
         }
     }
 
