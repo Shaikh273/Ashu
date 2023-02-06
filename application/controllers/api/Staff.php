@@ -87,6 +87,42 @@ class Staff extends REST_Controller
         }
     }
 
+    public function doctors_get()
+    {
+        $doc_id = $this->input->get('doc_id');
+
+        if (!empty($doc_id)) {
+            $data = array();
+            $data = $this->db->select('*')->from($this->staff)->where("u_id = '$doc_id' AND role_id = 3")->get()->row();
+
+            if ($data == True) {
+                $this->response([
+                    'status' => True,
+                    'data' => $data
+                ], REST_Controller::HTTP_OK);
+            } else {
+                $this->response([
+                    'status' => False,
+                    'message' => 'Doctor Not Found'
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        } else {
+            $data = $this->db->select("*")->from($this->staff)->where("role_id = 3")->get()->result_array();
+
+            if ($data == True) {
+                $this->response([
+                    'status' => True,
+                    'data' => $data
+                ], REST_Controller::HTTP_OK);
+            } else {
+                $this->response([
+                    'status' => False,
+                    'message' => 'Doctor Not Found'
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        }
+    }
+
     public function staff_register_post()
     {
         $name = $this->security->xss_clean($this->input->post('name'));
@@ -192,7 +228,7 @@ class Staff extends REST_Controller
                 $config['max_width'] = '6000';
                 $config['max_height'] = '6000';
                 $config['remove_spaces'] = FALSE;
-                
+
                 $this->load->library('upload', $config);
 
                 $this->upload->initialize($config);
@@ -216,7 +252,7 @@ class Staff extends REST_Controller
                 $config['max_width'] = '6000';
                 $config['max_height'] = '6000';
                 $config['remove_spaces'] = FALSE;
-    
+
                 $this->load->library('upload', $config);
 
                 $this->upload->initialize($config);
