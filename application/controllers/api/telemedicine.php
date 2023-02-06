@@ -6,7 +6,7 @@ require APPPATH . '/libraries/REST_Controller.php';
 
 use Restserver\Libraries\REST_Controller;
 
-class Telemedicine extends REST_Controller
+class telemedicine extends REST_Controller
 {
 
     public function __construct()

@@ -67,6 +67,39 @@ class Staff extends REST_Controller {
                 'status'=>false,
                 'message'=>'Role is not Assigned',
             ],REST_Controller::HTTP_BAD_REQUEST); 
+              // $data = $this->db->select('*')->from($this->staff)->order_by("u_id ASC")->get()->result() ?? '';
+
+            // if (!empty($data)) {
+            //     $this->response([
+            //         'status' => true,
+            //         'img_url' => 'https://www./Ashu/assets/uploads/patients/',
+            //         'data' => $data,
+            //     ], REST_Controller::HTTP_OK);
+            // } else {
+            //     $this->response([
+            //         'status' => false,
+            //         'message' => "Data Not Found",
+            //     ], REST_Controller::HTTP_BAD_REQUEST);
+            // }
+        }
+    }
+
+     public function mobile_number_post()
+    {
+        $mobile_no = $this->security->xss_clean($this->input->post('mobile_no'));
+
+        $data = $this->db->select('*')->from($this->staff)->where("mobile_no = '$mobile_no'")->get()->row() ?? '';
+
+        if ($data == True) {
+            $this->response([
+                'status' => true,
+                'data' => $data
+            ], REST_Controller::HTTP_OK);
+        } else {
+            $this->response([
+                'status' => false,
+                'message' => 'Data Not Found.'
+            ], REST_Controller::HTTP_NOT_FOUND);
         }
     }
 
@@ -118,7 +151,6 @@ class Staff extends REST_Controller {
                 if (!empty($super_name) && !empty($admin)) {
                     $u_id =  explode('_', $user_id)[1] + 1;
                     $u_id =  substr($name, 0, 3) . '-' . substr($super_name, 0, 3) . "-A_0" . $u_id;
-                    
                     // print_r($u_id);die();
                     
                 } else {
@@ -176,7 +208,7 @@ class Staff extends REST_Controller {
                 $config['max_height'] = '6000';
                 $config['remove_spaces'] = FALSE;
     
-                $this->load->library('img', $config);
+                $this->load->library('upload', $config);
                 $this->upload->initialize($config);
                 if (!$this->upload->do_upload('img')) {
                     $message2 = strip_tags($this->upload->display_errors());
@@ -200,7 +232,7 @@ class Staff extends REST_Controller {
                 $config['max_height'] = '6000';
                 $config['remove_spaces'] = FALSE;
     
-                $this->load->library('id_img', $config);
+                $this->load->library('upload', $config);
                 $this->upload->initialize($config);
                 if (!$this->upload->do_upload('id_img')) {
                     $message2 = strip_tags($this->upload->display_errors());
