@@ -336,7 +336,7 @@ class Register extends REST_Controller
             $config['file_name'] = $fileName;
             $config['upload_path'] = './assets/uploads/profile/';
             $config['allowed_types'] = 'gif|jpg|png|pdf|jpeg|docx|doc';
-            $config['max_size']     = '10024';
+            $config['max_size']     = '1024000';
             $config['max_width'] = '6000';
             $config['max_height'] = '6000';
             $config['remove_spaces'] = FALSE;
@@ -539,7 +539,7 @@ class Register extends REST_Controller
         $profile = $this->security->xss_clean($this->input->post("profile"));
 
         $name = $this->db->select('first_name')->from('patients')->where('pat_id', $pat_id)->get()->row()->first_name ?? '';
-        $mobileNo = $this->db->select('mobile_no')->from('patients')->where('pat_id', $pat_id)->get()->row()->mobile_no ?? '';
+        // $mobileNo = $this->db->select('mobile_no')->from('patients')->where('pat_id',$pat_id)->get()->row()->mobile_no ?? '';
         $email = $this->db->select('email')->from('patients')->where('pat_id', $pat_id)->get()->row()->email ?? '';
 
         if (!empty($_FILES['profile'])) {
@@ -548,7 +548,7 @@ class Register extends REST_Controller
             $config['file_name'] = $fileName;
             $config['upload_path'] = './assets/uploads/profile/';
             $config['allowed_types'] = 'gif|jpg|png|pdf|jpeg|docx|doc';
-            $config['max_size']     = '10024';
+            $config['max_size']     = '1024000';
             $config['max_width'] = '6000';
             $config['max_height'] = '6000';
             $config['remove_spaces'] = FALSE;
@@ -568,6 +568,7 @@ class Register extends REST_Controller
         }
 
         $data = array();
+        // print_r($mobileNo);die();
 
         if (!empty($profile)) {
             $data['profile'] = $profile;
@@ -588,23 +589,108 @@ class Register extends REST_Controller
                 $twilio_client = new Client($sid, $token);
                 $phone = $this->config->item('phone');
                 $whatsapp = $this->config->item('whatsapp');
-                // 			$twilio = $twilio_client->messages->create("whatsapp:+{$mobileNo}",[
-                // 				'from'=>"whatsapp:$phone",
-                // 				'body'=>$msg
-                // 			]);
+                $twilio = $twilio_client->messages->create("whatsapp:{$mobileNo}", [
+                    'from' => "whatsapp:$whatsapp",
+                    'body' => $msg
+                ]) ?? '';
 
                 //Here we are sending sms
-                $twilio_client->messages->create("+{$mobileNo}", [
+                $twilio_client->messages->create($mobileNo, [
                     'from' => $phone,
                     'body' => $msg
-                ]) ?? 'SMS failed due to ' . $ex->getMessage();
+                ]); // ?? 'SMS failed due to '.$ex->getMessage();
                 // $this->load->library('smsalert/Smsalertlib');
                 // $this->smsalertlib->smssend($mobileNo, $msg);
-                // print_r($sms);die();
             }
         }
 
         if ($data) {
+            $data = $this->Registerpatient_model->updatedata($pat_id, $data);
+            $this->response([
+                'status' => !empty($message1) ? false : true,
+                'message' => !empty($message1) ? $message1 : 'Patient Updated Successfully.',
+            ], !empty($message1) ? REST_Controller::HTTP_INTERNAL_SERVER_ERROR : REST_Controller::HTTP_OK);
+        } else {
+            $this->response([
+                'status' => false,
+                'message' => 'Unsuccessful.'
+            ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function profile1_post()
+    {
+        $pat_id = $this->post('pat_id');
+        $profile = $this->security->xss_clean($this->input->post("profile"));
+
+        $name = $this->db->select('first_name')->from('patients')->where('pat_id', $pat_id)->get()->row()->first_name ?? '';
+        $mobileNo = $this->db->select('mobile_no')->from('patients')->where('pat_id', $pat_id)->get()->row()->mobile_no ?? '';
+        $email = $this->db->select('email')->from('patients')->where('pat_id', $pat_id)->get()->row()->email ?? '';
+
+        if (!empty($_FILES['profile'])) {
+            $fileName = $_FILES['profile']['name'];
+
+            $config['file_name'] = $fileName;
+            $config['upload_path'] = './assets/uploads/profile/';
+            $config['allowed_types'] = 'gif|jpg|png|pdf|jpeg|docx|doc';
+            $config['max_size']     = '1024000';
+            $config['max_width'] = '6000';
+            $config['max_height'] = '6000';
+            $config['remove_spaces'] = FALSE;
+            $config['overwrite'] = true;
+
+            $this->load->library('upload', $config);
+            $this->upload->overwrite = true;
+            $this->upload->initialize($config);
+            if (!$this->upload->do_upload('profile')) {
+                $message1 = strip_tags($this->upload->display_errors());
+            } else {
+                $path = $this->upload->data();
+                $profile = $path['file_name'];
+            }
+        } else {
+            $message1 = '';
+        }
+
+        $data = array();
+        // print_r($mobileNo);die();
+
+        if (!empty($profile)) {
+            $data['profile'] = $profile;
+
+            // Here we are sending mail
+            $url = 'https://softdigit.in/Ashu/assets/uploads/profile/' . '' . $profile;
+
+            if (!empty($name) && !empty($email) && !empty($url)) {
+                $this->Users->send_email($name, $email, $url);
+            }
+
+            if (!empty($mobileNo)) {
+                // Here we are sending whatsapp
+                $msg = "Click on this link to see Your Profile : \n$url";
+                $this->load->config('twilio');
+                $sid = $this->config->item('sid');
+                $token = $this->config->item('token');
+                $twilio_client = new Client($sid, $token);
+                $phone = $this->config->item('phone');
+                $whatsapp = $this->config->item('whatsapp');
+                $twilio = $twilio_client->messages->create("whatsapp:{$mobileNo}", [
+                    'from' => "whatsapp:$whatsapp",
+                    'body' => $msg
+                ]) ?? '';
+
+                //Here we are sending sms
+                // $twilio_client->messages->create($mobileNo,[
+                //     'from'=>$phone,
+                //     'body'=>$msg
+                // ]) ?? 'SMS failed due to '.$ex->getMessage();
+                // $this->load->library('smsalert/Smsalertlib');
+                // $this->smsalertlib->smssend($mobileNo, $msg);
+            }
+        }
+
+        if ($data) {
+            $data = $this->Registerpatient_model->updatedata($pat_id, $data);
             $this->response([
                 'status' => !empty($message1) ? false : true,
                 'message' => !empty($message1) ? $message1 : 'Patient Updated Successfully.',
