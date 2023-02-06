@@ -272,7 +272,6 @@ class Register extends REST_Controller
 
     public function patientupdate_post()
     {
-        // $pat_id = $this->post('pat_id');
         $first_name = $this->security->xss_clean($this->input->post("first_name"));
         $middle_name = $this->security->xss_clean($this->input->post("middle_name"));
         $last_name = $this->security->xss_clean($this->input->post("last_name"));
@@ -356,23 +355,23 @@ class Register extends REST_Controller
             $message1 = '';
         }
 
-        $this->form_validation->set_rules(
-            "first_name",
-            "First Name",
-            "required",
-            array(
-                'required' => 'first_name should not be empty',
-            )
-        );
+        // $this->form_validation->set_rules(
+        //     "first_name",
+        //     "First Name",
+        //     "required",
+        //     array(
+        //         'required' => 'first_name should not be empty',
+        //     )
+        // );
 
-        $this->form_validation->set_rules(
-            "mobileNo",
-            "Mobile No",
-            "required",
-            array(
-                'required' => 'Mobile No should not be empty',
-            )
-        );
+        // $this->form_validation->set_rules(
+        //     "mobileNo",
+        //     "Mobile No",
+        //     "required",
+        //     array(
+        //         'required' => 'Mobile No should not be empty',
+        //     )
+        // );
 
         // $this->form_validation->set_rules(
         //     "profile",
@@ -384,178 +383,237 @@ class Register extends REST_Controller
         // );
 
 
-        if ($this->form_validation->run() == false) {
+        // if ($this->form_validation->run() == false) {
 
-            // very important query "LIFES SAVER"
-            $error = strip_tags(validation_errors());
+        //     // very important query "LIFES SAVER"
+        //     $error = strip_tags(validation_errors());
 
-            $this->response([
-                "status" => False,
-                "message" => $error,
-            ], REST_Controller::HTTP_BAD_REQUEST);
+        //     $this->response([
+        //         "status" => False,
+        //         "message" => $error,
+        //     ], REST_Controller::HTTP_BAD_REQUEST);
+        // } else {
+        // $data = array(
+        //     // "id" => $id,
+
+        //     "first_name" => $first_name ?? '',
+        //     "middle_name" => $middle_name ?? '',
+        //     "last_name" => $last_name ?? '',
+        //     "mobile_no" => $mobileNo ?? '',
+        //     "secondarynumber" => $secondarynumber ?? '',
+        //     "email" => $email ?? '',
+        //     "gender" => $gender ?? '',
+        //     "DOB" => $DOB ?? '',
+        //     "language" => $language ?? '',
+        //     "patienttype" => $patienttype ?? '',
+        //     "address" => $address ?? '',
+        //     "state" => $state ?? '',
+        //     "city" => $city ?? '',
+        //     "pincode" => $pincode ?? '',
+        //     "occupation" => $occupation ?? '',
+        //     "employeeid" => $employeeid ?? '',
+        //     "medicalrecordno" => $medicalrecordno ?? '',
+        //     "governmentid_type" => $governmentid_type ?? '',
+        //     "governmentidno" => $governmentidno ?? '',
+
+        //     "img" => $img ?? '',
+        //     "blood_grp" => $blood_grp ?? '',
+        //     "maritail_status" => $maritail_status ?? '',
+        //     "disabled" => $disabled ?? '',
+        //     "emg_relation" => $emg_relation ?? '',
+        //     "emg_name" => $emg_name ?? '',
+        //     "emg_no" => $emg_no ?? '',
+
+        //     "pat_id" => $pat_id,
+        // );
+
+        $data = array();
+        if (!empty($first_name)) {
+            $data['first_name'] = $first_name;
+        }
+        if (!empty($middle_name)) {
+            $data['middle_name'] = $middle_name;
+        }
+        if (!empty($last_name)) {
+            $data['last_name'] = $last_name;
+        }
+        if (!empty($mobileNo)) {
+            $data['mobile_no'] = $mobileNo;
+        }
+        if (!empty($secondarynumber)) {
+            $data['secondarynumber'] = $secondarynumber;
+        }
+        if (!empty($email)) {
+            $data['email'] = $email;
+        }
+        if (!empty($gender)) {
+            $data['gender'] = $gender;
+        }
+        if (!empty($DOB)) {
+            $data['DOB'] = $DOB;
+        }
+        if (!empty($language)) {
+            $data['language'] = $language;
+        }
+        if (!empty($patienttype)) {
+            $data['patienttype'] = $patienttype;
+        }
+        if (!empty($address)) {
+            $data['address'] = $address;
+        }
+        if (!empty($state)) {
+            $data['state'] = $state;
+        }
+        if (!empty($city)) {
+            $data['city'] = $city;
+        }
+        if (!empty($pincode)) {
+            $data['pincode'] = $pincode;
+        }
+        if (!empty($occupation)) {
+            $data['occupation'] = $occupation;
+        }
+        if (!empty($employeeid)) {
+            $data['employeeid'] = $employeeid;
+        }
+        if (!empty($medicalrecordno)) {
+            $data['medicalrecordno'] = $medicalrecordno;
+        }
+        if (!empty($governmentid_type)) {
+            $data['governmentid_type'] = $governmentid_type;
+        }
+        if (!empty($governmentidno)) {
+            $data['governmentidno'] = $governmentidno;
+        }
+        if (!empty($img)) {
+            $data['img'] = $img;
+        }
+        if (!empty($blood_grp)) {
+            $data['blood_grp'] = $blood_grp;
+        }
+        if (!empty($maritail_status)) {
+            $data['maritail_status'] = $maritail_status;
+        }
+        if (!empty($disabled)) {
+            $data['disabled'] = $disabled;
+        }
+        if (!empty($emg_relation)) {
+            $data['emg_relation'] = $emg_relation;
+        }
+        if (!empty($emg_name)) {
+            $data['emg_name'] = $emg_name;
+        }
+        if (!empty($emg_no)) {
+            $data['emg_no'] = $emg_no;
+        }
+
+        if (!empty($profile)) {
+            $data['profile'] = $profile;
+        }
+
+
+        if ($data == '') {
         } else {
-            // $data = array(
-            //     // "id" => $id,
+            $data = $this->Registerpatient_model->updatedata($pat_id, $data);
+            $given_data = $this->Registerpatient_model->getdata($pat_id);
+        }
 
-            //     "first_name" => $first_name ?? '',
-            //     "middle_name" => $middle_name ?? '',
-            //     "last_name" => $last_name ?? '',
-            //     "mobile_no" => $mobileNo ?? '',
-            //     "secondarynumber" => $secondarynumber ?? '',
-            //     "email" => $email ?? '',
-            //     "gender" => $gender ?? '',
-            //     "DOB" => $DOB ?? '',
-            //     "language" => $language ?? '',
-            //     "patienttype" => $patienttype ?? '',
-            //     "address" => $address ?? '',
-            //     "state" => $state ?? '',
-            //     "city" => $city ?? '',
-            //     "pincode" => $pincode ?? '',
-            //     "occupation" => $occupation ?? '',
-            //     "employeeid" => $employeeid ?? '',
-            //     "medicalrecordno" => $medicalrecordno ?? '',
-            //     "governmentid_type" => $governmentid_type ?? '',
-            //     "governmentidno" => $governmentidno ?? '',
+        if ($data) {
+            $this->response([
+                'status' => !empty($message1) ? false : true,
+                'message' => !empty($message1) ? $message1 : 'Patient Updated Successfully.',
+                'data' => $given_data
+            ], !empty($message1) ? REST_Controller::HTTP_INTERNAL_SERVER_ERROR : REST_Controller::HTTP_OK);
+        } else {
+            $this->response([
+                'status' => false,
+                'message' => 'Unsuccessful.'
+            ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        // }
+    }
 
-            //     "img" => $img ?? '',
-            //     "blood_grp" => $blood_grp ?? '',
-            //     "maritail_status" => $maritail_status ?? '',
-            //     "disabled" => $disabled ?? '',
-            //     "emg_relation" => $emg_relation ?? '',
-            //     "emg_name" => $emg_name ?? '',
-            //     "emg_no" => $emg_no ?? '',
+    public function profile_post()
+    {
+        $pat_id = $this->post('pat_id');
+        $profile = $this->security->xss_clean($this->input->post("profile"));
 
-            //     "pat_id" => $pat_id,
-            // );
+        $name = $this->db->select('first_name')->from('patients')->where('pat_id', $pat_id)->get()->row()->first_name ?? '';
+        $mobileNo = $this->db->select('mobile_no')->from('patients')->where('pat_id', $pat_id)->get()->row()->mobile_no ?? '';
+        $email = $this->db->select('email')->from('patients')->where('pat_id', $pat_id)->get()->row()->email ?? '';
 
-            $data = array();
-            if (!empty($first_name)) {
-                $data['first_name'] = $first_name;
+        if (!empty($_FILES['profile'])) {
+            $fileName = $_FILES['profile']['name'];
+
+            $config['file_name'] = $fileName;
+            $config['upload_path'] = './assets/uploads/profile/';
+            $config['allowed_types'] = 'gif|jpg|png|pdf|jpeg|docx|doc';
+            $config['max_size']     = '10024';
+            $config['max_width'] = '6000';
+            $config['max_height'] = '6000';
+            $config['remove_spaces'] = FALSE;
+            $config['overwrite'] = true;
+
+            $this->load->library('upload', $config);
+            $this->upload->overwrite = true;
+            $this->upload->initialize($config);
+            if (!$this->upload->do_upload('profile')) {
+                $message1 = strip_tags($this->upload->display_errors());
+            } else {
+                $path = $this->upload->data();
+                $profile = $path['file_name'];
             }
-            if (!empty($middle_name)) {
-                $data['middle_name'] = $middle_name;
+        } else {
+            $message1 = '';
+        }
+
+        $data = array();
+
+        if (!empty($profile)) {
+            $data['profile'] = $profile;
+
+            // Here we are sending mail
+            $url = 'https://softdigit.in/Ashu/assets/uploads/profile/' . '' . $profile;
+
+            if (!empty($name) && !empty($email) && !empty($url)) {
+                $this->Users->send_email($name, $email, $url);
             }
-            if (!empty($last_name)) {
-                $data['last_name'] = $last_name;
-            }
+
             if (!empty($mobileNo)) {
-                $data['mobile_no'] = $mobileNo;
-            }
-            if (!empty($secondarynumber)) {
-                $data['secondarynumber'] = $secondarynumber;
-            }
-            if (!empty($email)) {
-                $data['email'] = $email;
-            }
-            if (!empty($gender)) {
-                $data['gender'] = $gender;
-            }
-            if (!empty($DOB)) {
-                $data['DOB'] = $DOB;
-            }
-            if (!empty($language)) {
-                $data['language'] = $language;
-            }
-            if (!empty($patienttype)) {
-                $data['patienttype'] = $patienttype;
-            }
-            if (!empty($address)) {
-                $data['address'] = $address;
-            }
-            if (!empty($state)) {
-                $data['state'] = $state;
-            }
-            if (!empty($city)) {
-                $data['city'] = $city;
-            }
-            if (!empty($pincode)) {
-                $data['pincode'] = $pincode;
-            }
-            if (!empty($occupation)) {
-                $data['occupation'] = $occupation;
-            }
-            if (!empty($employeeid)) {
-                $data['employeeid'] = $employeeid;
-            }
-            if (!empty($medicalrecordno)) {
-                $data['medicalrecordno'] = $medicalrecordno;
-            }
-            if (!empty($governmentid_type)) {
-                $data['governmentid_type'] = $governmentid_type;
-            }
-            if (!empty($governmentidno)) {
-                $data['governmentidno'] = $governmentidno;
-            }
-            if (!empty($img)) {
-                $data['img'] = $img;
-            }
-            if (!empty($blood_grp)) {
-                $data['blood_grp'] = $blood_grp;
-            }
-            if (!empty($maritail_status)) {
-                $data['maritail_status'] = $maritail_status;
-            }
-            if (!empty($disabled)) {
-                $data['disabled'] = $disabled;
-            }
-            if (!empty($emg_relation)) {
-                $data['emg_relation'] = $emg_relation;
-            }
-            if (!empty($emg_name)) {
-                $data['emg_name'] = $emg_name;
-            }
-            if (!empty($emg_no)) {
-                $data['emg_no'] = $emg_no;
-            }
+                // Here we are sending whatsapp
+                $msg = "Click on this link to see Your Profile : \n$url";
+                $this->load->config('twilio');
+                $sid = $this->config->item('sid');
+                $token = $this->config->item('token');
+                $twilio_client = new Client($sid, $token);
+                $phone = $this->config->item('phone');
+                $whatsapp = $this->config->item('whatsapp');
+                // 			$twilio = $twilio_client->messages->create("whatsapp:+{$mobileNo}",[
+                // 				'from'=>"whatsapp:$phone",
+                // 				'body'=>$msg
+                // 			]);
 
-            if (!empty($profile)) {
-                $data['profile'] = $profile;
-
-                // Here we are sending mail
-                $url = 'https://softdigit.in/Ashu/assets/uploads/profile/' . '' . $profile;
-                $name = "{$first_name}";
-
-                if (!empty($name) && !empty($email) && !empty($url)) {
-                    $this->Users->send_email($name, $email, $url);
-                }
-
-                // Here we are sending sms
-                if (!empty($mobileNo)) {
-                    $msg = "Click on this link to see Your Profile : \n$url";
-                    $this->load->config('twilio');
-                    $sid = $this->config->item('sid');
-                    $token = $this->config->item('token');
-                    $twilio_client = new Client($sid, $token);
-                    $phone = $this->config->item('phone');
-                    $twilio_client->messages->create("+{$mobileNo}", [
-                        'from' => $phone,
-                        'body' => $msg
-                    ]) ?? 'SMS failed due to ' . $ex->getMessage();
-                    // $this->load->library('smsalert/Smsalertlib');
-                    // $this->smsalertlib->smssend($mobileNo, $msg);
-                }
+                //Here we are sending sms
+                $twilio_client->messages->create("+{$mobileNo}", [
+                    'from' => $phone,
+                    'body' => $msg
+                ]) ?? 'SMS failed due to ' . $ex->getMessage();
+                // $this->load->library('smsalert/Smsalertlib');
+                // $this->smsalertlib->smssend($mobileNo, $msg);
+                // print_r($sms);die();
             }
-            // print_r($sms);die();
+        }
 
-
-            if ($data == '') {
-            } else {
-                $data = $this->Registerpatient_model->updatedata($pat_id, $data);
-                $given_data = $this->Registerpatient_model->getdata($pat_id);
-            }
-
-            if ($data) {
-                $this->response([
-                    'status' => !empty($message1) ? false : true,
-                    'message' => !empty($message1) ? $message1 : 'Patient Updated Successfully.',
-                    'data' => $given_data
-                ], !empty($message1) ? REST_Controller::HTTP_INTERNAL_SERVER_ERROR : REST_Controller::HTTP_OK);
-            } else {
-                $this->response([
-                    'status' => false,
-                    'message' => 'Unsuccessful.'
-                ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
-            }
+        if ($data) {
+            $this->response([
+                'status' => !empty($message1) ? false : true,
+                'message' => !empty($message1) ? $message1 : 'Patient Updated Successfully.',
+            ], !empty($message1) ? REST_Controller::HTTP_INTERNAL_SERVER_ERROR : REST_Controller::HTTP_OK);
+        } else {
+            $this->response([
+                'status' => false,
+                'message' => 'Unsuccessful.'
+            ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 

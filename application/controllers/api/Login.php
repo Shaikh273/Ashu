@@ -29,7 +29,7 @@ class Login extends REST_Controller
             $con['conditions'] = array(
                 'email' => $email,
                 'password' => sha1($password),
-                'status' => 1
+                // 'status' => 1
             );
 
             $user = $this->Users_model->getRows($con);

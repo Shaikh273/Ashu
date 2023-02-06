@@ -11,6 +11,7 @@ class Prescription extends REST_Controller
         parent::__construct();
         $this->load->database();
         $this->pres = 'prescription';
+
         $this->lab = 'pres_labtest';
         $this->advice = 'pres_advice';
         $this->notes = 'pres_notes';
@@ -59,6 +60,7 @@ class Prescription extends REST_Controller
                 "pat_id" => $pat_id,
                 "C_id" => $C_id,
                 "staff_id" => $staff_id,
+
                 "medicine_name" => $name ?? '',
                 "type" => $type ?? '',
                 "quantity" => $quantity ?? '',
@@ -297,6 +299,7 @@ class Prescription extends REST_Controller
                     $data[$i]['Prescription'][$j]['Notes'] = $this->db->select("id,notes")->from($this->notes)->where("C_id = '$C_id' && pat_id = '$p_id'")->get()->result_array() ?? [];
 
                     // $data[$i]['Prescription'][$j]['instruction'] = $this->db->select("*")->from($this->advice)->where("prescription_id", $p_id)->get()->result_array();
+
                 }
             }
         }
@@ -319,6 +322,7 @@ class Prescription extends REST_Controller
         $id = $this->delete('id');
 
         $data = $this->db->delete($this->pres, array('id' => $id));
+
         // $this->db->delete($this->taper, array('prescription_id' => $id));
         $this->db->delete($this->lab, array('id' => $id));
         $this->db->delete($this->advice, array('id' => $id));

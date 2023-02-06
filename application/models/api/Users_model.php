@@ -106,7 +106,6 @@ class Users_model extends CI_Model
             $result['org_id'] = $this->db->select('org_id')->from($this->org)->where(['admin_id' => $is_admin])->get()->row()->org_id ?? '';
         }
 
-
         //return fetched data
         return $result;
     }
@@ -123,12 +122,13 @@ class Users_model extends CI_Model
                 $this->db->where($key, $value);
             }
         }
-        
+
         if (array_key_exists("id", $params)) {
             $this->db->where('u_id', $params['id']);
             $query = $this->db->get();
             $result = $query->row_array();
-            print_r($result);die();
+            print_r($result);
+            die();
         } else {
             //set start and limit
             if (array_key_exists("start", $params) && array_key_exists("limit", $params)) {

@@ -14,6 +14,38 @@ class Appointments extends REST_Controller
         $this->load->database();
         $this->app = "appointments";
         // $this->load->model('api/Users_model');
+    }    
+    
+    public function appointments_get()
+    {
+        $C_id = $this->input->get('C_id');
+
+        $data = array();
+        if (!empty($C_id)) {
+            $data['appointments'] = $this->db->select('*')->from($this->app)->where("$this->app . C_id = '$C_id' xor $this->app . pat_id = '$C_id'")->get()->result_array();
+        } else {
+            $master = $this->db->select('DISTINCT(C_id)')->from($this->app)->get()->result();
+
+            $length = count($master);
+
+            for ($i = 0; $i < $length; ++$i) {
+                $C_id = $master[$i]->C_id;
+
+                $data[$i]['appointments'] = $this->db->select('*')->from($this->app)->where("C_id", $C_id)->get()->result_array();
+            }
+        }
+
+        if (!empty($data)) {
+            $this->response([
+                'status' => true,
+                'data' => $data
+            ], REST_Controller::HTTP_OK);
+        } else {
+            $this->response([
+                'status' => false,
+                'data' => 'Data Not Found.'
+            ], REST_Controller::HTTP_NOT_FOUND);
+        }
     }
 
     public function appointments_post()
@@ -106,38 +138,6 @@ class Appointments extends REST_Controller
         }
     }
 
-    public function appointments_get()
-    {
-        $C_id = $this->input->get('C_id');
-
-        $data = array();
-        if (!empty($C_id)) {
-            $data['appointments'] = $this->db->select('*')->from($this->app)->where("$this->app . C_id = '$C_id' xor $this->app . pat_id = '$C_id'")->get()->result_array();
-        } else {
-            $master = $this->db->select('DISTINCT(C_id)')->from($this->app)->get()->result();
-
-            $length = count($master);
-
-            for ($i = 0; $i < $length; ++$i) {
-                $C_id = $master[$i]->C_id;
-
-                $data[$i]['appointments'] = $this->db->select('*')->from($this->app)->where("C_id", $C_id)->get()->result_array();
-            }
-        }
-
-        if (!empty($data)) {
-            $this->response([
-                'status' => true,
-                'data' => $data
-            ], REST_Controller::HTTP_OK);
-        } else {
-            $this->response([
-                'status' => false,
-                'data' => 'Data Not Found.'
-            ], REST_Controller::HTTP_NOT_FOUND);
-        }
-    }
-
     public function appointments_delete()
     {
         $id = $this->delete('id');
@@ -158,3 +158,4 @@ class Appointments extends REST_Controller
         }
     }
 }
+

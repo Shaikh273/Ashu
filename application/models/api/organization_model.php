@@ -25,8 +25,9 @@ class Organization_model extends CI_Model
 
     public function getData($org_id)
     {
-        $data = $this->db->select("*")->from('organization')->where("org_id = '$org_id'")->get()->result();
-        if (!empty($data)) {
+        $data['Patient'] =
+            $this->db->select("*")->from('organization')->where("org_id = '$org_id'")->get()->result();
+        if (!empty($data['Patient'])) {
             return $data;
         } else {
             return 'Data Not Found';

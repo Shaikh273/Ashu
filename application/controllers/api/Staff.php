@@ -192,8 +192,9 @@ class Staff extends REST_Controller
                 $config['max_width'] = '6000';
                 $config['max_height'] = '6000';
                 $config['remove_spaces'] = FALSE;
-
+                
                 $this->load->library('upload', $config);
+
                 $this->upload->initialize($config);
                 if (!$this->upload->do_upload('img')) {
                     $message2 = strip_tags($this->upload->display_errors());
@@ -215,8 +216,9 @@ class Staff extends REST_Controller
                 $config['max_width'] = '6000';
                 $config['max_height'] = '6000';
                 $config['remove_spaces'] = FALSE;
-
+    
                 $this->load->library('upload', $config);
+
                 $this->upload->initialize($config);
                 if (!$this->upload->do_upload('id_img')) {
                     $message2 = strip_tags($this->upload->display_errors());
