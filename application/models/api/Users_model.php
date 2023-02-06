@@ -14,6 +14,7 @@ class Users_model extends CI_Model
         $this->userTbl = 'staff';
         $this->org = 'admin_org';
         $this->role = 'role';
+        $this->pat = 'patients';
     }
 
     public function send_email($name = '', $email = '', $profile = '')
@@ -127,8 +128,6 @@ class Users_model extends CI_Model
             $this->db->where('u_id', $params['id']);
             $query = $this->db->get();
             $result = $query->row_array();
-            print_r($result);
-            die();
         } else {
             //set start and limit
             if (array_key_exists("start", $params) && array_key_exists("limit", $params)) {
@@ -163,6 +162,45 @@ class Users_model extends CI_Model
             $result['org_id'] = $this->db->select('org_id')->from($this->org)->where(['admin_id' => $is_admin])->get()->row()->org_id ?? '';
         }
 
+
+        //return fetched data
+        return $result;
+    }
+
+    function get_pat_no_Rows($params = array())
+    {
+        $this->db->select('*');
+        $this->db->from($this->pat);
+
+        //fetch data by conditions
+        if (array_key_exists("conditions", $params)) {
+            foreach ($params['conditions'] as $key => $value) {
+                $this->db->where($key, $value);
+            }
+        }
+
+        if (array_key_exists("id", $params)) {
+            $this->db->where('u_id', $params['id']);
+            $query = $this->db->get();
+            $result = $query->row_array();
+        } else {
+            //set start and limit
+            if (array_key_exists("start", $params) && array_key_exists("limit", $params)) {
+                $this->db->limit($params['limit'], $params['start']);
+            } elseif (!array_key_exists("start", $params) && array_key_exists("limit", $params)) {
+                $this->db->limit($params['limit']);
+            }
+
+            if (array_key_exists("returnType", $params) && $params['returnType'] == 'count') {
+                $result = $this->db->count_all_results();
+            } elseif (array_key_exists("returnType", $params) && $params['returnType'] == 'single') {
+                $query = $this->db->get();
+                $result = ($query->num_rows() > 0) ? $query->row_array() : false;
+            } else {
+                $query = $this->db->get();
+                $result = ($query->num_rows() > 0) ? $query->result_array() : false;
+            }
+        }
 
         //return fetched data
         return $result;
