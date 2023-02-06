@@ -3,9 +3,10 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 03, 2023 at 07:04 AM
--- Server version: 10.5.13-MariaDB-cll-lve
--- PHP Version: 7.2.34
+-- Generation Time: Jan 07, 2023 at 08:44 AM
+-- Server version: 10.4.20-MariaDB
+-- PHP Version: 7.4.22
+
 SET
   SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 
@@ -29,6 +30,7 @@ SET
 --
 -- Database: `u848800466_ashu`
 --
+
 CREATE DATABASE IF NOT EXISTS `u848800466_ashu` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 USE `u848800466_ashu`;
@@ -1728,7 +1730,6 @@ CREATE TABLE `history_visit` (
   `pat_id` varchar(65) NOT NULL,
   `visit_type` varchar(65) NOT NULL,
   `comments` varchar(100) NOT NULL,
-  `created_by` varchar(55) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `updated_at` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
@@ -2363,7 +2364,6 @@ INSERT INTO
     `DOB`,
     `years`,
     `months`,
-    `days`,
     `language`,
     `patienttype`,
     `address`,
@@ -2376,7 +2376,6 @@ INSERT INTO
     `governmentid_type`,
     `governmentidno`,
     `img`,
-    `qr`,
     `blood_grp`,
     `maritail_status`,
     `disabled`,
@@ -2388,6 +2387,7 @@ INSERT INTO
   )
 VALUES
   (
+
     2,
     'BIL-P_02',
     'Ash_01',
@@ -3515,7 +3515,7 @@ CREATE TABLE `test_cases` (
 ) ENGINE = InnoDB DEFAULT CHARSET = latin1;
 
 --
--- Dumping data for table `test_cases`
+-- Indexes for table `admin_org`
 --
 INSERT INTO
   `test_cases` (
@@ -3619,10 +3619,10 @@ VALUES
   );
 
 --
--- Indexes for dumped tables
+-- Indexes for table `api_keys`
 --
 --
--- Indexes for table `admin_org`
+-- Indexes for table `breaktime`
 --
 ALTER TABLE
   `admin_org`
@@ -3660,7 +3660,7 @@ ALTER TABLE
   `bills`
 ADD
   PRIMARY KEY (`id`);
-
+  
 --
 -- Indexes for table `history_anthropometry`
 --
@@ -3916,6 +3916,7 @@ MODIFY
 --
 -- AUTO_INCREMENT for table `history_food_allergies`
 --
+
 ALTER TABLE
   `history_food_allergies`
 MODIFY
