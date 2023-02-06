@@ -49,6 +49,7 @@ class Users_model extends CI_Model
             return $message;
             // $this->response(["status"=>false,"message"=>$message], REST_Controller::HTTP_BAD_REQUEST);
         }
+
     }
 
     /*
@@ -97,15 +98,15 @@ class Users_model extends CI_Model
 
         if (!empty($role_id)) {
 
-               $result['role_id'] = $this->db->select('role,id')->from($this->role)->where(['id' => $role_id])->get()->row();
+            $result['role_id'] = $this->db->select('role,id')->from($this->role)->where(['id' => $role_id])->get()->row();
+
         }
 
         if (!empty($is_admin)) {
 
             $result['org_id'] = $this->db->select('org_id')->from($this->org)->where(['admin_id' => $is_admin])->get()->row()->org_id ?? '';
         }
-
-      
+        
         //return fetched data
         return $result;
     }

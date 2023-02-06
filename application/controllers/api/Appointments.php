@@ -14,8 +14,7 @@ class Appointments extends REST_Controller
         $this->load->database();
         $this->app = "appointments";
         // $this->load->model('api/Users_model');
-    }
-    
+    }    
     
     public function appointments_get()
     {
@@ -80,6 +79,7 @@ class Appointments extends REST_Controller
                 "staff_id" => $staff_id,
                 "appointment_date" => $appointment_date,
                 "appointment_time" => $appointment_time,
+
                 "created_at" => date('Y-m-d H:i:s'),
             );
 
@@ -158,3 +158,4 @@ class Appointments extends REST_Controller
         }
     }
 }
+
