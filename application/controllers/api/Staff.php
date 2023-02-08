@@ -25,16 +25,19 @@ class Staff extends REST_Controller
         $u_id = $this->security->xss_clean($this->input->get('u_id'));
         $role_id = $this->db->select('role_id')->from($this->staff)->where("u_id = '$u_id'")->get()->row()->role_id ?? '';
         $role = $this->db->select('role')->from($this->role)->where("$this->role.id = '$role_id'")->get()->row()->role ?? '';
+
         $data = [];
         if (!empty($role)) {
             if ($role == 'Super Admin') {
                 $data['user_data'] = $this->db->select("*,$this->role.role")->from($this->staff)->join($this->role, "$this->staff.role_id = $this->role.id")->where("u_id = '$u_id'")->get()->row();
+                
                 $staff = $this->db->select('DISTINCT(u_id)')->from($this->staff)->join($this->role, "$this->staff.role_id = $this->role.id")->where("admin = '$u_id' AND $this->role.role = 'Admin'")->get()->result();
                 if (count($staff) > 0) {
                     for ($i = 0; $i < count($staff); ++$i) {
                         $staff_id = $staff[$i]->u_id;
+
                         $data['admin'][$i] = $this->db->select('*')->from($this->staff)->where("admin = '$u_id' AND u_id = '$staff_id'")->get()->row();
-                        // print_r($data['staff']);
+    
                         $org = $this->db->select('org_id')->from($this->org)->where("admin_id = '$staff_id'")->get()->result();
                         for ($j = 0; $j < count($org); ++$j) {
                             $org_id = $org[$j]->org_id;
@@ -45,10 +48,13 @@ class Staff extends REST_Controller
                 }
             } else if ($role == 'Admin') {
                 $data['user_data'] = $this->db->select("*,$this->role.role")->from($this->staff)->join($this->role, "$this->staff.role_id = $this->role.id")->where("u_id = '$u_id'")->get()->row();
+
                 $org = $this->db->select('org_id')->from($this->org)->where("admin_id = '$u_id'")->get()->result();
                 for ($j = 0; $j < count($org); ++$j) {
                     $org_id = $org[$j]->org_id;
+                    
                     $data['org'][$j] = $this->db->select('*')->from($this->organization)->where("org_id = '$org_id'")->get()->row();
+
                     $data['org'][$j]->staff = $this->db->select('*')->from($this->staff)->where("org_id = '$org_id'")->get()->result();
                 }
             } else {
@@ -143,6 +149,7 @@ class Staff extends REST_Controller
         $join_date = $this->security->xss_clean($this->input->post('join_date'));
         $role_id = $this->security->xss_clean($this->input->post('role_id'));
         $org_id = $this->security->xss_clean($this->input->post('org_id'));
+        $about = $this->security->xss_clean($this->input->post('about'));
         $status = $this->security->xss_clean($this->input->post('status'));
 
         //----------------------Getting Role-------------------//
@@ -285,6 +292,7 @@ class Staff extends REST_Controller
                 'id_img' => $id_img ?? '',
                 'join_date' => $join_date ?? '',
                 'role_id' => $role_id ?? '',
+                'about' => $about ?? '',
                 'status' => $status ?? '',
             ];
 
@@ -432,7 +440,6 @@ class Staff extends REST_Controller
             $data['role_id'] = $role_id;
         }
         if (!empty($status)) {
-            // print_r($status);die();
             if ($status == 'Approved') {
                 $admin_id = $this->db->select('admin')->from($this->staff)->where('u_id', $u_id)->get()->row()->admin ?? '';
                 if (!empty($admin) && $admin == $admin_id) {
@@ -447,8 +454,6 @@ class Staff extends REST_Controller
                 $data['status'] = $status;
             }
         }
-
-        // print_r($data);die();
 
         $result = $this->db->update($this->staff, $data, array('u_id' => $u_id));
         if ($result) {
