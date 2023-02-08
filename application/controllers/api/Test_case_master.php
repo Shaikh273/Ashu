@@ -157,6 +157,4 @@ class Test_case_master extends REST_Controller
             ], REST_Controller::HTTP_BAD_REQUEST);
         }
     }
-
-    // print_r();die();
 }
