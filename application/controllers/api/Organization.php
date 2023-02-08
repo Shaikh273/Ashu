@@ -1,7 +1,5 @@
 <?php
-
 if (!defined('BASEPATH')) exit('No direct script access allowed');
-
 require(APPPATH . '/libraries/REST_Controller.php');
 
 use Restserver\Libraries\REST_Controller;
@@ -125,11 +123,11 @@ class Organization extends REST_Controller
         //     // very important query "LIFES SAVER"
         //     $error = strip_tags(validation_errors());
 
-            // $this->response([
-            //     "status" => False,
-            //     "message" => "Invalid Details",
-            //     "error" => $error
-            // ], REST_Controller::HTTP_BAD_REQUEST);
+        // $this->response([
+        //     "status" => False,
+        //     "message" => "Invalid Details",
+        //     "error" => $error
+        // ], REST_Controller::HTTP_BAD_REQUEST);
         // } else {
 
         $data = array(

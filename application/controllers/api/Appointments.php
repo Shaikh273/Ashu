@@ -1,7 +1,5 @@
 <?php
-
 if (!defined('BASEPATH')) exit('No direct script access allowed');
-
 require(APPPATH . '/libraries/REST_Controller.php');
 
 use Restserver\Libraries\REST_Controller;
@@ -14,8 +12,8 @@ class Appointments extends REST_Controller
         $this->load->database();
         $this->app = "appointments";
         // $this->load->model('api/Users_model');
-    }    
-    
+    }
+
     public function appointments_get()
     {
         $C_id = $this->input->get('C_id');
@@ -158,4 +156,3 @@ class Appointments extends REST_Controller
         }
     }
 }
-

@@ -1,9 +1,8 @@
 <?php
-defined('BASEPATH') or exit('No direct script access allowed');
-require APPPATH . '/libraries/REST_Controller.php';
+if (!defined('BASEPATH')) exit('No direct script access allowed');
+require(APPPATH . '/libraries/REST_Controller.php');
 
 use Restserver\Libraries\REST_Controller;
-
 
 class Old_Reports extends REST_Controller
 {
