@@ -1,9 +1,8 @@
 <?php
-defined('BASEPATH') or exit('No direct script access allowed');
-require APPPATH . '/libraries/REST_Controller.php';
+if (!defined('BASEPATH')) exit('No Direct Scripts access are Allowed');
+require(APPPATH . '/libraries/REST_Controller.php');
 
 use Restserver\Libraries\REST_Controller;
-
 
 class Test_case_master extends REST_Controller
 {
