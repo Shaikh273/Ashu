@@ -1,5 +1,7 @@
 <?php
+
 if (!defined('BASEPATH')) exit('No direct script access allowed');
+
 require(APPPATH . '/libraries/REST_Controller.php');
 
 use Restserver\Libraries\REST_Controller;
@@ -12,7 +14,9 @@ class Appointments extends REST_Controller
         $this->load->database();
         $this->app = "appointments";
         $this->staff = "staff";
+        // $this->load->model('api/Users_model');
     }
+
 
     public function appointments_get()
     {
@@ -21,7 +25,6 @@ class Appointments extends REST_Controller
         $data = array();
         if (!empty($C_id)) {
             $data['appointments'] = $this->db->select("$this->staff.name AS staff,$this->app.*")->from($this->app)->join($this->staff, "$this->app.staff_id = $this->staff.u_id")->where("$this->app . C_id = '$C_id' xor $this->app . pat_id = '$C_id'")->get()->result_array();
-
         } else {
             $master = $this->db->select('DISTINCT(C_id)')->from($this->app)->get()->result();
 
@@ -29,7 +32,7 @@ class Appointments extends REST_Controller
 
             for ($i = 0; $i < $length; ++$i) {
                 $C_id = $master[$i]->C_id;
-                
+
                 $data[$i]['appointments'] = $this->db->select("$this->staff.name,$this->app.*")->from($this->app)->join($this->staff, "$this->app.staff_id = $this->staff.u_id")->where("C_id", $C_id)->get()->result_array();
             }
         }
