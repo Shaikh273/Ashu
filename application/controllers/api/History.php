@@ -1,11 +1,13 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
-require(APPPATH . '/libraries/REST_Controller.php');
+defined('BASEPATH') or exit('No direct script access allowed');
+require APPPATH . '/libraries/REST_Controller.php';
 
 use Restserver\Libraries\REST_Controller;
 
+
 class History extends REST_Controller
 {
+
     public function __construct()
     {
         parent::__construct();
@@ -13,6 +15,7 @@ class History extends REST_Controller
         $this->load->model('api/History_model');
         $this->history = 'history_visit';
         $this->org = 'organization';
+        $this->test_cases = 'test_cases';
     }
 
     public function history_post()
@@ -40,25 +43,21 @@ class History extends REST_Controller
         $C_id = "Case_{$year}-{$next_year}_0" . $c_id;
 
         $pat_id = $this->security->xss_clean($this->input->post('pat_id'));
-        // $dt = strtotime($this->input->post('dt'));
-
 
         // VISIT HISTORY
-        $visit_type = $this->input->post('visit_type');
-        $comments1 = $this->input->post('visit_comments');
+        $problem = $this->input->post('problem');
+        $description = $this->input->post('description');
 
         // VISIT HISTORY
         $data1 = array(
             'pat_id' => $pat_id,
             'org_id' => $org_id,
             'C_id' => $C_id,
-            'visit_type' => $visit_type ?? '',
+            'problem' => $problem ?? '',
             'created_by' => $created_by,
-            'comments' => $comments1 ?? '',
-
+            'description' => $description ?? '',
             'created_at' => date('Y-m-d H:i:s'),
         );
-
 
         // CHIEF COMPLAINTS
         $chief_complaint_type = $this->input->post('chief_complaint_type');
@@ -80,7 +79,7 @@ class History extends REST_Controller
             'duration_unit' => $duration_unit ?? '',
             'comments1' => $comments2 ?? '',
             'options' => $options ?? '',
-            'comments2' => $comments3 ?? '',
+            'comments2' => $comment3 ?? '',
 
             'created_at' => date('Y-m-d H:i:s'),
         );
@@ -202,7 +201,6 @@ class History extends REST_Controller
             'blood_pressure' => $blood_pressure ?? '',
             'rr' => $rr ?? '',
             'spo2' => $spo2 ?? '',
-
             'created_at' => date('Y-m-d H:i:s'),
         );
 
@@ -221,14 +219,13 @@ class History extends REST_Controller
             'weight' => $weight ?? '',
             'bmi' => $bmi ?? '',
             'comments' => $comments12 ?? '',
-
             'created_at' => date('Y-m-d H:i:s'),
         );
 
 
         // '$created_at' => date('Y-m-d H:i:s);
-        // $this->form_validation->set_rules('comments1', ' Type', 'trim|required');
-        // $this->form_validation->set_rules('comments2', 'Type', 'trim|required');
+        // $this->form_validation->set_rules('comments1', 'Comment Type', 'trim|required');
+        // $this->form_validation->set_rules('comments2', 'Comment Type', 'trim|required');
         // if ($this->form_validation->run() == FALSE) {
         //     $this->response([
         //         'status' => false,
@@ -236,11 +233,7 @@ class History extends REST_Controller
         //     ], REST_Controller::HTTP_BAD_REQUEST);
         // } else {
 
-        if (empty($data1)) {
-            $this->response([
-                'status' => false,
-                'message' => 'Unsuccessful.'
-            ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+        if ($data1 == '') {
         } else {
             $data = $this->History_model->insertdata(
                 $data1,
@@ -252,28 +245,18 @@ class History extends REST_Controller
                 $data7,
                 $data8
             );
+        }
 
-            if ($data == true) {
-                $this->response([
-                    'status' => true,
-                    'message' => 'History Added Successfully.',
-                    // 'data' => array(
-                    //     "Visit History" => $data1,
-                    //     "Chief Complaints" => $data2,
-                    //     "Systemic History" => $data3,
-                    //     "Drug Allergies" => $data4,
-                    //     "Contact Allergies" => $data5,
-                    //     "Food Allergies" => $data6,
-                    //     "Vital Signs" => $data7,
-                    //     "Anthropometry" => $data8
-                    // )
-                ], REST_Controller::HTTP_OK);
-            } else {
-                $this->response([
-                    'status' => false,
-                    'message' => 'Unsuccessful.'
-                ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
-            }
+        if ($data == true) {
+            $this->response([
+                'status' => true,
+                'message' => 'History Added Successfully.',
+            ], REST_Controller::HTTP_OK);
+        } else {
+            $this->response([
+                'status' => false,
+                'message' => 'Unsuccessful.'
+            ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
         }
         // } else {
         // $getadd = $this->Other_model->getadddata($emp_id, $month, $year);
@@ -312,16 +295,13 @@ class History extends REST_Controller
         // }
     }
 
+
     public function history_get()
     {
         $org_id = $this->input->get('org_id');
-        // $C_id = $this->input->get('C_id');
-        // $pat_id = $this->input->get('pat_id');
 
         $data = array();
         if (!empty($org_id)) {
-
-
             $organization = $this->db->select('org_id')->from($this->history)->where("$this->history.org_id = '$org_id' XOR $this->history.C_id = '$org_id' XOR $this->history.pat_id = '$org_id'")->get()->row()->org_id ?? '';
 
             $data['organization'] = $this->db->select("$this->org.*")->from($this->org)->where('org_id', $organization)->get()->row() ?? [];
@@ -333,47 +313,37 @@ class History extends REST_Controller
             $length = count($patients);
             for ($j = 0; $j < $length; ++$j) {
                 $pat_id = $patients[$j]->pat_id;
-
                 $data['patients'][$j]['patient'] = $this->db->select("patients.*")->from('patients')->where('pat_id', $pat_id)->get()->row();
                 if ($is_cases > 0) {
                     $case_id = $this->db->select("DISTINCT(C_id)")->from($this->history)->where("$this->history.org_id = '$org_id' XOR $this->history.C_id = '$org_id' XOR $this->history.pat_id = '$org_id'")->get()->result();
                 } else {
                     $case_id = $this->db->select("DISTINCT(C_id)")->from($this->history)->where("pat_id = '$pat_id'")->get()->result();
                 }
-
                 $length1 = count($case_id);
                 $data2 = array();
                 for ($i = 0; $i < $length1; ++$i) {
                     $c_id = $case_id[$i]->C_id;
-
                     $data2[$i]['visit'] =
                         $this->db->select("
                         $this->history.id AS ID,
                         $this->history.c_id,
-                        $this->history.visit_type,
+                        $this->history.problem,
+                        $this->history.description,
                         $this->history.created_by,
                         $this->history.created_at,
                         $this->history.updated_at,
                     ")->from($this->history)->where("$this->history.C_id = '$c_id'")->get()->result();
 
                     $data2[$i]['chief_complaints'] = $this->db->select("*")->from('history_chief_complaints')->where("C_id = '$c_id'")->get()->result();
-
                     $data2[$i]['systemic_history'] = $this->db->select("*")->from('history_systemic_history')->where("C_id = '$c_id'")->get()->result();
-
                     $data2[$i]['drug_allergies'] = $this->db->select("*")->from('history_drug_allergies')->where("C_id = '$c_id'")->get()->result();
-
                     $data2[$i]['contact_allergies'] = $this->db->select("*")->from('history_contact_allergies')->where("C_id = '$c_id'")->get()->result();
-
                     $data2[$i]['vital_signs'] = $this->db->select("*")->from('history_vital_signs')->where("C_id = '$c_id'")->get()->result();
-
                     $data2[$i]['anthropometry'] = $this->db->select("*")->from('history_anthropometry')->where("C_id = '$c_id'")->get()->result();
-
-                    $data2[$i]['test_cases'] = $this->db->select("test_cases.id,test_cases.problem,test_cases.description,test_cases.title,test_cases.reading,test_cases.doctor_id,test_cases.status")->from('test_cases')->join('tests', 'test_cases.test_id = tests.id')->where("C_id = '$c_id'")->get()->result();
+                    $data2[$i]['test_cases'] = $this->db->select("test_cases.id,test_cases.test_id,test_cases.title,test_cases.reading,test_cases.doctor_id,test_cases.status")->from($this->test_cases)->join('tests', 'test_cases.test_id = tests.id')->where("C_id = '$c_id'")->get()->result();
                 }
                 $data['patients'][$j][$this->history] = $data2;
             }
-
-            // $data['visit_history'] = $this->db->select("$this->history.id AS ID ")->from($this->history)->where("$this->history.org_id = '$org_id'  XOR $this->history.C_id = '$org_id' XOR $this->history.pat_id = '$org_id'")->get()->result();
         }
 
         if (!empty($data)) {
@@ -397,20 +367,18 @@ class History extends REST_Controller
         $pat_id = $this->input->post('pat_id');
         $createdby = $this->input->post('created_by');
 
-
         // VISIT HISTORY
-        $visit_type = $this->input->post('visit_type');
-        $comments1 = $this->input->post('visit_comments');
+        $problem = $this->input->post('problem');
+        $description = $this->input->post('description');
 
         // VISIT HISTORY
         $data1 = array();
-        if (!empty($visit_type)) {
-            $data1['visit_type'] = $visit_type;
+        if (!empty($problem)) {
+            $data1['problem'] = $problem;
         }
-        if (!empty($comments1)) {
-            $data1['comments'] = $comments1;
+        if (!empty($description)) {
+            $data1['description'] = $description;
         }
-
 
         // CHIEF COMPLAINTS
         $chief_complaint_type = $this->input->post('chief_complaint_type');
@@ -444,7 +412,6 @@ class History extends REST_Controller
         if (!empty($comments3)) {
             $data2['comments2'] = $comments3;
         }
-
 
         // SYSTEMIC HISTORY
         $systemic_history_type = $this->input->post('systemic_history_type');
@@ -487,7 +454,6 @@ class History extends REST_Controller
             $data3['special_status'] = $special_status;
         }
 
-
         //DRUG ALLERGIES
         $drug_allergies_type = $this->input->post('drug_allergies_type');
         $drug_allergies_name = $this->input->post('name');
@@ -517,7 +483,6 @@ class History extends REST_Controller
             $data4['comments2'] = $comments7;
         }
 
-
         // CONATCT ALLERGIES
         $contact_allergies_type = $this->input->post('contact_allergies_type');
         $contact_allergies_name = $this->input->post('contact_allergies_name');
@@ -546,7 +511,6 @@ class History extends REST_Controller
         if (!empty($comments9)) {
             $data5['comments2'] = $comments9;
         }
-
 
         // // FOOD ALLERGIES
         $food_allergies_type = $this->input->post('food_allergies_type');
@@ -578,7 +542,6 @@ class History extends REST_Controller
             $data6['comments2'] = $comments11;
         }
 
-
         // VITAL SIGNS
         $temperature = $this->input->post('temperature');
         $pulse = $this->input->post('pulse');
@@ -604,7 +567,6 @@ class History extends REST_Controller
             $data7['spo2'] = $spo2;
         }
 
-
         // ANTHROPOMETRY HISTORY
         $height = $this->input->post('height');
         $weight = $this->input->post('weight');
@@ -625,7 +587,6 @@ class History extends REST_Controller
         if (!empty($comments12)) {
             $data8['comments'] = $comments12;
         }
-
 
         if (empty($data1)) {
             $this->response([
@@ -684,8 +645,8 @@ class History extends REST_Controller
     public function test_cases_post()
     {
         $c_id = $this->security->xss_clean($this->input->post('C_id'));
-        $problem =  $this->security->xss_clean($this->input->post('problem'));
-        $description =  $this->security->xss_clean($this->input->post('description'));
+        // $problem =  $this->security->xss_clean($this->input->post('problem'));
+        // $description =  $this->security->xss_clean($this->input->post('description'));
         $test_id =  $this->security->xss_clean($this->input->post('test_id'));
         $reading =  $this->security->xss_clean($this->input->post('reading'));
         $doctor_id =  $this->security->xss_clean($this->input->post('doctor_id'));
@@ -708,8 +669,8 @@ class History extends REST_Controller
         } else {
             $data = array(
                 'C_id' => $c_id,
-                'problem' => $problem,
-                'description' => $description,
+                // 'problem' => $problem,
+                // 'description' => $description,
                 'test_id' => $test_id,
                 'reading' => $reading,
                 'doctor_id' => $doctor_id,
@@ -717,7 +678,7 @@ class History extends REST_Controller
                 'status' => $status,
             );
 
-            $insert = $this->db->insert('test_cases', $data);
+            $insert = $this->db->insert($this->test_cases, $data);
             if ($insert) {
                 $this->response([
                     "status" => true,
@@ -736,8 +697,8 @@ class History extends REST_Controller
     {
         $id = $this->security->xss_clean($this->input->post('id'));
         $c_id = $this->security->xss_clean($this->input->post('C_id'));
-        $problem = $this->security->xss_clean($this->input->post('problem'));
-        $description = $this->security->xss_clean($this->input->post('description'));
+        // $problem = $this->security->xss_clean($this->input->post('problem'));
+        // $description = $this->security->xss_clean($this->input->post('description'));
         $test_id = $this->security->xss_clean($this->input->post('test_id'));
         $title =  $this->security->xss_clean($this->input->post('title'));
         $reading = $this->security->xss_clean($this->input->post('reading'));
@@ -751,9 +712,9 @@ class History extends REST_Controller
         if (!empty($title) && !empty($id)) {
             $data['title'] = $title;
         }
-        if (!empty($description) && !empty($id)) {
-            $data['description'] = $description;
-        }
+        // if (!empty($description) && !empty($id)) {
+        //     $data['description'] = $description;
+        // }
         if (!empty($test_id) && !empty($id)) {
             $data['test_id'] = $test_id;
         }
@@ -767,7 +728,7 @@ class History extends REST_Controller
             $data['status'] = $status;
         }
 
-        $update = $this->db->update('test_cases', $data, array('id' => $id));
+        $update = $this->db->update($this->test_cases, $data, array('id' => $id));
         if ($update) {
             $this->response([
                 "status" => true,
