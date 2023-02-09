@@ -188,14 +188,14 @@ class Register extends REST_Controller
             )
         );
 
-        $this->form_validation->set_rules(
-            "img",
-            "img",
-            "required",
-            array(
-                'required' => 'img should not be empty',
-            )
-        );
+        // $this->form_validation->set_rules(
+        //     "img",
+        //     "img",
+        //     "required",
+        //     array(
+        //         'required' => 'img should not be empty',
+        //     )
+        // );
 
         $this->form_validation->set_rules(
             "emg_no",
