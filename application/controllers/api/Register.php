@@ -1,5 +1,7 @@
 <?php
+
 if (!defined('BASEPATH')) exit('No direct script access allowed');
+
 require(APPPATH . '/libraries/REST_Controller.php');
 
 use Restserver\Libraries\REST_Controller;
@@ -9,6 +11,7 @@ require_once "vendor/autoload.php";
 
 class Register extends REST_Controller
 {
+
     public function __construct()
     {
         parent::__construct();
@@ -23,7 +26,7 @@ class Register extends REST_Controller
     {
         $data = $this->db->select('*')->from($this->pat)->get()->result();
         if (!empty($pat_id)) {
-            $data = $this->db->select('*')->from($this->pat)->where('pat_id', $pat_id)->get()->result();
+            $data = $this->db->select('*')->from($this->pat)->where('pat_id', $pat_id)->get()->row();
         }
         if (!empty($data)) {
             $this->response([
@@ -219,56 +222,61 @@ class Register extends REST_Controller
             ], REST_Controller::HTTP_BAD_REQUEST);
         } else {
 
-            $data = array(
-                "first_name" => $first_name ?? '',
-                "middle_name" => $middle_name ?? '',
-                "last_name" => $last_name ?? '',
-                "mobile_no" => $mobileNo ?? '',
-                "secondarynumber" => $secondarynumber ?? '',
-                "email" => $email ?? '',
-                "gender" => $gender ?? '',
-                "DOB" => $DOB ?? '',
-                "years" => $years ?? '',
-                "months" => $months ?? '',
-                "days" => $days ?? '',
+            if (!empty($img)) {
+                $data = array(
+                    "first_name" => $first_name ?? '',
+                    "middle_name" => $middle_name ?? '',
+                    "last_name" => $last_name ?? '',
+                    "mobile_no" => $mobileNo ?? '',
+                    "secondarynumber" => $secondarynumber ?? '',
+                    "email" => $email ?? '',
+                    "gender" => $gender ?? '',
+                    "DOB" => $DOB ?? '',
+                    "years" => $years ?? '',
+                    "months" => $months ?? '',
+                    "days" => $days ?? '',
+                    "language" => $language ?? '',
+                    "patienttype" => $patienttype ?? '',
+                    "address" => $address ?? '',
+                    "state" => $state ?? '',
+                    "city" => $city ?? '',
+                    "pincode" => $pincode ?? '',
+                    "occupation" => $occupation ?? '',
+                    "employeeid" => $employeeid ?? '',
+                    "medicalrecordno" => $medicalrecordno ?? '',
+                    "governmentid_type" => $governmentid_type ?? '',
+                    "governmentidno" => $governmentidno ?? '',
 
-                "language" => $language ?? '',
-                "patienttype" => $patienttype ?? '',
-                "address" => $address ?? '',
-                "state" => $state ?? '',
-                "city" => $city ?? '',
-                "pincode" => $pincode ?? '',
-                "occupation" => $occupation ?? '',
-                "employeeid" => $employeeid ?? '',
-                "medicalrecordno" => $medicalrecordno ?? '',
-                "governmentid_type" => $governmentid_type ?? '',
-                "governmentidno" => $governmentidno ?? '',
+                    "img" => $img ?? '',
+                    "blood_grp" => $blood_grp ?? '',
+                    "maritail_status" => $maritail_status ?? '',
+                    "disabled" => $disabled ?? '',
+                    "emg_relation" => $emg_relation ?? '',
+                    "emg_name" => $emg_name ?? '',
+                    "emg_no" => $emg_no ?? '',
 
-                "img" => $img ?? '',
-                "blood_grp" => $blood_grp ?? '',
-                "maritail_status" => $maritail_status ?? '',
-                "disabled" => $disabled ?? '',
-                "emg_relation" => $emg_relation ?? '',
-                "emg_name" => $emg_name ?? '',
-                "emg_no" => $emg_no ?? '',
+                    "org_id" => $org_id,
+                    "pat_id" => $pat_id,
 
-                "org_id" => $org_id,
-                "pat_id" => $pat_id,
-
-                'created_at' => date('Y-m-d H:i:s'),
-            );
-
-            $insertData = $this->Registerpatient_model->insertdata($data);
-            if ($insertData) {
-                $this->response([
-                    'status' => TRUE,
-                    'message' => "You've Registered Successfully",
-                    'data' => $data
-                ], REST_Controller::HTTP_OK);
+                    'created_at' => date('Y-m-d H:i:s'),
+                );
+                $insertData = $this->Registerpatient_model->insertdata($data);
+                if ($insertData) {
+                    $this->response([
+                        'status' => TRUE,
+                        'message' => "You've Registered Successfully",
+                        'data' => $data
+                    ], REST_Controller::HTTP_OK);
+                } else {
+                    $this->response([
+                        "status" => false,
+                        "Message" => "Registration Failed"
+                    ], REST_Controller::HTTP_BAD_REQUEST);
+                }
             } else {
                 $this->response([
-                    "status" => False,
-                    "Message" => "Registration Failed"
+                    "status" => false,
+                    "message" => 'img should not be empty',
                 ], REST_Controller::HTTP_BAD_REQUEST);
             }
         }
@@ -316,7 +324,7 @@ class Register extends REST_Controller
 
             $config['file_name'] = $fileName;
             $config['upload_path'] = './assets/uploads/patients/';
-            $config['allowed_types'] = 'gif|jpg|png';
+            $config['allowed_types'] = 'gif|jpg|png|jpeg';
             $config['max_size']     = '1024000';
             $config['max_width'] = '6000';
             $config['max_height'] = '6000';
@@ -638,6 +646,7 @@ class Register extends REST_Controller
     {
         $pat_id = $this->post('pat_id');
         $profile = $this->security->xss_clean($this->input->post("profile"));
+        // $fname = $this->security->xss_clean($this->input->post("fname"));
 
         $name = $this->db->select('first_name')->from('patients')->where('pat_id', $pat_id)->get()->row()->first_name ?? '';
         $mobileNo = $this->db->select('mobile_no')->from('patients')->where('pat_id', $pat_id)->get()->row()->mobile_no ?? '';
@@ -669,13 +678,12 @@ class Register extends REST_Controller
         }
 
         $data = array();
-        // print_r($mobileNo);die();
 
         if (!empty($profile)) {
             $data['profile'] = $profile;
 
             // Here we are sending mail
-            $url = 'https://softdigit.in/Ashu/assets/uploads/profile/' . '' . $profile;
+            $url = 'https://softdigit.in/Ashu/assets/uploads/profile/' . '' . $profile; //$fname.
 
             if (!empty($name) && !empty($email) && !empty($url)) {
                 $this->Users->send_email($name, $email, $url);
@@ -687,13 +695,13 @@ class Register extends REST_Controller
                 $this->load->config('twilio');
                 $sid = $this->config->item('sid');
                 $token = $this->config->item('token');
-                $twilio_client = new Client($sid, $token);
                 $phone = $this->config->item('phone');
                 $whatsapp = $this->config->item('whatsapp');
+                $twilio_client = new Client($sid, $token);
                 $twilio = $twilio_client->messages->create("whatsapp:{$mobileNo}", [
-                    'from' => "whatsapp:$whatsapp",
+                    'from' => "whatsapp:{$whatsapp}",
                     'body' => $msg
-                ]) ?? '';
+                ]) ?? 'SMS failed due to ' . $ex->getMessage();
 
                 //Here we are sending sms
                 // $twilio_client->messages->create($mobileNo,[
@@ -704,6 +712,7 @@ class Register extends REST_Controller
                 // $this->smsalertlib->smssend($mobileNo, $msg);
             }
         }
+        // print_r($data);die();
 
         if ($data) {
             $data = $this->Registerpatient_model->updatedata($pat_id, $data);

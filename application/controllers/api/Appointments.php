@@ -14,6 +14,8 @@ class Appointments extends REST_Controller
         $this->load->database();
         $this->app = "appointments";
         $this->staff = "staff";
+        $this->history_visit = "history_visit";
+        $this->pat = "patients";
         // $this->load->model('api/Users_model');
     }
 
@@ -75,6 +77,31 @@ class Appointments extends REST_Controller
                 "message" => $error,
             ], REST_Controller::HTTP_BAD_REQUEST);
         } else {
+
+            $case_exist = $this->db->select('C_id')->from($this->history_visit)->where('C_id', $C_id)->get()->row()->C_id ?? '';
+            if (empty($case_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Case doesn't Exist",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+
+            $patient_exist = $this->db->select('pat_id')->from($this->pat)->where('pat_id', $pat_id)->get()->row()->pat_id ?? '';
+            if (empty($patient_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Patient doesn't Exist",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+
+            $staff_exist = $this->db->select('u_id')->from($this->staff)->where(array('u_id' => $staff_id))->get()->row()->u_id ?? '';
+            if (empty($staff_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Staff doesn't Exist",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+
             $data = array(
                 "pat_id" => $pat_id,
                 "C_id" => $C_id,
@@ -113,12 +140,50 @@ class Appointments extends REST_Controller
         $appointment_time = $this->security->xss_clean($this->input->post('appointment_time'));
 
         $data = [];
+
+        $appointments_exist = $this->db->select('id')->from($this->app)->where(array('id' => $id))->get()->row()->id ?? '';
+        if (empty($appointments_exist)) {
+            $this->response([
+                'status' => false,
+                'message' => "Appointments doesn't Exist",
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }
+
+        if (!empty($C_id)) {
+            $case_exist = $this->db->select('C_id')->from($this->history_visit)->where('C_id', $C_id)->get()->row()->C_id ?? '';
+            if (empty($case_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Case doesn't Exist",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        }
+
+        if (!empty($pat_id)) {
+            $patient_exist = $this->db->select('pat_id')->from($this->pat)->where('pat_id', $pat_id)->get()->row()->pat_id ?? '';
+            if (empty($patient_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Patient doesn't Exist",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        }
+
         if (!empty($staff_id) && !empty($id)) {
+            $staff_exist = $this->db->select('u_id')->from($this->staff)->where(array('u_id' => $staff_id))->get()->row()->u_id ?? '';
+            if (empty($staff_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Staff doesn't Exist",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
             $data['staff_id'] = $staff_id;
         }
+
         if (!empty($appointment_date) && !empty($id)) {
             $data['appointment_date'] = $appointment_date;
         }
+
         if (!empty($appointment_time) && !empty($id)) {
             $data['appointment_time'] = $appointment_time;
         }
@@ -142,7 +207,13 @@ class Appointments extends REST_Controller
     public function appointments_delete()
     {
         $id = $this->delete('id');
-
+        $appointments_exist = $this->db->select('id')->from($this->app)->where(array('id' => $id))->get()->row()->id ?? '';
+        if (empty($appointments_exist)) {
+            $this->response([
+                'status' => false,
+                'message' => "Appointments doesn't Exist",
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }
         $data = $this->db->delete($this->app, array('id' => $id));
 
         if ($data) {

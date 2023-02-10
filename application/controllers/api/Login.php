@@ -1,5 +1,7 @@
 <?php
+
 if (!defined('BASEPATH')) exit('No direct script access allowed');
+
 require(APPPATH . '/libraries/REST_Controller.php');
 
 use Restserver\Libraries\REST_Controller;
@@ -19,6 +21,7 @@ class Login extends REST_Controller
         $email = $this->input->post('email');
         $password = $this->input->post('password');
 
+
         // Validate the post data
         if (!empty($email) && !empty($password)) {
 
@@ -27,7 +30,7 @@ class Login extends REST_Controller
             $con['conditions'] = array(
                 'email' => $email,
                 'password' => sha1($password),
-                // 'status' => 1
+                'status' => 'Approved',
             );
 
             $user = $this->Users_model->getRows($con);
@@ -66,7 +69,7 @@ class Login extends REST_Controller
             $con['returnType'] = 'single';
             $con['conditions'] = array(
                 'mobile_no' => $mobile_no,
-                'status' => 1
+                'status' => 'Approved'
             );
 
             $user = $this->Users_model->getno_Rows($con);

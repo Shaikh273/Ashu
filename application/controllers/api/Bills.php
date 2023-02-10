@@ -15,6 +15,7 @@ class Bills extends REST_Controller
         $this->staff = 'staff';
         $this->test = 'test_cases';
         $this->tele = 'telemedicine';
+        $this->history_visit = 'history_visit';
     }
 
     public function bill_post()
@@ -54,6 +55,39 @@ class Bills extends REST_Controller
                 "message" => $error,
             ], REST_Controller::HTTP_BAD_REQUEST);
         } else {
+
+            $tele_exist = $this->db->select('tele_id')->from($this->tele)->where('tele_id', $tele_id)->get()->row()->tele_id ?? '';
+            if (empty($tele_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Tele Medicine Session doesn't Exist",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+
+            $case_exist = $this->db->select('C_id')->from($this->history_visit)->where('C_id', $C_id)->get()->row()->C_id ?? '';
+            if (empty($case_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Case doesn't Exist",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+
+            $patient_exist = $this->db->select('pat_id')->from($this->pat)->where('pat_id', $pat_id)->get()->row()->pat_id ?? '';
+            if (empty($patient_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Patient doesn't Exist",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+
+            $doctor_exist = $this->db->select('u_id')->from($this->staff)->join($this->role, "$this->staff.role_id = $this->role.id")->where(array('u_id' => $doc_id, "$this->role.role" => 'Doctor'))->get()->row()->u_id ?? '';
+            if (empty($doctor_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Doctor doesn't Exist",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+
             $data = array(
                 'pat_id' => $pat_id,
                 'C_id' => $C_id,
@@ -70,7 +104,7 @@ class Bills extends REST_Controller
 
             if ($insert) {
                 $this->response([
-                    'status' => True,
+                    'status' => true,
                     'message' => 'Bill Created Successfully',
                     'data' => $data,
                 ], REST_Controller::HTTP_OK);
