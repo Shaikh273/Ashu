@@ -13,6 +13,9 @@ class Prescription extends REST_Controller
         $this->pres = 'prescription';
         $this->taper = 'taper';
         $this->pro = 'instructions';
+        $this->history_visit = 'history_visit';
+        $this->pat = 'patients';
+        $this->staff = 'staff';
     }
 
     public function prescription_post()
@@ -46,6 +49,23 @@ class Prescription extends REST_Controller
                 "message" => $error,
             ], REST_Controller::HTTP_BAD_REQUEST);
         } else {
+
+            $case_exist = $this->db->select('C_id')->from($this->history_visit)->where('C_id', $C_id)->get()->row()->C_id ?? '';
+            if (empty($case_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Case doesn't Exist",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+
+            $patient_exist = $this->db->select('pat_id')->from($this->pat)->where('pat_id', $pat_id)->get()->row()->pat_id ?? '';
+            if (empty($patient_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Patient doesn't Exist",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+
             $data = array(
                 "pat_id" => $pat_id ?? '',
                 "C_id" => $C_id ?? '',
@@ -58,7 +78,6 @@ class Prescription extends REST_Controller
                 "duration_unit" => $duration_unit ?? '',
                 "taper_id" => $taper_id ?? '',
                 "instruction_id" => $instruction_id ?? '',
-
                 "created_at" => date('Y-m-d H:i:s'),
             );
 
@@ -104,7 +123,7 @@ class Prescription extends REST_Controller
 
                 $data[$i]['Prescription'] = $this->db->select('*')->from($this->pres)->where("C_id", $C_id)->get()->result_array();
                 $prescription = $this->db->select('id')->from($this->pres)->where("C_id", $C_id)->get()->result_array();
-                // print_r($data);die();
+        
                 $length1 = count($prescription);
 
                 for ($j = 0; $j < $length1; ++$j) {
@@ -131,7 +150,13 @@ class Prescription extends REST_Controller
     public function prescription_delete()
     {
         $id = $this->delete('id');
-
+        $prescription_exist = $this->db->select('id')->from($this->pres)->where('id', $id)->get()->row()->C_id ?? '';
+        if (empty($prescription_exist)) {
+            $this->response([
+                'status' => false,
+                'message' => "Prescription doesn't Exist",
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }
         $data = $this->db->delete($this->pres, array('id' => $id));
         $this->db->delete($this->taper, array('prescription_id' => $id));
         $this->db->delete($this->pro, array('prescription_id' => $id));
@@ -179,6 +204,15 @@ class Prescription extends REST_Controller
                 "mesage" => $error
             ], REST_Controller::HTTP_BAD_REQUEST);
         } else {
+
+            $prescription_exist = $this->db->select('id')->from($this->pres)->where('id', $prescription_id)->get()->row()->id ?? '';
+            if (empty($prescription_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Prescription doesn't Exist",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+
             $data = array(
                 "prescription_id" => $prescription_id,
 

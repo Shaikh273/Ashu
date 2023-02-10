@@ -12,6 +12,7 @@ class Old_Reports extends REST_Controller
         parent::__construct();
         $this->load->database();
         $this->old = 'old_reports';
+        $this->pat = 'patients';
     }
 
     public function old_reports_get($pat_id = '')
@@ -37,6 +38,14 @@ class Old_Reports extends REST_Controller
         $pat_id = $this->security->xss_clean($this->input->post('pat_id'));
         $reports = '';
 
+        $patient_exist = $this->db->select('pat_id')->from($this->pat)->where('pat_id', $pat_id)->get()->row()->pat_id ?? '';
+        if (empty($patient_exist)) {
+            $this->response([
+                'status' => false,
+                'message' => "Patient doesn't Exist",
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }
+
         if (!empty($_FILES['reports'])) {
             $fileName = $_FILES['reports']['name'];
 
@@ -59,7 +68,6 @@ class Old_Reports extends REST_Controller
         } else {
             $message1 = '';
         }
-        // print_r($reports);die();
 
         $data = array(
             'pat_id' => $pat_id,
