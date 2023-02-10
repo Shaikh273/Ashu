@@ -1,34 +1,34 @@
 <?php
-if (!defined('BASEPATH')) exit('No Direct Scripts access are Allowed');
-require(APPPATH . '/libraries/REST_Controller.php');
+defined('BASEPATH') or exit('No direct script access allowed');
+require APPPATH . '/libraries/REST_Controller.php';
 
 use Restserver\Libraries\REST_Controller;
 
+
 class Test_case_master extends REST_Controller
 {
+
     public function __construct()
     {
         parent::__construct();
         $this->load->database();
-
-        $this->tests_master = 'tests_master';
         $this->tests = 'tests';
+        $this->tests_master = 'tests_master';
     }
 
     public function tests_get()
     {
-        $test = $this->db->select('id,test,status')->from($this->tests)->get()->result_array();
+        $data = $this->db->select('id,test,status')->from($this->tests)->get()->result_array();
 
-        $length = count($test);
+        $length = count($data);
 
         for ($i = 0; $i < $length; ++$i) {
-            $test[$i]['isSelected'] = boolval(false);
+            $data[$i]['isSelected'] = boolval(false);
         }
-
-        if (!empty($test)) {
+        if (!empty($data)) {
             $this->response([
                 'status' => true,
-                'data' => $test
+                'data' => $data
             ], REST_Controller::HTTP_OK);
         } else {
             $this->response([
@@ -46,7 +46,6 @@ class Test_case_master extends REST_Controller
         if (!empty($master_id)) {
 
             $master_id = $this->db->select('test_master_name')->from($this->tests_master)->where('test_master_name', $master_id)->get()->result();
-
             $length = count($master_id);
 
             for ($i = 0; $i < $length; ++$i) {
@@ -83,19 +82,25 @@ class Test_case_master extends REST_Controller
     public function test_master_post()
     {
         $test_id = $this->security->xss_clean($this->input->post('test_id'));
-
+        // $master_id =  $this->security->xss_clean($this->input->post('master_id'));
         $test_master_name =  $this->security->xss_clean($this->input->post('test_master_name'));
+
+        $test_exist = $this->db->select('id')->from($this->tests)->where(array('id' => $test_id))->get()->row()->id ?? '';
+        if (empty($test_exist)) {
+            $this->response([
+                'status' => false,
+                'message' => "Test doesn't Exist",
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }
 
         $data = array(
             'test_id' => $test_id,
             'master_id' => $master_id,
             'test_master_name' => $test_master_name,
-
             'created_at' => date('Y-m-d H:i:s'),
         );
 
         $insert = $this->db->insert($this->tests_master, $data);
-
         if ($insert) {
             $this->response([
                 "status" => true,
@@ -113,19 +118,28 @@ class Test_case_master extends REST_Controller
     {
         $id = $this->security->xss_clean($this->input->post('id'));
         $test_id = $this->security->xss_clean($this->input->post('test_id'));
+        // $master_id =  $this->security->xss_clean($this->input->post('master_id'));
         $test_master_name =  $this->security->xss_clean($this->input->post('test_master_name'));
 
         $data = array();
         if (!empty($test_id) && !empty($id)) {
+            $test_exist = $this->db->select('id')->from($this->tests)->where(array('id' => $test_id))->get()->row()->id ?? '';
+            if (empty($test_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Test doesn't Exist",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
             $data['test_id'] = $test_id;
         }
-
+        // if (!empty($master_id) && !empty($id)) {
+        //     $data['master_id'] = $master_id;
+        // }
         if (!empty($test_master_name) && !empty($id)) {
             $data['test_master_name'] = $test_master_name;
         }
 
         $update = $this->db->update($this->tests_master, $data, array('id' => $id));
-
         if ($update) {
             $this->response([
                 "status" => true,
@@ -142,6 +156,14 @@ class Test_case_master extends REST_Controller
     public function test_master_delete()
     {
         $id = $this->input->get('id');
+        $test_master_exist = $this->db->select('id')->from($this->tests_master)->where(array('id' => $id))->get()->row()->id ?? '';
+        if (empty($test_master_exist)) {
+            $this->response([
+                'status' => false,
+                'message' => "Test Master doesn't Exist",
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }
+
         $data = $this->db->delete($this->tests_master, array('id' => $id));
 
         if ($data) {

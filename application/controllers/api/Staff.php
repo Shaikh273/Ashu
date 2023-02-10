@@ -1,11 +1,14 @@
 <?php
+
 if (!defined('BASEPATH')) exit('No Direct Scripts access are Allowed');
-require(APPPATH . '/libraries/REST_Controller.php');
+
+require APPPATH . '/libraries/REST_Controller.php';
 
 use Restserver\Libraries\REST_Controller;
 
 class Staff extends REST_Controller
 {
+
     public function __construct()
     {
         parent::__construct();
@@ -38,7 +41,9 @@ class Staff extends REST_Controller
                         $org = $this->db->select('org_id')->from($this->org)->where("admin_id = '$staff_id'")->get()->result();
                         for ($j = 0; $j < count($org); ++$j) {
                             $org_id = $org[$j]->org_id;
+
                             $data['admin'][$i]->org[$j] = $this->db->select('*')->from($this->organization)->where("org_id = '$org_id'")->get()->row();
+
                             $data['admin'][$i]->org[$j]->staff = $this->db->select('*')->from($this->staff)->where("org_id = '$org_id'")->get()->result();
                         }
                     }
@@ -67,26 +72,11 @@ class Staff extends REST_Controller
                 'staff_proof_img' => 'https://www./Ashu/assets/uploads/staff/',
                 'data' => $data,
             ], REST_Controller::HTTP_OK);
-            // $data['organization'] = $this->db->select('*')->from($this->org)->;
         } else {
             $this->response([
                 'status' => false,
                 'message' => 'Role is not Assigned',
             ], REST_Controller::HTTP_BAD_REQUEST);
-            // $data = $this->db->select('*')->from($this->staff)->order_by("u_id ASC")->get()->result() ?? '';
-
-            // if (!empty($data)) {
-            //     $this->response([
-            //         'status' => true,
-            //         'img_url' => 'https://www./Ashu/assets/uploads/patients/',
-            //         'data' => $data,
-            //     ], REST_Controller::HTTP_OK);
-            // } else {
-            //     $this->response([
-            //         'status' => false,
-            //         'message' => "Data Not Found",
-            //     ], REST_Controller::HTTP_BAD_REQUEST);
-            // }
         }
     }
 
@@ -149,16 +139,44 @@ class Staff extends REST_Controller
         $about = $this->security->xss_clean($this->input->post('about'));
         $status = $this->security->xss_clean($this->input->post('status'));
 
+        //----------------------Verifying Exixtence of Admin and Organization-------------------//
+
+        if (!empty($admin)) {
+            $admin_exist = $this->db->select('u_id')->from($this->staff)->where('u_id', $admin)->get()->row()->admin ?? '';
+            if (empty($admin_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Admin doesn't Exist",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        }
+
+        if (!empty($org_id)) {
+            $org_exist = $this->db->select('org_id')->from($this->organization)->where('org_id', $org_id)->get()->row()->admin ?? '';
+            if (empty($org_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Organization doesn't Exist",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+        }
+
         //----------------------Getting Role-------------------//
+
+        $role_exist = $this->db->select('id')->from($this->role)->where('id', $role_id)->get()->row()->id ?? '';
+        if (empty($role_exist)) {
+            $this->response([
+                'status' => false,
+                'message' => "Role doesn't Exist",
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }
 
         $role = $this->db->select('role')->from($this->role)->where('id', $role_id)->get()->row()->role ?? '';
         if (!empty($role)) {
             $super_id = $this->db->select('u_id')->from($this->staff)->join($this->role, "$this->staff.role_id = $this->role.id")->where("$this->role.role = 'Super Admin'")->order_by("$this->staff.id", 'DESC')->get()->row()->u_id ?? '_0';
 
-
             $super_name = $this->db->select('name')->from($this->staff)->join($this->role, "$this->staff.role_id = $this->role.id")->where("$this->role.role = 'Super Admin'")->order_by("$this->staff.id", 'DESC')->get()->row()->name ?? '';
 
-            // print_r($super_name);die();
             $user_id = $this->db->select('u_id')->from($this->staff)->join($this->role, "$this->staff.role_id = $this->role.id")->where("$this->role.role = '$role' AND admin = '$admin'")->order_by("$this->staff.id", 'DESC')->get()->row()->u_id ?? '_0';
             $user_id = !empty($user_id) ? $user_id : '_0';
 
@@ -166,8 +184,6 @@ class Staff extends REST_Controller
 
             $admin_name = $this->db->select('name')->from($this->staff)->join($this->role, "$this->staff.role_id = $this->role.id")->where("$this->role.role = 'Admin' AND u_id = '$admin'")->order_by("$this->staff.id", 'DESC')->get()->row()->name ?? '';
 
-
-            // print($admin_name);die();
             if ($role == 'Super Admin') {
                 $u_id =  explode('_', $super_id)[1] + 1;
                 $u_id =  substr($name, 0, 3) . '-S_0' . $u_id;
@@ -176,8 +192,6 @@ class Staff extends REST_Controller
                 if (!empty($super_name) && !empty($admin)) {
                     $u_id =  explode('_', $user_id)[1] + 1;
                     $u_id =  substr($name, 0, 3) . '-' . substr($super_name, 0, 3) . "-A_0" . $u_id;
-                    // print_r($u_id);die();
-
                 } else {
                     $this->response([
                         'status' => false,
@@ -217,7 +231,7 @@ class Staff extends REST_Controller
                 } else {
                     $this->response([
                         'status' => false,
-                        'message' => "organization Organization not assigned",
+                        'message' => "Organization not assigned",
                     ], REST_Controller::HTTP_BAD_REQUEST);
                 }
             }
@@ -234,7 +248,6 @@ class Staff extends REST_Controller
                 $config['remove_spaces'] = FALSE;
 
                 $this->load->library('upload', $config);
-
                 $this->upload->initialize($config);
                 if (!$this->upload->do_upload('img')) {
                     $message2 = strip_tags($this->upload->display_errors());
@@ -258,7 +271,6 @@ class Staff extends REST_Controller
                 $config['remove_spaces'] = FALSE;
 
                 $this->load->library('upload', $config);
-
                 $this->upload->initialize($config);
                 if (!$this->upload->do_upload('id_img')) {
                     $message2 = strip_tags($this->upload->display_errors());
@@ -292,8 +304,6 @@ class Staff extends REST_Controller
                 'about' => $about ?? '',
                 'status' => $status ?? '',
             ];
-
-            // print_r($data);die();
 
             $result = $this->db->insert($this->staff, $data);
             if ($result) {
@@ -335,6 +345,7 @@ class Staff extends REST_Controller
         $join_date = $this->security->xss_clean($this->input->post('join_date'));
         $role_id = $this->security->xss_clean($this->input->post('role_id'));
         $org_id = $this->security->xss_clean($this->input->post('org_id'));
+        $about = $this->security->xss_clean($this->input->post('about'));
         $status = $this->security->xss_clean($this->input->post('status'));
 
         if (!empty($_FILES['img'])) {
@@ -392,6 +403,13 @@ class Staff extends REST_Controller
             $data['name'] = $name;
         }
         if (!empty($admin)) {
+            $admin_exist = $this->db->select('u_id')->from($this->staff)->where('u_id', $admin)->get()->row()->admin ?? '';
+            if (empty($admin_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Admin doesn't Exist",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
             $data['admin'] = $admin;
         }
         if (!empty($email)) {
@@ -433,7 +451,17 @@ class Staff extends REST_Controller
         if (!empty($join_date)) {
             $data['join_date'] = $join_date;
         }
+        if (!empty($about)) {
+            $data['about'] = $about;
+        }
         if (!empty($role_id)) {
+            $role_exist = $this->db->select('id')->from($this->role)->where('id', $role_id)->get()->row()->id ?? '';
+            if (empty($role_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Role doesn't Exist",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
             $data['role_id'] = $role_id;
         }
         if (!empty($status)) {

@@ -1,8 +1,9 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
-require(APPPATH . '/libraries/REST_Controller.php');
+defined('BASEPATH') or exit('No direct script access allowed');
+require APPPATH . '/libraries/REST_Controller.php';
 
 use Restserver\Libraries\REST_Controller;
+
 
 class Old_Reports extends REST_Controller
 {
@@ -12,11 +13,11 @@ class Old_Reports extends REST_Controller
         $this->load->database();
         $this->old = 'old_reports';
     }
-    
+
     public function old_reports_get($pat_id = '')
     {
         $pat_id = $this->security->xss_clean($pat_id);
-        $data = $this->db->select('*')->from($this->old)->where('pat_id',$pat_id)->order_by("id  ASC")->get()->result();
+        $data = $this->db->select('*')->from($this->old)->where('pat_id', $pat_id)->order_by("id  ASC")->get()->result();
 
         if (!empty($data)) {
             $this->response([
@@ -30,13 +31,13 @@ class Old_Reports extends REST_Controller
             ], REST_Controller::HTTP_NOT_FOUND);
         }
     }
-    
+
     public function old_reports_post()
     {
-        $pat_id = $this->security->xss_clean($this->input->post('test_id'));
+        $pat_id = $this->security->xss_clean($this->input->post('pat_id'));
         $reports = '';
-        
-        if(!empty($_FILES['reports'])) {
+
+        if (!empty($_FILES['reports'])) {
             $fileName = $_FILES['reports']['name'];
 
             $config['file_name'] = $fileName;
@@ -51,12 +52,11 @@ class Old_Reports extends REST_Controller
             $this->upload->initialize($config);
             if (!$this->upload->do_upload('reports')) {
                 $message1 = strip_tags($this->upload->display_errors());
-            }
-            else {
+            } else {
                 $path = $this->upload->data();
                 $reports = $path['file_name'];
             }
-        }else{
+        } else {
             $message1 = '';
         }
         // print_r($reports);die();
