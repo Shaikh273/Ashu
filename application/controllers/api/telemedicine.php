@@ -58,8 +58,8 @@ class telemedicine extends REST_Controller
 
             for ($i = 0; $i < $length; ++$i) {
                 $pat_id = $case_id[$i]->pat_id;
-                // print_r($pat_id);die();
                 $c_id = $case_id[$i]->C_id;
+                
                 $data['visit_history'][$i]->organization = $this->db->select("organization.*")->from('organization')->where('org_id', $org_id)->get()->row() ?? [];
                 $data['visit_history'][$i]->patient_data = $this->db->select("patients.*")->from('patients')->where('pat_id', $pat_id)->get()->row();
                 $data['visit_history'][$i]->visit =
@@ -70,9 +70,7 @@ class telemedicine extends REST_Controller
                     history_visit.created_by,
                     history_visit.created_at,
                     history_visit.updated_at,
-                ")
-                    // ->from('history_visit')->join('organization', 'history_visit.org_id = organization.org_id')->join('patients', 'history_visit.pat_id = patients.pat_id')->where("history_visit.org_id = '$org_id'  XOR history_visit.C_id = '$org_id' XOR history_visit.pat_id = '$org_id'")->get()->result();
-                    ->from('history_visit')->where("history_visit.org_id = '$c_id'  XOR history_visit.C_id = '$c_id' XOR history_visit.pat_id = '$c_id'")->get()->result();
+                ")->from('history_visit')->where("history_visit.org_id = '$c_id'  XOR history_visit.C_id = '$c_id' XOR history_visit.pat_id = '$c_id'")->get()->result();
 
                 $data['visit_history'][$i]->chief_complaints = $this->db->select("*")->from('history_chief_complaints')->where("C_id = '$c_id'")->get()->result();
                 $data['visit_history'][$i]->systemic_history = $this->db->select("*")->from('history_systemic_history')->where("C_id = '$c_id'")->get()->result();
@@ -82,8 +80,6 @@ class telemedicine extends REST_Controller
                 $data['visit_history'][$i]->anthropometry = $this->db->select("*")->from('history_anthropometry')->where("C_id = '$c_id'")->get()->result();
                 $data['visit_history'][$i]->test_cases = $this->db->select("test_cases.id,test_cases.problem,test_cases.description,test_cases.reading,test_cases.doctor_id,test_cases.status")->from('test_cases')->join('tests', 'test_cases.test_id = tests.id')->where("C_id = '$c_id'")->get()->result();
             }
-            // print_r($data);die();
-
 
             if (!empty($data)) {
                 $this->response([
@@ -102,51 +98,6 @@ class telemedicine extends REST_Controller
                 'message' => 'Telemedicine Not Found',
             ], REST_Controller::HTTP_BAD_REQUEST);
         }
-        //     $role = $this->db->select('role')->from($this->role)->where("$this->role.id = '$tele_id'")->get()->row()->role ?? '';
-        //     $data = [];
-        //     if (!empty($role)) {
-        //         if ($role == 'Super Admin') {
-        //             $data['user_data'] = $this->db->select("*,$this->role.role")->from($this->tele)->join($this->role, "$this->tele.tele_id = $this->role.id")->where("u_id = '$u_id'")->get()->row();
-        //             $staff = $this->db->select('DISTINCT(u_id)')->from($this->tele)->join($this->role, "$this->tele.tele_id = $this->role.id")->where("admin = '$u_id' AND $this->role.role = 'Admin'")->get()->result();
-        //             if (count($staff) > 0) {
-        //                 for ($i = 0; $i < count($staff); ++$i) {
-        //                     $staff_id = $staff[$i]->u_id;
-        //                     $data['admin'][$i] = $this->db->select('*')->from($this->tele)->where("admin = '$u_id' AND u_id = '$staff_id'")->get()->row();
-        //                     // print_r($data['staff']);
-        //                     $org = $this->db->select('org_id')->from($this->org)->where("admin_id = '$staff_id'")->get()->result();
-        //                     for ($j = 0; $j < count($org); ++$j) {
-        //                         $org_id = $org[$j]->org_id;
-        //                         $data['admin'][$i]->org[$j] = $this->db->select('*')->from($this->organization)->where("org_id = '$org_id'")->get()->row();
-        //                         $data['admin'][$i]->org[$j]->staff = $this->db->select('*')->from($this->tele)->where("org_id = '$org_id'")->get()->result();
-        //                     }
-        //                 }
-        //             }
-        //         } else if ($role == 'Admin') {
-        //             $data['user_data'] = $this->db->select("*,$this->role.role")->from($this->tele)->join($this->role, "$this->tele.tele_id = $this->role.id")->where("u_id = '$u_id'")->get()->row();
-        //             $org = $this->db->select('org_id')->from($this->org)->where("admin_id = '$u_id'")->get()->result();
-        //             for ($j = 0; $j < count($org); ++$j) {
-        //                 $org_id = $org[$j]->org_id;
-        //                 $data['org'][$j] = $this->db->select('*')->from($this->organization)->where("org_id = '$org_id'")->get()->row();
-        //                 $data['org'][$j]->staff = $this->db->select('*')->from($this->tele)->where("org_id = '$org_id'")->get()->result();
-        //             }
-        //         } else {
-        //             $org_id = $this->db->select('org_id')->from($this->tele)->where("u_id = '$u_id'")->get()->row()->org_id ?? '';
-
-        //             $data['user_data'] = $this->db->select("*,$this->role.role")->from($this->tele)->join($this->role, "$this->tele.tele_id = $this->role.id")->where("u_id = '$u_id'")->get()->row();
-
-        //             $data['org'] = $this->db->select('*')->from($this->organization)->where("org_id = '$org_id'")->get()->row();
-        //         }
-        //         $this->response([
-        //             'status' => true,
-        //             'data' => $data,
-        //         ], REST_Controller::HTTP_OK);
-        //         // $data['organization'] = $this->db->select('*')->from($this->org)->;
-        //     } else {
-        //         $this->response([
-        //             'status' => false,
-        //             'message' => 'Role is not Assigned',
-        //         ], REST_Controller::HTTP_BAD_REQUEST);
-        //     }
     }
 
     public function telemedicine_post()
