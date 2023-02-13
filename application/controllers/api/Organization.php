@@ -77,7 +77,6 @@ class Organization extends REST_Controller
         $org_logo = $this->security->xss_clean($this->input->post("img"));
         $org_id =  explode('_', $org)[1] + 1;
         $org_id = substr($org_name, 0, 3) . '_0' . $org_id;
-        // print_r($org_id);die();
 
         if (!empty($_FILES['img'])) {
             $fileName = $_FILES['img']['name'];
@@ -102,31 +101,6 @@ class Organization extends REST_Controller
         } else {
             $message = '';
         }
-
-        // $this->form_validation->set_rules(
-        //     "mobileNo",
-        //     "Mobile No",
-        //     "required|numeric|is_unique[organizations.mobile_no]|min_length[10]|max_length[15]",
-        //     array(
-        //         'max_length' => 'Mobile no. should be maximum 15 digits',
-        //         'min_length' => 'Mobile no. should be minimum 10 digits',
-        //         'is_unique' => 'Mobile no. already used',
-        //         'required' => 'This Field must be filled',
-        //         'numeric' => 'Please Enter only Numbers'
-        //     )
-        // );
-
-        // if ($this->form_validation->run() == false) {
-
-        //     // very important query "LIFES SAVER"
-        //     $error = strip_tags(validation_errors());
-
-        // $this->response([
-        //     "status" => False,
-        //     "message" => "Invalid Details",
-        //     "error" => $error
-        // ], REST_Controller::HTTP_BAD_REQUEST);
-        // } else {
 
         $data = array(
             "org_id" => $org_id,
@@ -209,8 +183,7 @@ class Organization extends REST_Controller
 
         $org_logo = $this->security->xss_clean($this->input->post("img"));
 
-
-
+        
         if (!empty($_FILES['img'])) {
             $fileName = $_FILES['img']['name'];
 
@@ -236,32 +209,21 @@ class Organization extends REST_Controller
             $message = '';
         }
 
-        // $this->form_validation->set_rules(
-        //     "mobileNo",
-        //     "Mobile No",
-        //     "required|numeric|is_unique[organizations.mobile_no]|min_length[10]|max_length[15]",
-        //     array(
-        //         'max_length' => 'Mobile no. should be maximum 15 digits',
-        //         'min_length' => 'Mobile no. should be minimum 10 digits',
-        //         'is_unique' => 'Mobile no. already used',
-        //         'required' => 'This Field must be filled',
-        //         'numeric' => 'Please Enter only Numbers'
-        //     )
-        // );
+        $organization_exist = $this->db->select('id')->from($this->organization)->where('id', $id)->get()->row()->id ?? '';
+        if (empty($organization_exist)) {
+            $this->response([
+                'status' => false,
+                'message' => "organization doesn't Exist",
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }
 
-
-
-        // if ($this->form_validation->run() == false) {
-
-        //     // very important query "LIFES SAVER"
-        //     $error = strip_tags(validation_errors());
-
-        //     $this->response([
-        //         "status" => False,
-        //         "message" => "Invalid Details",
-        //         "error" => $error
-        //     ], REST_Controller::HTTP_BAD_REQUEST);
-        // } else {
+        $org_exist = $this->db->select('org_id')->from($this->organization)->where('org_id', $org_id)->get()->row()->org_id ?? '';
+        if (empty($org_exist)) {
+            $this->response([
+                'status' => false,
+                'message' => "org id doesn't Exist",
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }
 
         $data = array();
         if (!empty($org_name)) {
@@ -299,8 +261,6 @@ class Organization extends REST_Controller
         } else {
             $data = $this->Organization_model->updatedata($org_id, $data);
             $given_data = $this->Organization_model->getdata($org_id);
-
-            // print_r($given_data);die();
 
             if ($data) {
                 $this->response([
@@ -366,13 +326,18 @@ class Organization extends REST_Controller
                 'message' => 'Unsuccessful.'
             ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
         }
-        // }
     }
 
     public function organization_delete()
     {
         $id = $this->delete('id');
-
+        $organization_exist = $this->db->select('id')->from($this->organization)->where('id', $id)->get()->row()->id ?? '';
+        if (empty($organization_exist)) {
+            $this->response([
+                'status' => false,
+                'message' => "organization doesn't Exist",
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }
         $data = $this->Organization_model->deletedata($id);
 
         if ($data == null) {

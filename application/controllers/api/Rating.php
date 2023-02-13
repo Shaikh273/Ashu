@@ -35,6 +35,27 @@ class Rating extends REST_Controller
             ], REST_Controller::HTTP_BAD_REQUEST);
         } else {
             $id = $this->db->select('id')->from('ratings')->where("doc_id = '$doc_id' AND pat_id = '$pat_id'")->get()->row()->id ?? 0;
+
+            if (!empty($pat_id)) {
+                $patient_exist = $this->db->select('pat_id')->from($this->pat)->where('pat_id', $pat_id)->get()->row()->pat_id ?? '';
+                if (empty($patient_exist)) {
+                    $this->response([
+                        'status' => false,
+                        'message' => "Patient doesn't Exist",
+                    ], REST_Controller::HTTP_BAD_REQUEST);
+                }
+            }
+
+            if (!empty($doc_id)) {
+                $doctor_exist = $this->db->select('u_id')->from($this->staff)->join($this->role, "$this->staff.role_id = $this->role.id")->where(array('u_id' => $doc_id, "$this->role.role" => 'Doctor'))->get()->row()->u_id ?? '';
+                if (empty($doctor_exist)) {
+                    $this->response([
+                        'status' => false,
+                        'message' => "Doctor doesn't Exist",
+                    ], REST_Controller::HTTP_BAD_REQUEST);
+                }
+            }
+
             if (!empty($id)) {
                 $data = array();
                 if (!empty($doc_id)) {
@@ -63,7 +84,7 @@ class Rating extends REST_Controller
                     $ratings = $this->db->select('SUM(ratings.rating) AS rating')->from('ratings')->join('staff', 'ratings.doc_id = staff.u_id')->join('role', 'staff.role_id = role.id')->where("doc_id = '$doc_id' AND role.role = 'Doctor'")->get()->row()->rating ?? 0;
                     $total_ratings = $this->db->select('id')->from('ratings')->where("doc_id = '$doc_id'")->get()->num_rows();
                     $final = number_format($ratings / ($total_ratings ?: 1), 1);
-                    // print_r($final);die();
+                    
                     $update_ratings = $this->db->update('staff', array('rating' => $final), array('u_id' => $doc_id));
                 }
 

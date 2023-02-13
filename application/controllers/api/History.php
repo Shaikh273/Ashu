@@ -17,48 +17,63 @@ class History extends REST_Controller
         $this->org = 'organization';
         $this->test_cases = 'test_cases';
         $this->staff = 'staff';
+        $this->pat = 'patients';
     }
 
-    public function history_post()
+    public function cases_get()
     {
-        // $key = $this->input->post('key');
-        // $result  = $this->Leave_model->getuserkey($key);
-        // if ($result) {
-        // if ($result->role == 'ROLL_NAME') {
-
-        // PATIENT DATA
-        $staff = $this->security->xss_clean($this->input->post('created_by'));
-
-        $created_by = $this->db->select('u_id')->from($this->staff)->where('u_id', $staff)->get()->row()->u_id ?? '';
-
-        if (empty($created_by)) {
+        $pat_id = $this->input->get('pat_id');
+        $data = array();
+        if (!empty($pat_id)) {
+            $cases = $this->db->select("DISTINCT(C_id)")->from($this->history)->where("$this->history.pat_id = '$pat_id'")->get()->result_array();
+            // print_r($cases);die();
+            $length = count($cases);
+            for ($j = 0; $j < $length; ++$j) {
+                $c_id = $cases[$j]['C_id'];
+                $data[$j]['cases'] = $this->db->select("
+                    $this->history.id AS ID,
+                    $this->history.c_id,
+                    $this->history.problem,
+                    $this->history.description,
+                    $this->history.created_by,
+                    $this->history.created_at,
+                    $this->history.updated_at,
+                ")->from($this->history)->where("$this->history.C_id = '$c_id'")->get()->row();
+                $data[$j]['test_cases'] = $this->db->select("test_cases.id,test_cases.test_id,test_cases.title,test_cases.reading,test_cases.staff_id,test_cases.status")->from($this->test_cases)->join('tests', 'test_cases.test_id = tests.id')->where("C_id = '$c_id'")->get()->result_array();
+            }
+        }
+        if (!empty($data)) {
+            $this->response([
+                'status' => true,
+                'data' => $data
+            ], REST_Controller::HTTP_OK);
+        } else {
             $this->response([
                 'status' => false,
-                'message' => "Clinic Operator doesn't Exist, Please Contact Admin",
-            ], REST_Controller::HTTP_BAD_REQUEST);
+                'data' => 'Data Not Found.'
+            ], REST_Controller::HTTP_NOT_FOUND);
         }
+    }
 
-        $c_id = $this->db->select('C_id')->from($this->history)->order_by('id', 'DESC')->get()->row()->C_id ?? 'c_c_0';
-
-        if (date('m') <= 3) {
-            $year = date('Y') - 1;
-            $next_year = date('Y');
-        } else {
-            $year = date('Y');
-            $next_year = date('Y') + 1;
-        }
-
-        $c_id =  explode('_', $c_id)[2] + 1;
-        $C_id = "Case_{$year}-{$next_year}_0" . $c_id;
-
+    public function cases_post()
+    {
+        // PATIENT DATA
         $pat_id = $this->security->xss_clean($this->input->post('pat_id'));
+        $staff = $this->security->xss_clean($this->input->post('created_by'));
 
         // VISIT HISTORY
         $problem = $this->input->post('problem');
         $description = $this->input->post('description');
 
-        $org_id = $this->db->select('org_id')->from('patients')->where("pat_id", $pat_id)->get()->row()->org_id ?? '';
 
+        $this->form_validation->set_rules(
+            "created_by",
+            "Staff ID",
+            "required",
+            array(
+                'required' => 'Please provide Staff ID',
+            )
+        );
         $this->form_validation->set_rules(
             "pat_id",
             "Patient ID",
@@ -77,15 +92,6 @@ class History extends REST_Controller
             )
         );
 
-        $this->form_validation->set_rules(
-            "created_by",
-            "Staff ID",
-            "required",
-            array(
-                'required' => 'Please provide Staff ID',
-            )
-        );
-
         if ($this->form_validation->run() == false) {
             $error = strip_tags(validation_errors());
 
@@ -94,6 +100,48 @@ class History extends REST_Controller
                 "message" => $error,
             ], REST_Controller::HTTP_BAD_REQUEST);
         } else {
+
+            $created_by = $this->db->select('u_id')->from($this->staff)->where('u_id', $staff)->get()->row()->u_id ?? '';
+
+            if (empty($created_by)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Clinic Operator doesn't Exist, Please Contact Admin",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+
+            $c_id = $this->db->select('C_id')->from($this->history)->order_by('id', 'DESC')->get()->row()->C_id ?? 'c_c_0';
+
+            if (date('m') <= 3) {
+                $year = date('Y') - 1;
+                $next_year = date('Y');
+            } else {
+                $year = date('Y');
+                $next_year = date('Y') + 1;
+            }
+
+            $c_id =  explode('_', $c_id)[2] + 1;
+            $C_id = "Case_{$year}-{$next_year}_0" . $c_id;
+
+
+
+            $patient_exist = $this->db->select('pat_id')->from($this->pat)->where('pat_id', $pat_id)->get()->row()->pat_id ?? '';
+            if (empty($patient_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Patient doesn't exist, Please Add them First",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+
+            $org_id = $this->db->select('org_id')->from('patients')->where("pat_id", $pat_id)->get()->row()->org_id ?? '';
+
+            $org_exist = $this->db->select('org_id')->from($this->org)->where('org_id', $org_id)->get()->row()->org_id ?? '';
+            if (empty($org_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Organization doesn't exist, Please Check it First",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
 
             // VISIT HISTORY
             $data1 = array(
@@ -107,182 +155,7 @@ class History extends REST_Controller
                 'created_at' => date('Y-m-d H:i:s'),
             );
 
-            // CHIEF COMPLAINTS
-            $chief_complaint_type = $this->input->post('chief_complaint_type');
-            $name1 = $this->input->post('chief_complaint_name');
-            // $side = $this->input->post('side');
-            $duration = $this->input->post('duration');
-            $duration_unit = $this->input->post('duration_unit');
-            $comments2 = $this->input->post('chief_comments');
-            $options = $this->input->post('options');
-            $comments3 = $this->input->post('chief_complaints_comments');
-
-            // CHIEF COMPLAINTS
-            $data2 = array(
-                // 'id' => $id,
-                'C_id' => $C_id,
-                'chief_complaint_type' => $chief_complaint_type ?? '',
-                'name' => $name1 ?? '',
-                'duration' => $duration ?? '',
-                'duration_unit' => $duration_unit ?? '',
-                'comments1' => $comments2 ?? '',
-                'options' => $options ?? '',
-                'comments2' => $comment3 ?? '',
-
-                'created_at' => date('Y-m-d H:i:s'),
-            );
-
-
-            // SYSTEMIC HISTORY
-            $systemic_history_type = $this->input->post('systemic_history_type');
-            $name2 = $this->input->post('systemic_history_name');
-            $duration1 = $this->input->post('duration1');
-            $duration_unit1 = $this->input->post('duration_unit1');
-            $comments4 = $this->input->post('systemic_comments');
-            $comments5 = $this->input->post('systemic_history_comments');
-            $family_history = $this->input->post('family_history');
-            $medical_history = $this->input->post('medical_history');
-            $special_status = $this->input->post('special_status');
-
-            // SYSTEMIC HISTORY
-            $data3 = array(
-                // 'id' => $id,
-                'C_id' => $C_id,
-                'systemic_history_type' => $systemic_history_type ?? '',
-                'name' => $name2 ?? '',
-                'duration' => $duration1 ?? '',
-                'duration_unit' => $duration_unit1 ?? '',
-                'comments1' => $comments4 ?? '',
-                'comments2' => $comments5 ?? '',
-                'family_history' => $family_history ?? '',
-                'medical_history' => $medical_history ?? '',
-                'special_status' => $special_status ?? '',
-
-                'created_at' => date('Y-m-d H:i:s'),
-            );
-
-
-            //DRUG ALLERGIES
-            $drug_allergies_type = $this->input->post('drug_allergies_type');
-            $name3 = $this->input->post('drug_allergies_name');
-            $duration2 = $this->input->post('duration2');
-            $duration_unit2 = $this->input->post('duration_unit2');
-            $comments6 = $this->input->post('drug_comments');
-            $comments7 = $this->input->post('drug_allergies_comments');
-
-            // DRUG ALLERGIES
-            $data4 = array(
-                // 'id' => $id,
-                'C_id' => $C_id,
-                'drug_allergies_type' => $drug_allergies_type ?? '',
-                'name' => $name3 ?? '',
-                'duration' => $duration2 ?? '',
-                'duration_unit' => $duration_unit2 ?? '',
-                'comments1' => $comments6 ?? '',
-                'comments2' => $comments7 ?? '',
-
-                'created_at' => date('Y-m-d H:i:s'),
-            );
-
-
-            // CONATCT ALLERGIES
-            $contact_allergies_type = $this->input->post('contact_allergies_type');
-            $name4 = $this->input->post('contact_allergies_name');
-            $duration3 = $this->input->post('duration3');
-            $duration_unit3 = $this->input->post('duration_unit3');
-            $comments8 = $this->input->post('contact_comments');
-            $comments9 = $this->input->post('contact_allergies_comments');
-
-            // CONTACT ALLERGIES
-            $data5 = array(
-                // 'id' => $id,
-                'C_id' => $C_id,
-                'contact_allergies_type' => $contact_allergies_type ?? '',
-                'name' => $name4 ?? '',
-                'duration' => $duration3 ?? '',
-                'duration_unit' => $duration_unit3 ?? '',
-                'comments1' => $comments8 ?? '',
-                'comments2' => $comments9 ?? '',
-
-                'created_at' => date('Y-m-d H:i:s'),
-            );
-
-
-            // // FOOD ALLERGIES
-            $food_allergies_type = $this->input->post('food_allergies_type');
-            $name5 = $this->input->post('food_allergies_name');
-            $duration4 = $this->input->post('duration4');
-            $duration_unit4 = $this->input->post('duration_unit4');
-            $comments10 = $this->input->post('food_comments');
-            $comments11 = $this->input->post('food_allergies_comments');
-            $other = $this->input->post('other');
-
-            // FOOD ALLERGIES
-            $data6 = array(
-                // 'id' => $id,
-                'C_id' => $C_id,
-                'food_allergies_type' => $food_allergies_type ?? '',
-                'name' => $name5 ?? '',
-                'duration' => $duration4 ?? '',
-                'duration_unit' => $duration_unit4 ?? '',
-                'comments1' => $comments10 ?? '',
-                'comments2' => $comments11 ?? '',
-                'other' => $other ?? '',
-
-                'created_at' => date('Y-m-d H:i:s'),
-            );
-
-
-            // VITAL SIGNS
-            $temperature = $this->input->post('temperature');
-            $pulse = $this->input->post('pulse');
-            $blood_pressure = $this->input->post('blood_pressure');
-            $rr = $this->input->post('rr');
-            $spo2 = $this->input->post('spo2');
-
-            // VITAL SIGNS
-            $data7 = array(
-                // 'id' => $id,
-                'C_id' => $C_id,
-                'temperature' => $temperature ?? '',
-                'pulse' => $pulse ?? '',
-                'blood_pressure' => $blood_pressure ?? '',
-                'rr' => $rr ?? '',
-                'spo2' => $spo2 ?? '',
-                'created_at' => date('Y-m-d H:i:s'),
-            );
-
-
-            // ANTHROPOMETRY HISTORY
-            $height = $this->input->post('height');
-            $weight = $this->input->post('weight');
-            $bmi = $this->input->post('bmi');
-            $comments12 = $this->input->post('anthropometry_comments');
-
-            // ANTHROPOMETRY HISTORY
-            $data8 = array(
-                // 'id' => $id,
-                'C_id' => $C_id,
-                'height' => $height ?? '',
-                'weight' => $weight ?? '',
-                'bmi' => $bmi ?? '',
-                'comments' => $comments12 ?? '',
-                'created_at' => date('Y-m-d H:i:s'),
-            );
-
-            if ($data1 == '') {
-            } else {
-                $data = $this->History_model->insertdata(
-                    $data1,
-                    $data2,
-                    $data3,
-                    $data4,
-                    $data5,
-                    $data6,
-                    $data7,
-                    $data8
-                );
-            }
+            $data = $this->db->insert('history_visit', $data1);
 
             if ($data == true) {
                 $this->response([
@@ -298,55 +171,636 @@ class History extends REST_Controller
         }
     }
 
+    public function opthalmichistory_post()
+    {
+        $pat_id = $this->security->xss_clean($this->input->post('pat_id'));
+
+        $this->form_validation->set_rules(
+            "pat_id",
+            "Patient ID",
+            "required",
+            array(
+                'required' => 'Require Patient ID',
+            )
+        );
+
+        if ($this->form_validation->run() == false) {
+            $error = strip_tags(validation_errors());
+
+            $this->response([
+                "status" => False,
+                "message" => $error,
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        } else {
+
+            $patient_exist = $this->db->select('pat_id')->from($this->pat)->where('pat_id', $pat_id)->get()->row()->pat_id ?? '';
+
+            if (empty($patient_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Patient doesn't exist, Please Add them First",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+
+            $org_id = $this->db->select('org_id')->from('patients')->where("pat_id", $pat_id)->get()->row()->org_id ?? '';
+            $org_exist = $this->db->select('org_id')->from($this->org)->where('org_id', $org_id)->get()->row()->org_id ?? '';
+
+            if (empty($org_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Organization doesn't exist, Please Check it First",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+
+
+            $patient_exist = $this->db->select('pat_id')->from($this->pat)->where('pat_id', $pat_id)->get()->row()->pat_id ?? '';
+
+            if (empty($patient_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Patient doesn't exist, Please Add them First",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+
+            // OPTHALMIC HISTORY
+            $name = $this->input->post('opthalmic_history_name');
+            $duration = $this->input->post('duration');
+            $duration_unit = $this->input->post('duration_unit');
+            $opthalmic_comments = $this->input->post('opthalmic_comments');
+            $opthalmic_history_comments = $this->input->post('opthalmic_history_comments');
+
+            // OPTHALMIC HISTORY
+            $data = array(
+                // 'id' => $id,
+                'pat_id' => $pat_id,
+                'name' => $name ?? '',
+                'duration' => $duration ?? '',
+                'duration_unit' => $duration_unit ?? '',
+                'opthalmic_comments' => $opthalmic_comments ?? '',
+                'opthalmic_history_comments' => $opthalmic_history_comments ?? '',
+
+                'created_at' => date('Y-m-d H:i:s'),
+            );
+
+            if (!empty($data)) {
+                $data = $this->db->insert('history_opthalmic_history', $data);
+            }
+
+            if ($data == true) {
+                $this->response([
+                    'status' => true,
+                    'message' => 'Opthalmic History Added Successfully.',
+                ], REST_Controller::HTTP_OK);
+            } else {
+                $this->response([
+                    'status' => false,
+                    'message' => 'Unsuccessful.'
+                ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+            }
+        }
+    }
+
+    public function systemichistory_post()
+    {
+        $pat_id = $this->security->xss_clean($this->input->post('pat_id'));
+
+        $this->form_validation->set_rules(
+            "pat_id",
+            "Patient ID",
+            "required",
+            array(
+                'required' => 'Require Patient ID',
+            )
+        );
+
+        if ($this->form_validation->run() == false) {
+            $error = strip_tags(validation_errors());
+
+            $this->response([
+                "status" => False,
+                "message" => $error,
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        } else {
+
+            $patient_exist = $this->db->select('pat_id')->from($this->pat)->where('pat_id', $pat_id)->get()->row()->pat_id ?? '';
+
+            if (empty($patient_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Patient doesn't exist, Please Add them First",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+
+            $org_id = $this->db->select('org_id')->from('patients')->where("pat_id", $pat_id)->get()->row()->org_id ?? '';
+            $org_exist = $this->db->select('org_id')->from($this->org)->where('org_id', $org_id)->get()->row()->org_id ?? '';
+
+            if (empty($org_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Organization doesn't exist, Please Check it First",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+
+
+            $patient_exist = $this->db->select('pat_id')->from($this->pat)->where('pat_id', $pat_id)->get()->row()->pat_id ?? '';
+
+            if (empty($patient_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Patient doesn't exist, Please Add them First",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+
+            // SYSTEMIC HISTORY
+            $name = $this->input->post('systemic_history_name');
+            $duration = $this->input->post('duration');
+            $duration_unit = $this->input->post('duration_unit');
+            $systemic_comments = $this->input->post('systemic_comments');
+            $systemic_history_comments = $this->input->post('systemic_history_comments');
+
+            // SYSTEMIC HISTORY
+            $data = array(
+                // 'id' => $id,
+                'pat_id' => $pat_id,
+                'name' => $name ?? '',
+                'duration' => $duration ?? '',
+                'duration_unit' => $duration_unit ?? '',
+                'systemic_comments' => $systemic_comments ?? '',
+                'systemic_history_comments' => $systemic_history_comments ?? '',
+
+                'created_at' => date('Y-m-d H:i:s'),
+            );
+
+            if (!empty($data)) {
+                $data = $this->db->insert('history_systemic_history', $data);
+            }
+
+            if ($data == true) {
+                $this->response([
+                    'status' => true,
+                    'message' => 'Systemic History Added Successfully.',
+                ], REST_Controller::HTTP_OK);
+            } else {
+                $this->response([
+                    'status' => false,
+                    'message' => 'Unsuccessful.'
+                ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+            }
+        }
+    }
+
+    public function medicalhistory_post()
+    {
+        $pat_id = $this->security->xss_clean($this->input->post('pat_id'));
+
+        $this->form_validation->set_rules(
+            "pat_id",
+            "Patient ID",
+            "required",
+            array(
+                'required' => 'Require Patient ID',
+            )
+        );
+
+        if ($this->form_validation->run() == false) {
+            $error = strip_tags(validation_errors());
+
+            $this->response([
+                "status" => False,
+                "message" => $error,
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        } else {
+
+            $patient_exist = $this->db->select('pat_id')->from($this->pat)->where('pat_id', $pat_id)->get()->row()->pat_id ?? '';
+
+            if (empty($patient_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Patient doesn't exist, Please Add them First",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+
+            $org_id = $this->db->select('org_id')->from('patients')->where("pat_id", $pat_id)->get()->row()->org_id ?? '';
+            $org_exist = $this->db->select('org_id')->from($this->org)->where('org_id', $org_id)->get()->row()->org_id ?? '';
+
+            if (empty($org_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Organization doesn't exist, Please Check it First",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+
+
+            $patient_exist = $this->db->select('pat_id')->from($this->pat)->where('pat_id', $pat_id)->get()->row()->pat_id ?? '';
+
+            if (empty($patient_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Patient doesn't exist, Please Add them First",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+
+            // Medical HISTORY
+            $family_history = $this->input->post('family_history');
+            $medical_history = $this->input->post('medical_history');
+
+            // Medical HISTORY
+            $data = array(
+                // 'id' => $id,
+                'pat_id' => $pat_id,
+                'family_history' => $family_history ?? '',
+                'medical_history' => $medical_history ?? '',
+
+                'created_at' => date('Y-m-d H:i:s'),
+            );
+
+            if (!empty($data)) {
+                $data = $this->db->insert('history_medical_history', $data);
+            }
+
+            if ($data == true) {
+                $this->response([
+                    'status' => true,
+                    'message' => 'Medical History Added Successfully.',
+                ], REST_Controller::HTTP_OK);
+            } else {
+                $this->response([
+                    'status' => false,
+                    'message' => 'Unsuccessful.'
+                ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+            }
+        }
+    }
+
+    public function  paediatrichistory_post()
+    {
+        $pat_id = $this->security->xss_clean($this->input->post('pat_id'));
+
+        $this->form_validation->set_rules(
+            "pat_id",
+            "Patient ID",
+            "required",
+            array(
+                'required' => 'Require Patient ID',
+            )
+        );
+
+        if ($this->form_validation->run() == false) {
+            $error = strip_tags(validation_errors());
+
+            $this->response([
+                "status" => False,
+                "message" => $error,
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        } else {
+
+            $patient_exist = $this->db->select('pat_id')->from($this->pat)->where('pat_id', $pat_id)->get()->row()->pat_id ?? '';
+
+            if (empty($patient_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Patient doesn't exist, Please Add them First",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+
+            $org_id = $this->db->select('org_id')->from('patients')->where("pat_id", $pat_id)->get()->row()->org_id ?? '';
+            $org_exist = $this->db->select('org_id')->from($this->org)->where('org_id', $org_id)->get()->row()->org_id ?? '';
+
+            if (empty($org_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Organization doesn't exist, Please Check it First",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+
+            $patient_exist = $this->db->select('pat_id')->from($this->pat)->where('pat_id', $pat_id)->get()->row()->pat_id ?? '';
+
+            if (empty($patient_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Patient doesn't exist, Please Add them First",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+
+            // Paediatric HISTORY
+            $nutrition_assess = $this->input->post('nutrition_assess');
+            $nutrition_comments = $this->input->post('nutrition_comments');
+            $immunization_asses = $this->input->post('immunization_asses');
+            $immunization_comments = $this->input->post('immunization_comments');
+
+            // Paediatric HISTORY
+            $data = array(
+                // 'id' => $id,
+                'pat_id' => $pat_id,
+                'nutrition_assess' => $nutrition_assess ?? '',
+                'nutrition_comments' => $nutrition_comments ?? '',
+                'immunization_asses' => $immunization_asses ?? '',
+                'immunization_comments' => $immunization_comments ?? '',
+
+                'created_at' => date('Y-m-d H:i:s'),
+            );
+
+            if (!empty($data)) {
+                $data = $this->db->insert('history_paediatric_history', $data);
+            }
+
+            if ($data == true) {
+                $this->response([
+                    'status' => true,
+                    'message' => 'Paediatric History Added Successfully.',
+                ], REST_Controller::HTTP_OK);
+            } else {
+                $this->response([
+                    'status' => false,
+                    'message' => 'Unsuccessful.'
+                ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+            }
+        }
+    }
+
+    public function drugallergies_post()
+    {
+        $pat_id = $this->security->xss_clean($this->input->post('pat_id'));
+
+        $this->form_validation->set_rules(
+            "pat_id",
+            "Patient ID",
+            "required",
+            array(
+                'required' => 'Require Patient ID',
+            )
+        );
+
+        if ($this->form_validation->run() == false) {
+            $error = strip_tags(validation_errors());
+
+            $this->response([
+                "status" => False,
+                "message" => $error,
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        } else {
+
+            $patient_exist = $this->db->select('pat_id')->from($this->pat)->where('pat_id', $pat_id)->get()->row()->pat_id ?? '';
+
+            if (empty($patient_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Patient doesn't exist, Please Add them First",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+
+            $org_id = $this->db->select('org_id')->from('patients')->where("pat_id", $pat_id)->get()->row()->org_id ?? '';
+            $org_exist = $this->db->select('org_id')->from($this->org)->where('org_id', $org_id)->get()->row()->org_id ?? '';
+
+            if (empty($org_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Organization doesn't exist, Please Check it First",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+
+
+            $patient_exist = $this->db->select('pat_id')->from($this->pat)->where('pat_id', $pat_id)->get()->row()->pat_id ?? '';
+
+            if (empty($patient_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Patient doesn't exist, Please Add them First",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+
+            //DRUG ALLERGIES
+            $name3 = $this->input->post('drug_allergies_name');
+            $duration = $this->input->post('duration');
+            $duration_unit = $this->input->post('duration_unit');
+            $drug_comments = $this->input->post('drug_comments');
+            $drug_allergies_comments = $this->input->post('drug_allergies_comments');
+
+            // DRUG ALLERGIES
+            $data = array(
+                // 'id' => $id,
+                'pat_id' => $pat_id,
+                'name' => $name3 ?? '',
+                'duration' => $duration ?? '',
+                'duration_unit' => $duration_unit ?? '',
+                'drug_comments' => $drug_comments ?? '',
+                'drug_allergies_comments' => $drug_allergies_comments ?? '',
+
+                'created_at' => date('Y-m-d H:i:s'),
+            );
+
+            if (!empty($data)) {
+                $data = $this->db->insert('history_drug_allergies', $data);
+            }
+
+            if ($data == true) {
+                $this->response([
+                    'status' => true,
+                    'message' => 'Drug Allergies Added Successfully.',
+                ], REST_Controller::HTTP_OK);
+            } else {
+                $this->response([
+                    'status' => false,
+                    'message' => 'Unsuccessful.'
+                ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+            }
+        }
+    }
+
+    public function contactallergies_post()
+    {
+        $pat_id = $this->security->xss_clean($this->input->post('pat_id'));
+
+        $this->form_validation->set_rules(
+            "pat_id",
+            "Patient ID",
+            "required",
+            array(
+                'required' => 'Require Patient ID',
+            )
+        );
+
+        if ($this->form_validation->run() == false) {
+            $error = strip_tags(validation_errors());
+
+            $this->response([
+                "status" => False,
+                "message" => $error,
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        } else {
+
+            $patient_exist = $this->db->select('pat_id')->from($this->pat)->where('pat_id', $pat_id)->get()->row()->pat_id ?? '';
+
+            if (empty($patient_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Patient doesn't exist, Please Add them First",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+
+            $org_id = $this->db->select('org_id')->from('patients')->where("pat_id", $pat_id)->get()->row()->org_id ?? '';
+            $org_exist = $this->db->select('org_id')->from($this->org)->where('org_id', $org_id)->get()->row()->org_id ?? '';
+
+            if (empty($org_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Organization doesn't exist, Please Check it First",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+
+
+            $patient_exist = $this->db->select('pat_id')->from($this->pat)->where('pat_id', $pat_id)->get()->row()->pat_id ?? '';
+
+            if (empty($patient_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Patient doesn't exist, Please Add them First",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+
+            // CONATCT ALLERGIES
+            $name = $this->input->post('contact_allergies_name');
+            $duration = $this->input->post('duration');
+            $duration_unit = $this->input->post('duration_unit');
+            $contact_comments = $this->input->post('contact_comments');
+            $contact_allergies_comments = $this->input->post('contact_allergies_comments');
+
+            // CONTACT ALLERGIES
+            $data = array(
+                // 'id' => $id,
+                'pat_id' => $pat_id,
+                'name' => $name ?? '',
+                'duration' => $duration ?? '',
+                'duration_unit' => $duration_unit ?? '',
+                'contact_comments' => $contact_comments ?? '',
+                'contact_allergies_comments' => $contact_allergies_comments ?? '',
+
+                'created_at' => date('Y-m-d H:i:s'),
+            );
+
+            if (!empty($data)) {
+                $data = $this->db->insert('history_contact_allergies', $data);
+            }
+
+            if ($data == true) {
+                $this->response([
+                    'status' => true,
+                    'message' => 'Contact Allergies Added Successfully.',
+                ], REST_Controller::HTTP_OK);
+            } else {
+                $this->response([
+                    'status' => false,
+                    'message' => 'Unsuccessful.'
+                ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+            }
+        }
+    }
+
+    public function foodallergies_post()
+    {
+        $pat_id = $this->security->xss_clean($this->input->post('pat_id'));
+
+        $this->form_validation->set_rules(
+            "pat_id",
+            "Patient ID",
+            "required",
+            array(
+                'required' => 'Require Patient ID',
+            )
+        );
+
+        if ($this->form_validation->run() == false) {
+            $error = strip_tags(validation_errors());
+
+            $this->response([
+                "status" => False,
+                "message" => $error,
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        } else {
+
+            $patient_exist = $this->db->select('pat_id')->from($this->pat)->where('pat_id', $pat_id)->get()->row()->pat_id ?? '';
+
+            if (empty($patient_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Patient doesn't exist, Please Add them First",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+
+            $org_id = $this->db->select('org_id')->from('patients')->where("pat_id", $pat_id)->get()->row()->org_id ?? '';
+            $org_exist = $this->db->select('org_id')->from($this->org)->where('org_id', $org_id)->get()->row()->org_id ?? '';
+
+            if (empty($org_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Organization doesn't exist, Please Check it First",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+
+
+            $patient_exist = $this->db->select('pat_id')->from($this->pat)->where('pat_id', $pat_id)->get()->row()->pat_id ?? '';
+
+            if (empty($patient_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Patient doesn't exist, Please Add them First",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+
+            // // FOOD ALLERGIES
+            $name5 = $this->input->post('food_allergies_name');
+            $duration = $this->input->post('duration');
+            $duration_unit = $this->input->post('duration_unit');
+            $food_comments = $this->input->post('food_comments');
+            $food_allergies_comments = $this->input->post('food_allergies_comments');
+            $other_comments = $this->input->post('other_comments');
+
+            // FOOD ALLERGIES
+            $data = array(
+                // 'id' => $id,
+                'pat_id' => $pat_id,
+                'name' => $name5 ?? '',
+                'duration' => $duration ?? '',
+                'duration_unit' => $duration_unit ?? '',
+                'food_comments' => $food_comments ?? '',
+                'food_allergies_comments' => $food_allergies_comments ?? '',
+                'other_comments' => $other_comments ?? '',
+
+                'created_at' => date('Y-m-d H:i:s'),
+            );
+
+            if (!empty($data)) {
+                $data = $this->db->insert('history_food_allergies', $data);
+            }
+
+            if ($data == true) {
+                $this->response([
+                    'status' => true,
+                    'message' => 'Food Allergies Added Successfully.',
+                ], REST_Controller::HTTP_OK);
+            } else {
+                $this->response([
+                    'status' => false,
+                    'message' => 'Unsuccessful.'
+                ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
+            }
+        }
+    }
 
     public function history_get()
     {
-        $org_id = $this->input->get('org_id');
+        $pat_id = $this->input->get('pat_id');
 
         $data = array();
-        if (!empty($org_id)) {
-            $organization = $this->db->select('org_id')->from($this->history)->where("$this->history.org_id = '$org_id' XOR $this->history.C_id = '$org_id' XOR $this->history.pat_id = '$org_id'")->get()->row()->org_id ?? '';
-
-            $data['organization'] = $this->db->select("$this->org.*")->from($this->org)->where('org_id', $organization)->get()->row() ?? [];
-
-            $patients = $this->db->select("DISTINCT(pat_id)")->from($this->history)->where("$this->history.org_id = '$org_id' XOR $this->history.C_id = '$org_id' XOR $this->history.pat_id = '$org_id'")->get()->result();
-
-            $is_cases = $this->db->select('C_id')->from($this->history)->where("C_id = '$org_id'")->get()->num_rows();
-
-            $length = count($patients);
-            for ($j = 0; $j < $length; ++$j) {
-                $pat_id = $patients[$j]->pat_id;
-                $data['patients'][$j]['patient'] = $this->db->select("patients.*")->from('patients')->where('pat_id', $pat_id)->get()->row();
-                if ($is_cases > 0) {
-                    $case_id = $this->db->select("DISTINCT(C_id)")->from($this->history)->where("$this->history.org_id = '$org_id' XOR $this->history.C_id = '$org_id' XOR $this->history.pat_id = '$org_id'")->get()->result();
-                } else {
-                    $case_id = $this->db->select("DISTINCT(C_id)")->from($this->history)->where("pat_id = '$pat_id'")->get()->result();
-                }
-                $length1 = count($case_id);
-                $data2 = array();
-                for ($i = 0; $i < $length1; ++$i) {
-                    $c_id = $case_id[$i]->C_id;
-                    $data2[$i]['visit'] =
-                        $this->db->select("
-                        $this->history.id AS ID,
-                        $this->history.c_id,
-                        $this->history.problem,
-                        $this->history.description,
-                        $this->history.created_by,
-                        $this->history.created_at,
-                        $this->history.updated_at,
-                    ")->from($this->history)->where("$this->history.C_id = '$c_id'")->get()->result();
-
-                    $data2[$i]['chief_complaints'] = $this->db->select("*")->from('history_chief_complaints')->where("C_id = '$c_id'")->get()->result();
-                    $data2[$i]['systemic_history'] = $this->db->select("*")->from('history_systemic_history')->where("C_id = '$c_id'")->get()->result();
-                    $data2[$i]['drug_allergies'] = $this->db->select("*")->from('history_drug_allergies')->where("C_id = '$c_id'")->get()->result();
-                    $data2[$i]['contact_allergies'] = $this->db->select("*")->from('history_contact_allergies')->where("C_id = '$c_id'")->get()->result();
-                    $data2[$i]['vital_signs'] = $this->db->select("*")->from('history_vital_signs')->where("C_id = '$c_id'")->get()->result();
-                    $data2[$i]['anthropometry'] = $this->db->select("*")->from('history_anthropometry')->where("C_id = '$c_id'")->get()->result();
-                    $data2[$i]['test_cases'] = $this->db->select("test_cases.id,test_cases.test_id,test_cases.title,test_cases.reading,test_cases.staff_id,test_cases.status")->from($this->test_cases)->join('tests', 'test_cases.test_id = tests.id')->where("C_id = '$c_id'")->get()->result();
-                }
-                $data['patients'][$j][$this->history] = $data2;
-            }
+        if (!empty($pat_id)) {
+            $data['patients'] = $this->db->select("*")->from($this->pat)->where("pat_id = '$pat_id'")->get()->row(); //[$j][$this->history]
+            $data['opthalmic_history'] = $this->db->select("*")->from('history_opthalmic_history')->where("pat_id = '$pat_id'")->get()->row() ?? [];
+            $data['systemic_history'] = $this->db->select("*")->from('history_systemic_history')->where("pat_id = '$pat_id'")->get()->row() ?? [];
+            $data['medical_history'] = $this->db->select("*")->from('history_medical_history')->where("pat_id = '$pat_id'")->get()->row() ?? [];
+            $data['paediatric_history'] = $this->db->select("*")->from('history_paediatric_history')->where("pat_id = '$pat_id'")->get()->row() ?? [];
+            $data['drug_allergies'] = $this->db->select("*")->from('history_drug_allergies')->where("pat_id = '$pat_id'")->get()->row() ?? [];
+            $data['contact_allergies'] = $this->db->select("*")->from('history_contact_allergies')->where("pat_id = '$pat_id'")->get()->row() ?? [];
+            $data['food_allergies'] = $this->db->select("*")->from('history_food_allergies')->where("pat_id = '$pat_id'")->get()->row() ?? [];
         }
 
         if (!empty($data)) {
@@ -365,41 +819,50 @@ class History extends REST_Controller
     public function historyupdate_post()
     {
         // PATIENT DATA
-        $id = $this->post('id');
-        $C_id = $this->input->post('C_id');
+        // $id = $this->post('id');
         $pat_id = $this->input->post('pat_id');
 
-        $staff = $this->security->xss_clean($this->input->post('created_by'));
+        // $C_id = $this->input->post('C_id');
+        // $staff = $this->security->xss_clean($this->input->post('created_by'));
 
-        $created_by = $this->db->select('u_id')->from($this->staff)->where('u_id', $staff)->get()->row()->u_id ?? '';
+        // $created_by = $this->db->select('u_id')->from($this->staff)->where('u_id', $staff)->get()->row()->u_id ?? '';
 
-        if (empty($created_by)) {
-            $this->response([
-                'status' => false,
-                'message' => "Clinic Operator doesn't Exist, Please Contact Admin",
-            ], REST_Controller::HTTP_BAD_REQUEST);
-        }
+        // if (empty($created_by)) {
+        //     $this->response([
+        //         'status' => false,
+        //         'message' => "Clinic Operator doesn't Exist, Please Contact Admin",
+        //     ], REST_Controller::HTTP_BAD_REQUEST);
+        // }
 
-        $C_id = $this->db->select('C_id')->from($this->history)->where('C_id', $C_id)->get()->row()->C_id ?? '';
+        // $C_id = $this->db->select('C_id')->from($this->history)->where('C_id', $C_id)->get()->row()->C_id ?? '';
 
-        if (empty($C_id)) {
-            $this->response([
-                'status' => false,
-                'message' => "Case Not Found, Please create a New Case",
-            ], REST_Controller::HTTP_BAD_REQUEST);
-        }
-
-        // VISIT HISTORY
-        $problem = $this->input->post('problem');
-        $description = $this->input->post('description');
+        // if (empty($C_id)) {
+        //     $this->response([
+        //         'status' => false,
+        //         'message' => "Case Not Found, Please create a New Case",
+        //     ], REST_Controller::HTTP_BAD_REQUEST);
+        // }
 
         // VISIT HISTORY
-        $data1 = array();
-        if (!empty($problem)) {
-            $data1['problem'] = $problem;
-        }
-        if (!empty($description)) {
-            $data1['description'] = $description;
+        // $problem = $this->input->post('problem');
+        // $description = $this->input->post('description');
+
+        // VISIT HISTORY
+        // $data1 = array();
+        // if (!empty($problem)) {
+        //     $data1['problem'] = $problem;
+        // }
+        // if (!empty($description)) {
+        //     $data1['description'] = $description;
+        // }
+
+        $patient_exist = $this->db->select('pat_id')->from($this->pat)->where('pat_id', $pat_id)->get()->row()->pat_id ?? '';
+
+        if (empty($patient_exist)) {
+            $this->response([
+                'status' => false,
+                'message' => "Patient doesn't Exist",
+            ], REST_Controller::HTTP_BAD_REQUEST);
         }
 
         // CHIEF COMPLAINTS
@@ -610,15 +1073,14 @@ class History extends REST_Controller
             $data8['comments'] = $comments12;
         }
 
-        if (empty($data1)) {
+        if (empty($data2) && empty($data3) && empty($data4) && empty($data5) && empty($data6) && empty($data7) && empty($data8)) {
             $this->response([
                 'status' => false,
                 'message' => 'Unsuccessful.'
             ], REST_Controller::HTTP_INTERNAL_SERVER_ERROR);
         } else {
             $data = $this->History_model->updatedata(
-                $C_id,
-                $data1,
+                $pat_id,
                 $data2,
                 $data3,
                 $data4,
@@ -642,9 +1104,8 @@ class History extends REST_Controller
         }
     }
 
-    public function history_delete()
+    public function cases_delete()
     {
-
         $case_id = $this->input->get('case_id');
         $data = $this->History_model->deletedata($case_id);
 
