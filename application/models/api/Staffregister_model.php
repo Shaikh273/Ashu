@@ -20,7 +20,7 @@ class Staffregister_model extends CI_Model
             'DOB' => $this->input->post('DOB'),
             'age' => $this->input->post('age'),
             'address' => $this->input->post('address'),
-            'mobile_no' => $this->input->post('mobile_no'),
+            'mobile' => $this->input->post('mobile_no'),
             'img' => $this->input->post('img'),
             'qualification' => $this->input->post('qualification'),
             'speciality' => $this->input->post('speciality'),

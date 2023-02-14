@@ -68,7 +68,7 @@ class Login extends REST_Controller
             // Check if any user exists with the given credentials
             $con['returnType'] = 'single';
             $con['conditions'] = array(
-                'mobile_no' => $mobile_no,
+                'mobile' => $mobile_no,
                 'status' => 'Approved'
             );
 
