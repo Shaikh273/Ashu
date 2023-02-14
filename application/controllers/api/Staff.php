@@ -293,7 +293,7 @@ class Staff extends REST_Controller
                 'd_o_b' => $d_o_b ?? '',
                 'age' => $age ?? '',
                 'address' => $address ?? '',
-                'mobile_no' => $mobile_no ?? '',
+                'mobile' => $mobile_no ?? '',
                 'img' => $img ?? '',
                 'qualification' => $qualification ?? '',
                 'speciality' => $speciality ?? '',

@@ -147,9 +147,9 @@ class Users_model extends CI_Model
             }
         }
 
-        $is_admin = $this->db->select('u_id')->from($this->userTbl)->where(['mobile_no' => $params['conditions']['mobile_no'],  'role_id' => 2])->get()->row()->u_id ?? '';
+        $is_admin = $this->db->select('u_id')->from($this->userTbl)->where(['mobile' => $params['conditions']['mobile_no'],  'role_id' => 2])->get()->row()->u_id ?? '';
 
-        $role_id = $this->db->select('role_id')->from($this->userTbl)->where(['mobile_no' => $params['conditions']['mobile_no'],])->get()->row()->role_id ?? '';
+        $role_id = $this->db->select('role_id')->from($this->userTbl)->where(['mobile' => $params['conditions']['mobile_no'],])->get()->row()->role_id ?? '';
 
 
         if (!empty($role_id)) {
