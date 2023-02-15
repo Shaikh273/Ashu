@@ -25,21 +25,16 @@ class Register extends REST_Controller
 
     public function patients_get($pat_id = '')
     {
-        $data = $this->db->select('*')->from($this->pat)->get()->result();
         if (!empty($pat_id)) {
-            $org_id = $this->db->select('org_id')->from($this->pat)->where('pat_id', $pat_id)->get()->row()->org_id ?? '';
-
-            // $organization = $this->db->select('org_name')->from($this->org)->where('org_id', $org_id)->get()->row();
-
-            $data = $this->db->select('*')->from($this->pat)->where('pat_id', $pat_id)->get()->result_array();
-
+            $data = $this->db->select("$this->pat.*,$this->org.org_name")->from($this->pat)->join($this->org, "$this->org.org_id = $this->pat.org_id")->where("$this->pat.pat_id = '$pat_id'")->get()->row();
+        } else {
+            $data = $this->db->select('*')->from($this->pat)->get()->result() ?? '';
             for ($i = 0; $i < count($data); ++$i) {
-                $data[$i]['org_id'] = $this->db->select('org_name')->from($this->org)->join($this->pat, "$this->org.org_id = $this->pat.org_id")->where("$this->org.org_id = '$org_id'")->get()->row()->org_name ?? "";
-            }
-            // print_r($data);
-            // die();
-        }
+                $org_id = $data[$i]->org_id;
 
+                $data[$i]->org_name = $this->db->select('org_name')->from($this->org)->join($this->pat, "$this->org.org_id = $this->pat.org_id")->where("$this->org.org_id = '$org_id'")->get()->row()->org_name ?? "";
+            }
+        }
         if (!empty($data)) {
             $this->response([
                 'status' => true,
