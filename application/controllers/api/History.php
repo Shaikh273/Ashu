@@ -179,16 +179,31 @@ class History extends REST_Controller
     public function cases_delete()
     {
         $id = $this->input->get('C_id');
-        $case_exist = $this->db->select('id')->from($this->history)->where(array('C_id' => $id))->get()->row()->id ?? '';
-        if (empty($case_exist)) {
-            $this->response([
-                'status' => false,
-                'message' => "Case doesn't Exist",
-            ], REST_Controller::HTTP_BAD_REQUEST);
-        }
-        $data = $this->db->delete($this->history, array('C_id' => $id));
-        $this->db->delete($this->test_cases, array('C_id' => $id));
 
+        $test_id = $this->input->get('test_id');
+
+        if (!empty($test_id) && !empty($id)) {
+
+            $case_exist = $this->db->select('id')->from($this->history)->where(array('C_id' => $id))->get()->row()->id ?? '';
+            if (empty($case_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Case doesn't Exist",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+            $data = $this->db->delete($this->test_cases, array('id' => $test_id));
+        } else {
+
+            $case_exist = $this->db->select('id')->from($this->history)->where(array('C_id' => $id))->get()->row()->id ?? '';
+            if (empty($case_exist)) {
+                $this->response([
+                    'status' => false,
+                    'message' => "Case doesn't Exist",
+                ], REST_Controller::HTTP_BAD_REQUEST);
+            }
+            $data = $this->db->delete($this->history, array('C_id' => $id));
+            $this->db->delete($this->test_cases, array('C_id' => $id));
+        }
         if ($data) {
             $this->response([
                 "status" => TRUE,
