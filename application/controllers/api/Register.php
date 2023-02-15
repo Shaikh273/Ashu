@@ -20,14 +20,26 @@ class Register extends REST_Controller
         $this->load->model('api/Registerpatient_model');
         $this->load->model('api/Users_model', 'Users');
         $this->pat = "patients";
+        $this->org = "organization";
     }
 
     public function patients_get($pat_id = '')
     {
         $data = $this->db->select('*')->from($this->pat)->get()->result();
         if (!empty($pat_id)) {
-            $data = $this->db->select('*')->from($this->pat)->where('pat_id', $pat_id)->get()->row();
+            $org_id = $this->db->select('org_id')->from($this->pat)->where('pat_id', $pat_id)->get()->row()->org_id ?? '';
+
+            // $organization = $this->db->select('org_name')->from($this->org)->where('org_id', $org_id)->get()->row();
+
+            $data = $this->db->select('*')->from($this->pat)->where('pat_id', $pat_id)->get()->result_array();
+
+            for ($i = 0; $i < count($data); ++$i) {
+                $data[$i]['org_id'] = $this->db->select('org_name')->from($this->org)->join($this->pat, "$this->org.org_id = $this->pat.org_id")->where("$this->org.org_id = '$org_id'")->get()->row()->org_name ?? "";
+            }
+            // print_r($data);
+            // die();
         }
+
         if (!empty($data)) {
             $this->response([
                 'status' => true,
