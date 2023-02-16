@@ -28,7 +28,7 @@ class History extends REST_Controller
         $pat_id = $this->input->get('pat_id');
         $data = array();
         if (!empty($pat_id)) {
-            $cases = $this->db->select("DISTINCT(C_id)")->from($this->history)->where("$this->history.pat_id = '$pat_id'")->get()->result_array();
+            $cases = $this->db->select("DISTINCT(C_id)")->from($this->history)->where("$this->history.pat_id = '$pat_id'")->order_by('C_id', 'DESC')->get()->result_array();
 
             $length = count($cases);
             for ($j = 0; $j < $length; ++$j) {
@@ -843,13 +843,13 @@ class History extends REST_Controller
         $data = array();
         if (!empty($pat_id)) {
             $data['patients'] = $this->db->select("*")->from($this->pat)->where("pat_id = '$pat_id'")->get()->row(); //[$j][$this->history]
-            $data['opthalmic_history'] = $this->db->select("*")->from('history_opthalmic_history')->where("pat_id = '$pat_id'")->get()->row() ?? [];
-            $data['systemic_history'] = $this->db->select("*")->from('history_systemic_history')->where("pat_id = '$pat_id'")->get()->row() ?? [];
-            $data['medical_history'] = $this->db->select("*")->from('history_medical_history')->where("pat_id = '$pat_id'")->get()->row() ?? [];
-            $data['paediatric_history'] = $this->db->select("*")->from('history_paediatric_history')->where("pat_id = '$pat_id'")->get()->row() ?? [];
-            $data['drug_allergies'] = $this->db->select("*")->from('history_drug_allergies')->where("pat_id = '$pat_id'")->get()->row() ?? [];
-            $data['contact_allergies'] = $this->db->select("*")->from('history_contact_allergies')->where("pat_id = '$pat_id'")->get()->row() ?? [];
-            $data['food_allergies'] = $this->db->select("*")->from('history_food_allergies')->where("pat_id = '$pat_id'")->get()->row() ?? [];
+            $data['opthalmic_history'] = $this->db->select("*")->from('history_opthalmic_history')->where("pat_id = '$pat_id'")->get()->result() ?? [];
+            $data['systemic_history'] = $this->db->select("*")->from('history_systemic_history')->where("pat_id = '$pat_id'")->get()->result() ?? [];
+            $data['medical_history'] = $this->db->select("*")->from('history_medical_history')->where("pat_id = '$pat_id'")->get()->result() ?? [];
+            $data['paediatric_history'] = $this->db->select("*")->from('history_paediatric_history')->where("pat_id = '$pat_id'")->get()->result() ?? [];
+            $data['drug_allergies'] = $this->db->select("*")->from('history_drug_allergies')->where("pat_id = '$pat_id'")->get()->result() ?? [];
+            $data['contact_allergies'] = $this->db->select("*")->from('history_contact_allergies')->where("pat_id = '$pat_id'")->get()->result() ?? [];
+            $data['food_allergies'] = $this->db->select("*")->from('history_food_allergies')->where("pat_id = '$pat_id'")->get()->result() ?? [];
         }
 
         if (!empty($data)) {
