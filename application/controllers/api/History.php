@@ -22,7 +22,6 @@ class History extends REST_Controller
     }
 
     // -----------------------------Patients Case------------------------------- //
-
     public function cases_get()
     {
         $pat_id = $this->input->get('pat_id');
@@ -33,7 +32,7 @@ class History extends REST_Controller
             $length = count($cases);
             for ($j = 0; $j < $length; ++$j) {
                 $c_id = $cases[$j]['C_id'];
-                $data[$j]['cases'] = $this->db->select("
+                $data[$j]['case'] = $this->db->select("
                     $this->history.id AS ID,
                     $this->history.c_id,
                     $this->history.problem,
@@ -42,8 +41,16 @@ class History extends REST_Controller
                     $this->history.created_at,
                     $this->history.updated_at,
                 ")->from($this->history)->where("$this->history.C_id = '$c_id'")->get()->row();
-
-                $data[$j]['test_cases'] = $this->db->select("$this->test_cases.id,$this->test_cases.test_id,$this->test_cases.title,$this->test_cases.reading,$this->test_cases.staff_id,$this->test_cases.status,$this->tests.test")->from($this->test_cases)->join($this->tests, "$this->tests.id = $this->test_cases.test_id")->where("$this->test_cases.C_id = '$c_id'")->get()->result_array();
+                $test_ids = $this->db->select('DISTINCT(test_id)')->from($this->test_cases)->where("$this->test_cases.C_id = '$c_id'")->get()->result_array();
+                $data1 = array();
+                $length1 = count($test_ids);
+                for ($i = 0; $i < $length1; $i++) {
+                    $tests_id = $test_ids[$i]['test_id'];
+                    $data1[$i] = $this->db->select("$this->test_cases.test_id,$this->test_cases.staff_id,$this->test_cases.status,$this->tests.test")->from($this->test_cases)->join($this->tests, "$this->tests.id = $this->test_cases.test_id")->where("$this->test_cases.C_id = '$c_id' AND $this->test_cases.test_id = '$tests_id'")->get()->row_array();
+                    $data1[$i]['test_result'] = $this->db->select("$this->test_cases.id,$this->test_cases.title,$this->test_cases.reading")->from($this->test_cases)->where("$this->test_cases.C_id = '$c_id' AND $this->test_cases.test_id = '$tests_id'")->get()->result_array();
+                }
+                // print_r($data1);die();
+                $data[$j]['tests'] = $data1;
             }
         }
         if (!empty($data)) {
@@ -218,8 +225,8 @@ class History extends REST_Controller
         }
     }
 
-    // -----------------------------Patients History & Allergies------------------------------- //
 
+    // -----------------------------Patients History & Allergies------------------------------- //
     public function opthalmichistory_post()
     {
         $pat_id = $this->security->xss_clean($this->input->post('pat_id'));
@@ -842,7 +849,8 @@ class History extends REST_Controller
 
         $data = array();
         if (!empty($pat_id)) {
-            $data['patients'] = $this->db->select("*")->from($this->pat)->where("pat_id = '$pat_id'")->get()->row(); //[$j][$this->history]
+            // $data['patients'] = $this->db->select("*")->from($this->pat)->where("pat_id = '$pat_id'")->get()->row(); //[$j][$this->history]
+            $data['patients'] = $this->db->select("$this->pat.*,$this->org.org_name")->from($this->pat)->join($this->org, "$this->org.org_id = $this->pat.org_id")->where("$this->pat.pat_id = '$pat_id'")->get()->row();
             $data['opthalmic_history'] = $this->db->select("*")->from('history_opthalmic_history')->where("pat_id = '$pat_id'")->get()->result() ?? [];
             $data['systemic_history'] = $this->db->select("*")->from('history_systemic_history')->where("pat_id = '$pat_id'")->get()->result() ?? [];
             $data['medical_history'] = $this->db->select("*")->from('history_medical_history')->where("pat_id = '$pat_id'")->get()->result() ?? [];
@@ -1157,22 +1165,36 @@ class History extends REST_Controller
 
     public function test_cases_post()
     {
-        $C_id = $this->security->xss_clean($this->input->post('C_id'));
+        $C_id = $this->security->xss_clean($this->input->post('C_id', true));
+        $tests = json_decode($this->input->post('tests', true));
+        $status =  $this->security->xss_clean($this->input->post('status', true));
+        $staff = $this->security->xss_clean($this->input->post('created_by', true));
+        // $problem =  $this->security->xss_clean($this->input->post('problem'));
+        // print_r($C_id);die();
 
-        $test_id =  $this->security->xss_clean($this->input->post('test_id'));
-        $reading =  $this->security->xss_clean($this->input->post('reading'));
 
-        $title =  $this->security->xss_clean($this->input->post('title'));
-        $status =  $this->security->xss_clean($this->input->post('status'));
+        $staff_id = $this->db->select('u_id')->from($this->staff)->where('u_id', $staff)->get()->row()->u_id ?? '';
 
-        $staff = $this->security->xss_clean($this->input->post('created_by'));
+        if (empty($staff_id)) {
+            $this->response([
+                'status' => false,
+                'message' => "Clinic Operator doesn't Exist, Please Contact Admin",
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }
+
+        $c_id = $this->db->select('C_id')->from($this->history)->where('C_id', $C_id)->get()->row()->C_id ?? '';
+
+        if (empty($c_id)) {
+            $this->response([
+                'status' => false,
+                'message' => "Case Not Found, Please create a New Case",
+            ], REST_Controller::HTTP_BAD_REQUEST);
+        }
 
         $this->form_validation->set_rules('C_id', 'Cases Id', 'required', array(
-            'required' => 'Case ID is Missing'
+            'required' => 'Case Id is Missing'
         ));
-        $this->form_validation->set_rules('test_id', 'Cases Id', 'required', array(
-            'required' => 'Test ID is Missing'
-        ));
+
         $this->form_validation->set_rules('status', 'Status', 'required', array(
             'required' => 'Status is Mandatory'
         ));
@@ -1184,38 +1206,26 @@ class History extends REST_Controller
                 "message" => $error,
             ], REST_Controller::HTTP_BAD_REQUEST);
         } else {
-            $staff_id = $this->db->select('u_id')->from($this->staff)->where('u_id', $staff)->get()->row()->u_id ?? '';
+            // print_r($tests);die();
+            $count = count($tests);
+            for ($i = 0; $i < $count; $i++) {
+                $data[$i] = array(
+                    'C_id' => $C_id,
+                    'test_id' => $tests[$i]->test_id ??
+                        $this->response([
+                            'status' => false,
+                            'message' => "Test ID is Missing",
+                        ], REST_Controller::HTTP_BAD_REQUEST),
+                    'reading' => $tests[$i]->reading,
+                    'staff_id' => $staff,
+                    'title' => $tests[$i]->title,
+                    'status' => $status,
+                    'created_at' =>  date('Y-m-d H:i:s'),
+                );
 
-            if (empty($staff_id)) {
-                $this->response([
-                    'status' => false,
-                    'message' => "Clinic Operator doesn't Exist, Please Contact Admin",
-                ], REST_Controller::HTTP_BAD_REQUEST);
+                $insert = $this->db->insert($this->test_cases, $data[$i]);
             }
-
-            $C_id = $this->db->select('C_id')->from($this->history)->where('C_id', $C_id)->get()->row()->C_id ?? '';
-
-            if (empty($C_id)) {
-                $this->response([
-                    'status' => false,
-                    'message' => "Case Not Found, Please create a New Case",
-                ], REST_Controller::HTTP_BAD_REQUEST);
-            }
-
-
-            $data = array(
-                'C_id' => $C_id,
-
-                'test_id' => $test_id,
-                'reading' => $reading,
-                'staff_id' => $staff_id,
-                'title' => $title,
-                'status' => $status,
-
-                'created_at' =>  date('Y-m-d H:i:s'),
-            );
-
-            $insert = $this->db->insert($this->test_cases, $data);
+            // print_r($data);die();
             if ($insert) {
                 $this->response([
                     "status" => true,
@@ -1236,11 +1246,15 @@ class History extends REST_Controller
         $id = $this->security->xss_clean($this->input->post('id'));
 
         $C_id = $this->security->xss_clean($this->input->post('C_id'));
+        // $problem = $this->security->xss_clean($this->input->post('problem'));
+        // $description = $this->security->xss_clean($this->input->post('description'));
         $test_id = $this->security->xss_clean($this->input->post('test_id'));
         $title =  $this->security->xss_clean($this->input->post('title'));
         $reading = $this->security->xss_clean($this->input->post('reading'));
-
+        $method = $this->security->xss_clean($this->input->post('method'));
+        // $staff_id = $this->security->xss_clean($this->input->post('staff_id'));
         $status = $this->security->xss_clean($this->input->post('status'));
+
 
         $staff = $this->security->xss_clean($this->input->post('created_by'));
 
@@ -1254,6 +1268,7 @@ class History extends REST_Controller
         }
 
         $C_id = $this->db->select('C_id')->from($this->test_cases)->where("C_id = '$C_id' AND id = '$id'")->get()->row()->C_id ?? '';
+        // print_r($C_id);die();
 
         if (empty($C_id)) {
             $this->response([
@@ -1261,6 +1276,7 @@ class History extends REST_Controller
                 'message' => "Case Not Found, Please create a New Case",
             ], REST_Controller::HTTP_BAD_REQUEST);
         }
+
 
         $data = array();
 
@@ -1275,6 +1291,9 @@ class History extends REST_Controller
         }
         if (!empty($staff_id) && !empty($id)) {
             $data['staff_id'] = $staff_id;
+        }
+        if (!empty($method) && !empty($id)) {
+            $data['method'] = $method;
         }
         if (!empty($status) && !empty($id)) {
             $data['status'] = $status;
