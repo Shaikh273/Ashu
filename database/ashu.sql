@@ -3,10 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 07, 2023 at 08:44 AM
--- Server version: 10.4.20-MariaDB
--- PHP Version: 7.4.22
-
+-- Generation Time: Feb 17, 2023 at 12:30 PM
+-- Server version: 10.5.13-MariaDB-cll-lve
+-- PHP Version: 7.2.34
 SET
   SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 
@@ -30,11 +29,6 @@ SET
 --
 -- Database: `u848800466_ashu`
 --
-
-CREATE DATABASE IF NOT EXISTS `u848800466_ashu` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
-USE `u848800466_ashu`;
-
 -- --------------------------------------------------------
 --
 -- Table structure for table `admin_org`
@@ -192,16 +186,6 @@ VALUES
     '2023-01-31 10:38:06'
   ),
   (
-    2,
-    'BIL-P_01',
-    'Case_2022-2023_01',
-    'Maa-Maj-A_01',
-    '31/01/23',
-    '01:00 AM',
-    '2023-01-31 11:38:27',
-    '2023-01-31 10:46:49'
-  ),
-  (
     3,
     'BIL-P_01',
     'Case_2022-2023_01',
@@ -230,6 +214,16 @@ VALUES
     '01:00 AM',
     '2023-01-31 16:43:18',
     '2023-01-31 11:13:18'
+  ),
+  (
+    8,
+    'BIL-P_01',
+    'Case_2022-2023_01',
+    'Maa-Maj-A_01',
+    '',
+    '',
+    '2023-02-10 16:12:38',
+    '2023-02-10 10:42:38'
   );
 
 -- --------------------------------------------------------
@@ -305,453 +299,16 @@ VALUES
 
 -- --------------------------------------------------------
 --
--- Table structure for table `history_anthropometry`
---
-CREATE TABLE `history_anthropometry` (
-  `id` int(10) NOT NULL,
-  `C_id` varchar(65) NOT NULL,
-  `height` int(3) NOT NULL,
-  `weight` int(3) NOT NULL,
-  `bmi` int(3) NOT NULL,
-  `comments` varchar(100) NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
-  `updated_at` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
-
---
--- Dumping data for table `history_anthropometry`
---
-INSERT INTO
-  `history_anthropometry` (
-    `id`,
-    `C_id`,
-    `height`,
-    `weight`,
-    `bmi`,
-    `comments`,
-    `created_at`,
-    `updated_at`
-  )
-VALUES
-  (
-    1,
-    'Case_2022-2023_01',
-    0,
-    0,
-    0,
-    'TEST',
-    '2023-01-07 08:07:22',
-    '2023-01-07 12:37:22'
-  ),
-  (
-    3,
-    'Case_2022-2023_02',
-    174,
-    0,
-    0,
-    '',
-    '2023-01-09 07:51:32',
-    '2023-01-09 12:21:32'
-  ),
-  (
-    4,
-    'Case_2022-2023_03',
-    174,
-    0,
-    0,
-    '',
-    '2023-01-09 08:01:25',
-    '2023-01-09 12:31:25'
-  ),
-  (
-    5,
-    'Case_2022-2023_04',
-    0,
-    0,
-    0,
-    'teast',
-    '2023-01-09 10:27:50',
-    '2023-01-09 14:57:50'
-  ),
-  (
-    6,
-    'Case_2022-2023_05',
-    0,
-    0,
-    0,
-    '',
-    '2023-01-10 06:14:58',
-    '2023-01-10 06:14:58'
-  ),
-  (
-    7,
-    'Case_2022-2023_06',
-    0,
-    0,
-    0,
-    '',
-    '2023-01-10 06:16:05',
-    '2023-01-10 06:16:05'
-  ),
-  (
-    8,
-    'Case_2022-2023_07',
-    0,
-    0,
-    0,
-    '',
-    '2023-01-27 16:50:32',
-    '2023-01-27 16:50:32'
-  ),
-  (
-    9,
-    'Case_2022-2023_08',
-    0,
-    0,
-    0,
-    '',
-    '2023-01-27 17:01:37',
-    '2023-01-27 17:01:37'
-  ),
-  (
-    10,
-    'Case_2022-2023_09',
-    0,
-    0,
-    0,
-    '',
-    '2023-01-27 17:05:07',
-    '2023-01-27 17:05:07'
-  ),
-  (
-    11,
-    'Case_2022-2023_010',
-    0,
-    0,
-    0,
-    '',
-    '2023-01-27 17:49:56',
-    '2023-01-27 17:49:56'
-  ),
-  (
-    12,
-    'Case_2022-2023_011',
-    0,
-    0,
-    0,
-    '',
-    '2023-01-27 18:19:34',
-    '2023-01-27 18:19:34'
-  ),
-  (
-    13,
-    'Case_2022-2023_012',
-    0,
-    0,
-    0,
-    '',
-    '2023-01-27 18:37:59',
-    '2023-01-27 18:37:59'
-  ),
-  (
-    14,
-    'Case_2022-2023_013',
-    0,
-    0,
-    0,
-    '',
-    '2023-01-28 14:47:30',
-    '2023-01-28 14:47:30'
-  ),
-  (
-    15,
-    'Case_2022-2023_014',
-    0,
-    0,
-    0,
-    '',
-    '2023-01-28 14:47:44',
-    '2023-01-28 14:47:44'
-  ),
-  (
-    16,
-    'Case_2022-2023_015',
-    0,
-    0,
-    0,
-    '',
-    '2023-01-28 14:48:22',
-    '2023-01-28 14:48:22'
-  ),
-  (
-    17,
-    'Case_2022-2023_016',
-    0,
-    0,
-    0,
-    '',
-    '2023-02-02 18:31:41',
-    '2023-02-02 18:31:42'
-  );
-
--- --------------------------------------------------------
---
--- Table structure for table `history_chief_complaints`
---
-CREATE TABLE `history_chief_complaints` (
-  `id` int(10) NOT NULL,
-  `C_id` varchar(65) NOT NULL,
-  `chief_complaint_type` varchar(40) NOT NULL,
-  `name` varchar(30) NOT NULL,
-  `duration` varchar(30) NOT NULL,
-  `duration_unit` varchar(30) NOT NULL,
-  `comments1` varchar(100) NOT NULL,
-  `options` varchar(30) NOT NULL,
-  `comments2` varchar(100) NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
-  `updated_at` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
-
---
--- Dumping data for table `history_chief_complaints`
---
-INSERT INTO
-  `history_chief_complaints` (
-    `id`,
-    `C_id`,
-    `chief_complaint_type`,
-    `name`,
-    `duration`,
-    `duration_unit`,
-    `comments1`,
-    `options`,
-    `comments2`,
-    `created_at`,
-    `updated_at`
-  )
-VALUES
-  (
-    1,
-    'Case_2022-2023_01',
-    'Hello',
-    'Hello',
-    'Hello',
-    'Hello',
-    'Hello',
-    'Hello',
-    'Hello',
-    '2023-01-07 08:07:22',
-    '2023-01-07 12:37:22'
-  ),
-  (
-    3,
-    'Case_2022-2023_02',
-    'Not Treated Properly',
-    'Bilal',
-    '10',
-    '',
-    '',
-    '',
-    'No I have Done Properly',
-    '2023-01-09 07:51:32',
-    '2023-01-09 12:21:32'
-  ),
-  (
-    4,
-    'Case_2022-2023_03',
-    'Not Treated Properly',
-    'Bilal',
-    '10',
-    '',
-    '',
-    '',
-    'No I have Done Properly',
-    '2023-01-09 08:01:25',
-    '2023-01-09 12:31:25'
-  ),
-  (
-    5,
-    'Case_2022-2023_04',
-    'test',
-    'test',
-    'test',
-    'test',
-    'test',
-    'test',
-    '',
-    '2023-01-09 10:27:50',
-    '2023-01-09 14:57:50'
-  ),
-  (
-    6,
-    'Case_2022-2023_05',
-    '123test',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-10 06:14:58',
-    '2023-01-10 06:14:58'
-  ),
-  (
-    7,
-    'Case_2022-2023_06',
-    '123test',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-10 06:16:05',
-    '2023-01-10 06:16:05'
-  ),
-  (
-    8,
-    'Case_2022-2023_07',
-    '',
-    '',
-    '2',
-    '2',
-    '',
-    '',
-    '',
-    '2023-01-27 16:50:32',
-    '2023-01-27 16:50:32'
-  ),
-  (
-    9,
-    'Case_2022-2023_08',
-    '',
-    '',
-    '2',
-    '2',
-    '',
-    '',
-    '',
-    '2023-01-27 17:01:37',
-    '2023-01-27 17:01:37'
-  ),
-  (
-    10,
-    'Case_2022-2023_09',
-    '',
-    '',
-    '2',
-    '1',
-    '',
-    '',
-    '',
-    '2023-01-27 17:05:07',
-    '2023-01-27 17:05:07'
-  ),
-  (
-    11,
-    'Case_2022-2023_010',
-    '',
-    '',
-    '2',
-    '1',
-    '',
-    '',
-    '',
-    '2023-01-27 17:49:56',
-    '2023-01-27 17:49:56'
-  ),
-  (
-    12,
-    'Case_2022-2023_011',
-    '',
-    '',
-    '2',
-    '1',
-    '',
-    '',
-    '',
-    '2023-01-27 18:19:34',
-    '2023-01-27 18:19:34'
-  ),
-  (
-    13,
-    'Case_2022-2023_012',
-    '',
-    '',
-    '2',
-    '2',
-    '',
-    '',
-    '',
-    '2023-01-27 18:37:59',
-    '2023-01-27 18:37:59'
-  ),
-  (
-    14,
-    'Case_2022-2023_013',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-28 14:47:30',
-    '2023-01-28 14:47:30'
-  ),
-  (
-    15,
-    'Case_2022-2023_014',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-28 14:47:44',
-    '2023-01-28 14:47:44'
-  ),
-  (
-    16,
-    'Case_2022-2023_015',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-28 14:48:22',
-    '2023-01-28 14:48:22'
-  ),
-  (
-    17,
-    'Case_2022-2023_016',
-    '',
-    '',
-    '2',
-    '2',
-    '',
-    '',
-    '',
-    '2023-02-02 18:31:41',
-    '2023-02-02 18:31:41'
-  );
-
--- --------------------------------------------------------
---
 -- Table structure for table `history_contact_allergies`
 --
 CREATE TABLE `history_contact_allergies` (
   `id` int(10) NOT NULL,
-  `C_id` varchar(65) NOT NULL,
-  `contact_allergies_type` varchar(30) NOT NULL,
-  `name` varchar(30) NOT NULL,
+  `pat_id` varchar(65) NOT NULL,
+  `name` varchar(60) NOT NULL,
   `duration` varchar(30) NOT NULL,
   `duration_unit` varchar(30) NOT NULL,
-  `comments1` varchar(100) NOT NULL,
-  `comments2` varchar(100) NOT NULL,
+  `contact_comments` varchar(100) NOT NULL,
+  `contact_allergies_comments` varchar(100) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `updated_at` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
@@ -762,208 +319,26 @@ CREATE TABLE `history_contact_allergies` (
 INSERT INTO
   `history_contact_allergies` (
     `id`,
-    `C_id`,
-    `contact_allergies_type`,
+    `pat_id`,
     `name`,
     `duration`,
     `duration_unit`,
-    `comments1`,
-    `comments2`,
+    `contact_comments`,
+    `contact_allergies_comments`,
     `created_at`,
     `updated_at`
   )
 VALUES
   (
     1,
-    'Case_2022-2023_01',
-    'Hello',
-    'Hello',
-    'Hello',
-    'Hello',
-    'Hello',
-    'Hello',
-    '2023-01-07 08:07:22',
-    '2023-01-07 12:37:22'
-  ),
-  (
-    3,
-    'Case_2022-2023_02',
-    '',
-    'Epidermis',
-    '5',
-    '',
-    '',
-    '',
-    '2023-01-09 07:51:32',
-    '2023-01-09 12:21:32'
-  ),
-  (
-    4,
-    'Case_2022-2023_03',
-    '',
-    'Epidermis',
-    '5',
-    '',
-    '',
-    '',
-    '2023-01-09 08:01:25',
-    '2023-01-09 12:31:25'
-  ),
-  (
-    5,
-    'Case_2022-2023_04',
+    'Zai-P_013',
     'test',
     'test',
     'test',
-    'tesst',
     'test',
     'test',
-    '2023-01-09 10:27:50',
-    '2023-01-09 14:57:50'
-  ),
-  (
-    6,
-    'Case_2022-2023_05',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-10 06:14:58',
-    '2023-01-10 06:14:58'
-  ),
-  (
-    7,
-    'Case_2022-2023_06',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-10 06:16:05',
-    '2023-01-10 06:16:05'
-  ),
-  (
-    8,
-    'Case_2022-2023_07',
-    '',
-    '',
-    '2',
-    '2',
-    '',
-    '',
-    '2023-01-27 16:50:32',
-    '2023-01-27 16:50:32'
-  ),
-  (
-    9,
-    'Case_2022-2023_08',
-    '',
-    '',
-    '2',
-    '2',
-    '',
-    '',
-    '2023-01-27 17:01:37',
-    '2023-01-27 17:01:37'
-  ),
-  (
-    10,
-    'Case_2022-2023_09',
-    '',
-    '',
-    '2',
-    '2',
-    '',
-    '',
-    '2023-01-27 17:05:07',
-    '2023-01-27 17:05:07'
-  ),
-  (
-    11,
-    'Case_2022-2023_010',
-    '',
-    '',
-    '2',
-    '2',
-    '',
-    '',
-    '2023-01-27 17:49:56',
-    '2023-01-27 17:49:56'
-  ),
-  (
-    12,
-    'Case_2022-2023_011',
-    '',
-    '',
-    '1',
-    '1',
-    '',
-    '',
-    '2023-01-27 18:19:34',
-    '2023-01-27 18:19:34'
-  ),
-  (
-    13,
-    'Case_2022-2023_012',
-    '',
-    '',
-    '3',
-    '3',
-    '',
-    '',
-    '2023-01-27 18:37:59',
-    '2023-01-27 18:37:59'
-  ),
-  (
-    14,
-    'Case_2022-2023_013',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-28 14:47:30',
-    '2023-01-28 14:47:30'
-  ),
-  (
-    15,
-    'Case_2022-2023_014',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-28 14:47:44',
-    '2023-01-28 14:47:44'
-  ),
-  (
-    16,
-    'Case_2022-2023_015',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-28 14:48:22',
-    '2023-01-28 14:48:22'
-  ),
-  (
-    17,
-    'Case_2022-2023_016',
-    '',
-    '[Betadine, Alcohol]',
-    '2',
-    '1',
-    'test contact 10',
-    '',
-    '2023-02-02 18:31:41',
-    '2023-02-02 18:31:42'
+    '2023-02-11 17:53:28',
+    '2023-02-11 12:23:28'
   );
 
 -- --------------------------------------------------------
@@ -972,13 +347,12 @@ VALUES
 --
 CREATE TABLE `history_drug_allergies` (
   `id` int(10) NOT NULL,
-  `C_id` varchar(65) NOT NULL,
-  `drug_allergies_type` varchar(30) NOT NULL,
-  `name` varchar(30) NOT NULL,
+  `pat_id` varchar(65) NOT NULL,
+  `name` varchar(60) NOT NULL,
   `duration` varchar(30) NOT NULL,
   `duration_unit` varchar(30) NOT NULL,
-  `comments1` varchar(100) NOT NULL,
-  `comments2` varchar(100) NOT NULL,
+  `drug_comments` varchar(100) NOT NULL,
+  `drug_allergies_comments` varchar(100) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `updated_at` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
@@ -989,208 +363,169 @@ CREATE TABLE `history_drug_allergies` (
 INSERT INTO
   `history_drug_allergies` (
     `id`,
-    `C_id`,
-    `drug_allergies_type`,
+    `pat_id`,
     `name`,
     `duration`,
     `duration_unit`,
-    `comments1`,
-    `comments2`,
+    `drug_comments`,
+    `drug_allergies_comments`,
     `created_at`,
     `updated_at`
   )
 VALUES
   (
     1,
-    'Case_2022-2023_01',
-    'Hello',
-    'Biotin',
-    'Hello',
-    'Hello',
-    'Hello',
-    'Hello',
-    '2023-01-07 08:07:22',
-    '2023-01-07 12:37:22'
+    'Zai-P_013',
+    'test',
+    'test',
+    'test',
+    'test',
+    'test',
+    '2023-02-11 17:52:39',
+    '2023-02-11 12:22:39'
+  ),
+  (
+    2,
+    'Zai-P_013',
+    'Antimicrobial Agents',
+    'test',
+    'test',
+    'test',
+    'test',
+    '2023-02-15 20:51:19',
+    '2023-02-15 15:21:19'
   ),
   (
     3,
-    'Case_2022-2023_02',
-    '',
-    'Biotin',
-    '20',
-    '',
-    '',
-    '',
-    '2023-01-09 07:51:32',
-    '2023-01-09 12:21:32'
+    'Zai-P_013',
+    'Antifungal Agents',
+    'test',
+    'test',
+    'test',
+    'test',
+    '2023-02-15 20:51:19',
+    '2023-02-15 15:21:19'
   ),
   (
     4,
-    'Case_2022-2023_03',
-    '',
-    'Biotin',
-    '20',
-    '',
-    '',
-    '',
-    '2023-01-09 08:01:25',
-    '2023-01-09 12:31:25'
+    'Zai-P_013',
+    'Antiviral Agents',
+    'test',
+    'test',
+    'test',
+    'test',
+    '2023-02-15 20:51:20',
+    '2023-02-15 15:21:20'
   ),
   (
     5,
-    'Case_2022-2023_04',
-    'test',
-    'etts',
+    'Zai-P_013',
     'test',
     'test',
     'test',
     'test',
-    '2023-01-09 10:27:50',
-    '2023-01-09 14:57:50'
+    'test',
+    '2023-02-15 20:53:25',
+    '2023-02-15 15:23:25'
   ),
   (
     6,
-    'Case_2022-2023_05',
+    'Dan-P_030',
+    'Antimicrobial Agents',
+    '2',
+    '4',
+    'hello',
     '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-10 06:14:58',
-    '2023-01-10 06:14:58'
+    '2023-02-15 22:23:19',
+    '2023-02-15 16:53:19'
   ),
   (
     7,
-    'Case_2022-2023_06',
+    'Dan-P_030',
+    'Antifungal Agents',
+    '4',
+    '2',
+    'world',
     '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-10 06:16:05',
-    '2023-01-10 06:16:05'
+    '2023-02-15 22:23:20',
+    '2023-02-15 16:53:20'
   ),
   (
     8,
-    'Case_2022-2023_07',
-    '',
-    '',
-    '2',
+    'BIL-P_02',
+    'Antimicrobial Agents',
     '3',
+    '1',
+    'q',
     '',
-    '',
-    '2023-01-27 16:50:32',
-    '2023-01-27 16:50:32'
+    '2023-02-16 10:05:59',
+    '2023-02-16 04:35:59'
   ),
   (
     9,
-    'Case_2022-2023_08',
-    '',
-    '',
+    'BIL-P_02',
+    'Antifungal Agents',
     '2',
     '3',
+    'q',
     '',
-    '',
-    '2023-01-27 17:01:37',
-    '2023-01-27 17:01:37'
+    '2023-02-16 10:05:59',
+    '2023-02-16 04:35:59'
   ),
   (
     10,
-    'Case_2022-2023_09',
-    '',
-    '',
+    'BIL-P_02',
+    'Antiviral Agents',
     '3',
     '2',
+    'q',
     '',
-    '',
-    '2023-01-27 17:05:07',
-    '2023-01-27 17:05:07'
+    '2023-02-16 10:05:59',
+    '2023-02-16 04:35:59'
   ),
   (
     11,
-    'Case_2022-2023_010',
-    '',
-    '',
+    'BIL-P_02',
+    'Nsaids',
+    '1',
     '3',
-    '2',
+    'q',
     '',
-    '',
-    '2023-01-27 17:49:56',
-    '2023-01-27 17:49:56'
+    '2023-02-16 10:05:59',
+    '2023-02-16 04:35:59'
   ),
   (
     12,
-    'Case_2022-2023_011',
+    'BIL-P_02',
+    'Eye Drops',
+    '1',
+    '1',
+    'q',
     '',
-    '',
-    '2',
-    '2',
-    '',
-    '',
-    '2023-01-27 18:19:34',
-    '2023-01-27 18:19:34'
+    '2023-02-16 10:05:59',
+    '2023-02-16 04:35:59'
   ),
   (
     13,
-    'Case_2022-2023_012',
-    '',
-    '',
+    'Maa-P_036',
+    'Antimicrobial Agents',
+    '1',
     '3',
-    '3',
+    'j',
     '',
-    '',
-    '2023-01-27 18:37:59',
-    '2023-01-27 18:37:59'
+    '2023-02-16 11:56:21',
+    '2023-02-16 06:26:21'
   ),
   (
     14,
-    'Case_2022-2023_013',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-28 14:47:30',
-    '2023-01-28 14:47:30'
-  ),
-  (
-    15,
-    'Case_2022-2023_014',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-28 14:47:44',
-    '2023-01-28 14:47:44'
-  ),
-  (
-    16,
-    'Case_2022-2023_015',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-28 14:48:22',
-    '2023-01-28 14:48:22'
-  ),
-  (
-    17,
-    'Case_2022-2023_016',
-    '',
-    '[Antimicrobial Agents, Antifun',
+    'Maa-P_036',
+    'Nsaids',
+    '1',
     '2',
-    '2',
-    'test drug 10',
+    'j',
     '',
-    '2023-02-02 18:31:41',
-    '2023-02-02 18:31:42'
+    '2023-02-16 11:56:22',
+    '2023-02-16 06:26:22'
   );
 
 -- --------------------------------------------------------
@@ -1199,14 +534,13 @@ VALUES
 --
 CREATE TABLE `history_food_allergies` (
   `id` int(10) NOT NULL,
-  `C_id` varchar(65) NOT NULL,
-  `food_allergies_type` varchar(30) NOT NULL,
-  `name` varchar(30) NOT NULL,
+  `pat_id` varchar(65) NOT NULL,
+  `name` varchar(60) NOT NULL,
   `duration` varchar(30) NOT NULL,
   `duration_unit` varchar(30) NOT NULL,
-  `comments1` varchar(100) NOT NULL,
-  `comments2` varchar(100) NOT NULL,
-  `other` varchar(100) NOT NULL,
+  `food_comments` varchar(100) NOT NULL,
+  `food_allergies_comments` varchar(100) NOT NULL,
+  `other_comments` varchar(100) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `updated_at` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
@@ -1217,225 +551,365 @@ CREATE TABLE `history_food_allergies` (
 INSERT INTO
   `history_food_allergies` (
     `id`,
-    `C_id`,
-    `food_allergies_type`,
+    `pat_id`,
     `name`,
     `duration`,
     `duration_unit`,
-    `comments1`,
-    `comments2`,
-    `other`,
+    `food_comments`,
+    `food_allergies_comments`,
+    `other_comments`,
     `created_at`,
     `updated_at`
   )
 VALUES
   (
     1,
-    'Case_2022-2023_01',
-    'Hello',
-    'Mushroom',
-    'Hello',
-    'Hello',
-    'Hello',
-    'Hello',
-    '',
-    '2023-01-07 08:07:22',
-    '2023-01-07 12:37:22'
+    'Zai-P_013',
+    'test',
+    'test',
+    'test',
+    'test',
+    'test',
+    'test',
+    '2023-02-11 17:54:24',
+    '2023-02-11 12:24:24'
+  );
+
+-- --------------------------------------------------------
+--
+-- Table structure for table `history_medical_history`
+--
+CREATE TABLE `history_medical_history` (
+  `id` int(10) NOT NULL,
+  `pat_id` varchar(65) NOT NULL,
+  `family_history` varchar(100) NOT NULL,
+  `medical_history` varchar(100) NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+--
+-- Dumping data for table `history_medical_history`
+--
+INSERT INTO
+  `history_medical_history` (
+    `id`,
+    `pat_id`,
+    `family_history`,
+    `medical_history`,
+    `created_at`,
+    `updated_at`
+  )
+VALUES
+  (
+    1,
+    'Zai-P_013',
+    'test',
+    'test',
+    '2023-02-11 17:51:12',
+    '2023-02-11 12:21:12'
+  ),
+  (
+    2,
+    'BIL-P_02',
+    'e',
+    'r',
+    '2023-02-15 10:15:45',
+    '2023-02-15 04:45:45'
   ),
   (
     3,
-    'Case_2022-2023_02',
-    '',
-    'Mushroom',
-    '12',
+    'BIL-P_02',
     '',
     '',
-    '',
-    '',
-    '2023-01-09 07:51:32',
-    '2023-01-09 12:21:32'
+    '2023-02-15 20:51:18',
+    '2023-02-15 15:21:18'
   ),
   (
     4,
-    'Case_2022-2023_03',
-    '',
-    'Mushroom',
-    '12',
+    'BIL-P_02',
     '',
     '',
-    '',
-    '',
-    '2023-01-09 08:01:25',
-    '2023-01-09 12:31:25'
+    '2023-02-15 21:16:37',
+    '2023-02-15 15:46:37'
   ),
   (
     5,
-    'Case_2022-2023_04',
-    'test',
-    'ttestasdas',
-    'test',
-    'test',
-    'test',
-    'test',
-    'test',
-    '2023-01-09 10:27:50',
-    '2023-01-09 14:57:50'
+    'BIL-P_02',
+    '',
+    '',
+    '2023-02-15 21:24:39',
+    '2023-02-15 15:54:39'
   ),
   (
     6,
-    'Case_2022-2023_05',
+    'BIL-P_02',
     '',
     '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-10 06:14:58',
-    '2023-01-10 06:14:58'
+    '2023-02-15 21:43:25',
+    '2023-02-15 16:13:25'
   ),
   (
     7,
-    'Case_2022-2023_06',
+    'BIL-P_02',
     '',
     '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-10 06:16:05',
-    '2023-01-10 06:16:05'
+    '2023-02-15 21:56:55',
+    '2023-02-15 16:26:55'
   ),
   (
     8,
-    'Case_2022-2023_07',
+    'BIL-P_02',
     '',
     '',
-    '2',
-    '2',
-    '',
-    '',
-    '',
-    '2023-01-27 16:50:32',
-    '2023-01-27 16:50:32'
+    '2023-02-15 22:11:51',
+    '2023-02-15 16:41:51'
   ),
   (
     9,
-    'Case_2022-2023_08',
+    'BIL-P_02',
     '',
     '',
-    '2',
-    '2',
-    '',
-    '',
-    '',
-    '2023-01-27 17:01:37',
-    '2023-01-27 17:01:37'
+    '2023-02-15 22:23:19',
+    '2023-02-15 16:53:19'
   ),
   (
     10,
-    'Case_2022-2023_09',
+    'Maa-P_036',
     '',
     '',
-    '2',
-    '2',
-    '',
-    '',
-    '',
-    '2023-01-27 17:05:07',
-    '2023-01-27 17:05:07'
+    '2023-02-16 11:56:21',
+    '2023-02-16 06:26:21'
+  );
+
+-- --------------------------------------------------------
+--
+-- Table structure for table `history_opthalmic_history`
+--
+CREATE TABLE `history_opthalmic_history` (
+  `id` int(10) NOT NULL,
+  `pat_id` varchar(65) NOT NULL,
+  `name` varchar(60) NOT NULL,
+  `duration` varchar(30) NOT NULL,
+  `duration_unit` varchar(30) NOT NULL,
+  `opthalmic_comments` varchar(100) NOT NULL,
+  `opthalmic_history_comments` varchar(100) NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+--
+-- Dumping data for table `history_opthalmic_history`
+--
+INSERT INTO
+  `history_opthalmic_history` (
+    `id`,
+    `pat_id`,
+    `name`,
+    `duration`,
+    `duration_unit`,
+    `opthalmic_comments`,
+    `opthalmic_history_comments`,
+    `created_at`,
+    `updated_at`
+  )
+VALUES
+  (
+    1,
+    'Zai-P_013',
+    'TEST',
+    'test',
+    'test',
+    'test',
+    'test',
+    '2023-02-11 17:49:21',
+    '2023-02-11 12:19:21'
   ),
   (
-    11,
-    'Case_2022-2023_010',
-    '',
-    '',
-    '2',
-    '2',
-    '',
-    '',
-    '',
-    '2023-01-27 17:49:56',
-    '2023-01-27 17:49:56'
+    2,
+    'Sor-P_024',
+    'TEST',
+    'test',
+    'test',
+    'test',
+    'test',
+    '2023-02-13 21:04:13',
+    '2023-02-13 15:34:13'
   ),
   (
-    12,
-    'Case_2022-2023_011',
-    '',
-    '',
+    3,
+    'Sor-P_024',
+    'TEST1',
+    'test2',
+    'test3',
+    'test4',
+    'test4',
+    '2023-02-13 21:04:34',
+    '2023-02-13 15:34:34'
+  ),
+  (
+    26,
+    'BIL-P_02',
+    'Glaucoma',
     '2',
     '2',
+    't',
     '',
-    '',
-    '',
-    '2023-01-27 18:19:34',
-    '2023-01-27 18:19:34'
+    '2023-02-14 18:07:46',
+    '2023-02-14 12:37:46'
   ),
   (
-    13,
-    'Case_2022-2023_012',
-    '',
-    '',
+    27,
+    'uma-P_032',
+    'Glaucoma',
     '2',
     '2',
-    '',
-    '',
-    '',
-    '2023-01-27 18:37:59',
-    '2023-01-27 18:37:59'
+    '1234',
+    'advadda',
+    '2023-02-15 21:43:25',
+    '2023-02-15 16:13:25'
   ),
   (
-    14,
-    'Case_2022-2023_013',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-28 14:47:30',
-    '2023-01-28 14:47:30'
-  ),
-  (
-    15,
-    'Case_2022-2023_014',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-28 14:47:44',
-    '2023-01-28 14:47:44'
-  ),
-  (
-    16,
-    'Case_2022-2023_015',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-28 14:48:22',
-    '2023-01-28 14:48:22'
-  ),
-  (
-    17,
-    'Case_2022-2023_016',
-    '',
-    '[All Seafood, Corn, Milk Proti',
+    28,
+    'Maa-P_036',
+    'Glaucoma',
     '3',
-    '4',
-    'food test10',
+    '2',
+    'fg',
+    'tre',
+    '2023-02-16 11:56:19',
+    '2023-02-16 06:26:19'
+  );
+
+-- --------------------------------------------------------
+--
+-- Table structure for table `history_paediatric_history`
+--
+CREATE TABLE `history_paediatric_history` (
+  `id` int(10) NOT NULL,
+  `pat_id` varchar(65) NOT NULL,
+  `nutrition_assess` varchar(30) NOT NULL,
+  `nutrition_comments` varchar(100) NOT NULL,
+  `immunization_asses` varchar(30) NOT NULL,
+  `immunization_comments` varchar(100) NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+--
+-- Dumping data for table `history_paediatric_history`
+--
+INSERT INTO
+  `history_paediatric_history` (
+    `id`,
+    `pat_id`,
+    `nutrition_assess`,
+    `nutrition_comments`,
+    `immunization_asses`,
+    `immunization_comments`,
+    `created_at`,
+    `updated_at`
+  )
+VALUES
+  (
+    1,
+    'Zai-P_013',
+    'test',
+    'test',
+    'test',
+    'test',
+    '2023-02-11 17:51:57',
+    '2023-02-11 12:21:57'
+  ),
+  (
+    2,
+    'BIL-P_02',
+    'Well Nourished',
+    'Test1',
+    'Complete',
+    'Test2',
+    '2023-02-15 10:11:37',
+    '2023-02-15 04:41:37'
+  ),
+  (
+    3,
+    'ati-P_029',
     '',
     '',
-    '2023-02-02 18:31:41',
-    '2023-02-02 18:31:42'
+    '',
+    '',
+    '2023-02-15 20:51:19',
+    '2023-02-15 15:21:19'
+  ),
+  (
+    4,
+    'Dan-P_030',
+    '',
+    '',
+    '',
+    '',
+    '2023-02-15 21:16:37',
+    '2023-02-15 15:46:37'
+  ),
+  (
+    5,
+    'Waq-P_031',
+    '',
+    '',
+    '',
+    '',
+    '2023-02-15 21:24:40',
+    '2023-02-15 15:54:40'
+  ),
+  (
+    6,
+    'uma-P_032',
+    'Malnourished',
+    '',
+    '',
+    'dgggg',
+    '2023-02-15 21:43:26',
+    '2023-02-15 16:13:26'
+  ),
+  (
+    7,
+    'Suz-P_033',
+    '',
+    '',
+    '',
+    '',
+    '2023-02-15 21:56:56',
+    '2023-02-15 16:26:56'
+  ),
+  (
+    8,
+    'abc-P_034',
+    '',
+    '',
+    '',
+    '',
+    '2023-02-15 22:11:52',
+    '2023-02-15 16:41:52'
+  ),
+  (
+    9,
+    'Abd-P_035',
+    '',
+    '',
+    '',
+    '',
+    '2023-02-15 22:23:19',
+    '2023-02-15 16:53:19'
+  ),
+  (
+    10,
+    'Maa-P_036',
+    'Malnourished',
+    '',
+    '',
+    'ggjj',
+    '2023-02-16 11:56:21',
+    '2023-02-16 06:26:21'
   );
 
 -- --------------------------------------------------------
@@ -1444,16 +918,12 @@ VALUES
 --
 CREATE TABLE `history_systemic_history` (
   `id` int(10) NOT NULL,
-  `C_id` varchar(65) NOT NULL,
-  `systemic_history_type` varchar(30) NOT NULL,
-  `name` varchar(64) NOT NULL,
+  `pat_id` varchar(65) NOT NULL,
+  `name` varchar(60) NOT NULL,
   `duration` varchar(30) NOT NULL,
   `duration_unit` varchar(30) NOT NULL,
-  `comments1` varchar(100) NOT NULL,
-  `comments2` varchar(100) NOT NULL,
-  `family_history` varchar(30) NOT NULL,
-  `medical_history` varchar(30) NOT NULL,
-  `special_status` varchar(30) NOT NULL,
+  `systemic_comments` varchar(100) NOT NULL,
+  `systemic_history_comments` varchar(100) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `updated_at` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
@@ -1464,259 +934,290 @@ CREATE TABLE `history_systemic_history` (
 INSERT INTO
   `history_systemic_history` (
     `id`,
-    `C_id`,
-    `systemic_history_type`,
+    `pat_id`,
     `name`,
     `duration`,
     `duration_unit`,
-    `comments1`,
-    `comments2`,
-    `family_history`,
-    `medical_history`,
-    `special_status`,
+    `systemic_comments`,
+    `systemic_history_comments`,
     `created_at`,
     `updated_at`
   )
 VALUES
   (
     1,
-    'Case_2022-2023_01',
-    'Hello',
-    'Hello',
-    'Hello',
-    'Hello',
-    'Hello',
-    'Hello',
-    'Hello',
-    'Hello',
-    'Hello',
-    '2023-01-07 08:07:22',
-    '2023-01-07 12:37:22'
+    'Zai-P_013',
+    'test',
+    'test',
+    'test',
+    'test',
+    'test',
+    '2023-02-11 17:50:33',
+    '2023-02-11 12:20:33'
   ),
   (
-    3,
-    'Case_2022-2023_02',
-    '',
-    'Lungs',
-    '15',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-09 07:51:32',
-    '2023-01-09 12:21:32'
-  ),
-  (
-    4,
-    'Case_2022-2023_03',
-    '',
-    'Lungs',
-    '15',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-09 08:01:25',
-    '2023-01-09 12:31:25'
+    2,
+    'Zai-P_013',
+    'test',
+    'test',
+    'test',
+    'test',
+    'test',
+    '2023-02-14 17:38:45',
+    '2023-02-14 12:08:45'
   ),
   (
     5,
-    'Case_2022-2023_04',
-    'test',
-    'test',
-    'etets',
-    'test',
-    'test',
-    'test',
-    'test',
-    'ests',
-    'test',
-    '2023-01-09 10:27:50',
-    '2023-01-09 14:57:50'
+    'BIL-P_02',
+    'Diabetes',
+    '1',
+    '1',
+    'r',
+    'OpthalmicHistoryComment.text',
+    '2023-02-14 18:12:17',
+    '2023-02-14 12:42:17'
   ),
   (
     6,
-    'Case_2022-2023_05',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-10 06:14:58',
-    '2023-01-10 06:14:58'
+    'BIL-P_02',
+    'Chewing Tobacco',
+    '2',
+    '1',
+    't',
+    'OpthalmicHistoryComment.text',
+    '2023-02-14 18:12:18',
+    '2023-02-14 12:42:18'
   ),
   (
     7,
-    'Case_2022-2023_06',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-10 06:16:05',
-    '2023-01-10 06:16:05'
+    'BIL-P_02',
+    'Hypertension',
+    '1',
+    '2',
+    'r',
+    'OpthalmicHistoryComment.text',
+    '2023-02-14 18:12:18',
+    '2023-02-14 12:42:18'
   ),
   (
     8,
-    'Case_2022-2023_07',
-    '',
-    '',
+    'BIL-P_02',
+    'Alcoholism',
     '2',
     '2',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-27 16:50:32',
-    '2023-01-27 16:50:32'
+    't',
+    'OpthalmicHistoryComment.text',
+    '2023-02-14 18:12:18',
+    '2023-02-14 12:42:18'
   ),
   (
     9,
-    'Case_2022-2023_08',
-    '',
-    '',
-    '2',
-    '2',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-27 17:01:37',
-    '2023-01-27 17:01:37'
+    'BIL-P_02',
+    'Smoking Tobacco',
+    '4',
+    '3',
+    't',
+    'OpthalmicHistoryComment.text',
+    '2023-02-14 18:12:18',
+    '2023-02-14 12:42:18'
   ),
   (
     10,
-    'Case_2022-2023_09',
-    '',
-    '',
+    'BIL-P_02',
+    'Cardiac Disorder',
     '1',
-    '2',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-27 17:05:07',
-    '2023-01-27 17:05:07'
+    '4',
+    't',
+    'OpthalmicHistoryComment.text',
+    '2023-02-14 18:12:18',
+    '2023-02-14 12:42:18'
   ),
   (
     11,
-    'Case_2022-2023_010',
-    '',
-    '',
-    '1',
+    'BIL-P_02',
+    'Drug Abuse',
     '2',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-27 17:49:56',
-    '2023-01-27 17:49:56'
+    '4',
+    't',
+    'OpthalmicHistoryComment.text',
+    '2023-02-14 18:12:18',
+    '2023-02-14 12:42:18'
   ),
   (
     12,
-    'Case_2022-2023_011',
-    '',
-    '',
-    '3',
+    'BIL-P_02',
+    'HIV/AIDS',
+    '1',
     '4',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-27 18:19:34',
-    '2023-01-27 18:19:34'
+    't',
+    'OpthalmicHistoryComment.text',
+    '2023-02-14 18:12:18',
+    '2023-02-14 12:42:18'
   ),
   (
     13,
-    'Case_2022-2023_012',
-    '',
-    '',
-    '2',
-    '2',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-27 18:37:59',
-    '2023-01-27 18:37:59'
+    'BIL-P_02',
+    'Hyperthyroidism',
+    '4',
+    '4',
+    't',
+    'OpthalmicHistoryComment.text',
+    '2023-02-14 18:12:18',
+    '2023-02-14 12:42:18'
   ),
   (
     14,
-    'Case_2022-2023_013',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-28 14:47:30',
-    '2023-01-28 14:47:30'
+    'BIL-P_02',
+    'Consanguinity',
+    '2',
+    '2',
+    't',
+    'OpthalmicHistoryComment.text',
+    '2023-02-14 18:12:18',
+    '2023-02-14 12:42:18'
   ),
   (
     15,
-    'Case_2022-2023_014',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-28 14:47:44',
-    '2023-01-28 14:47:44'
+    'BIL-P_02',
+    'On Aspirin Blood Thinners',
+    '3',
+    '3',
+    't',
+    'OpthalmicHistoryComment.text',
+    '2023-02-14 18:12:18',
+    '2023-02-14 12:42:18'
   ),
   (
     16,
-    'Case_2022-2023_015',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-28 14:48:22',
-    '2023-01-28 14:48:22'
+    'BIL-P_02',
+    'Hypothyroidism',
+    '3',
+    '2',
+    't',
+    'OpthalmicHistoryComment.text',
+    '2023-02-14 18:12:18',
+    '2023-02-14 12:42:18'
   ),
   (
     17,
-    'Case_2022-2023_016',
-    '',
-    '[Hypertension, Diabetes, Alcoh',
-    '1',
+    'BIL-P_02',
+    'CNS Disorder Stroke',
+    '4',
+    '2',
+    't',
+    'OpthalmicHistoryComment.text',
+    '2023-02-14 18:12:18',
+    '2023-02-14 12:42:18'
+  ),
+  (
+    18,
+    'BIL-P_02',
+    'On Insulin',
     '3',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-02-02 18:31:41',
-    '2023-02-02 18:31:42'
+    '2',
+    't',
+    'OpthalmicHistoryComment.text',
+    '2023-02-14 18:12:18',
+    '2023-02-14 12:42:18'
+  ),
+  (
+    19,
+    'BIL-P_02',
+    'Acidity',
+    '4',
+    '2',
+    't',
+    'OpthalmicHistoryComment.text',
+    '2023-02-14 18:12:18',
+    '2023-02-14 12:42:18'
+  ),
+  (
+    20,
+    'BIL-P_02',
+    'Asthma',
+    '4',
+    '4',
+    't',
+    'OpthalmicHistoryComment.text',
+    '2023-02-14 18:12:18',
+    '2023-02-14 12:42:18'
+  ),
+  (
+    21,
+    'BIL-P_02',
+    'Tuberculosis',
+    '2',
+    '4',
+    't',
+    'OpthalmicHistoryComment.text',
+    '2023-02-14 18:12:18',
+    '2023-02-14 12:42:18'
+  ),
+  (
+    22,
+    'BIL-P_02',
+    'Cancer Tumor',
+    '3',
+    '3',
+    't',
+    'OpthalmicHistoryComment.text',
+    '2023-02-14 18:12:19',
+    '2023-02-14 12:42:19'
+  ),
+  (
+    23,
+    'BIL-P_02',
+    'Hepatities Cirrhosis',
+    '3',
+    '2',
+    't',
+    'OpthalmicHistoryComment.text',
+    '2023-02-14 18:12:19',
+    '2023-02-14 12:42:19'
+  ),
+  (
+    24,
+    'BIL-P_02',
+    'Thyroid Disorder',
+    '2',
+    '2',
+    't',
+    'OpthalmicHistoryComment.text',
+    '2023-02-14 18:12:19',
+    '2023-02-14 12:42:19'
+  ),
+  (
+    25,
+    'BIL-P_02',
+    'Renal Disorder',
+    '2',
+    '1',
+    't',
+    'OpthalmicHistoryComment.text',
+    '2023-02-14 18:12:19',
+    '2023-02-14 12:42:19'
+  ),
+  (
+    26,
+    'BIL-P_02',
+    'Rheumatoid Arthritis',
+    '1',
+    '1',
+    't',
+    'OpthalmicHistoryComment.text',
+    '2023-02-14 18:12:19',
+    '2023-02-14 12:42:19'
+  ),
+  (
+    27,
+    'BIL-P_02',
+    'Benign Prostatic Hyperplasia (',
+    '2',
+    '4',
+    't',
+    'OpthalmicHistoryComment.text',
+    '2023-02-14 18:12:19',
+    '2023-02-14 12:42:19'
   );
 
 -- --------------------------------------------------------
@@ -1728,8 +1229,9 @@ CREATE TABLE `history_visit` (
   `C_id` varchar(65) NOT NULL,
   `org_id` varchar(65) NOT NULL,
   `pat_id` varchar(65) NOT NULL,
-  `visit_type` varchar(65) NOT NULL,
-  `comments` varchar(100) NOT NULL,
+  `problem` varchar(65) NOT NULL,
+  `description` varchar(100) NOT NULL,
+  `created_by` varchar(55) NOT NULL,
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `updated_at` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
@@ -1743,8 +1245,8 @@ INSERT INTO
     `C_id`,
     `org_id`,
     `pat_id`,
-    `visit_type`,
-    `comments`,
+    `problem`,
+    `description`,
     `created_by`,
     `created_at`,
     `updated_at`
@@ -1754,375 +1256,133 @@ VALUES
     1,
     'Case_2022-2023_01',
     'Ash_01',
-    'BIL-P_01 ',
-    'Fever',
-    'Cough and Cold',
-    '',
-    '2023-01-07 08:07:22',
-    '2023-01-07 12:37:22'
-  ),
-  (
-    3,
-    'Case_2022-2023_02',
-    'Ash_01',
-    'BIL-P_01',
-    'Cough',
-    'Cough and Cold',
-    '',
-    '2023-01-09 07:51:32',
-    '2023-01-09 12:21:32'
+    'Zai-P_013',
+    'FevFever',
+    'test',
+    'Maj-Noo-C_01',
+    '2023-02-09 15:48:58',
+    '2023-02-09 10:18:58'
   ),
   (
     4,
     'Case_2022-2023_03',
     'Ash_01',
-    'BIL-P_02',
-    'Cough',
-    'Cough and Cold',
-    '',
-    '2023-01-09 08:01:25',
-    '2023-01-09 12:31:25'
-  ),
-  (
-    6,
-    'Case_2022-2023_05',
-    'Ash_01',
-    'TES-P_05',
-    'Test123',
-    '',
-    '',
-    '2023-01-10 06:14:58',
-    '2023-01-10 06:14:58'
-  ),
-  (
-    7,
-    'Case_2022-2023_06',
-    'Ash_01',
-    'TES-P_05',
-    'test12',
-    '',
-    '',
-    '2023-01-10 06:16:05',
-    '2023-01-10 06:16:05'
-  ),
-  (
-    8,
-    'Case_2022-2023_07',
-    'Ash_01',
-    'vs-P_021',
-    '',
-    '',
-    '',
-    '2023-01-27 16:50:32',
-    '2023-01-27 16:50:32'
-  ),
-  (
-    9,
-    'Case_2022-2023_08',
-    'Ash_01',
-    'abc-P_022',
-    '',
-    '',
-    '',
-    '2023-01-27 17:01:37',
-    '2023-01-27 17:01:37'
-  ),
-  (
-    10,
-    'Case_2022-2023_09',
-    'Ash_01',
-    'ati-P_023',
-    '',
-    '',
-    '',
-    '2023-01-27 17:05:07',
-    '2023-01-27 17:05:07'
-  ),
-  (
-    11,
-    'Case_2022-2023_010',
-    'Ash_01',
-    'hel-P_024',
-    '',
-    '',
-    '',
-    '2023-01-27 17:49:56',
-    '2023-01-27 17:49:56'
-  ),
-  (
-    12,
-    'Case_2022-2023_011',
-    'Ash_01',
-    'qwe-P_025',
-    '',
-    '',
-    '',
-    '2023-01-27 18:19:34',
-    '2023-01-27 18:19:34'
-  ),
-  (
-    13,
-    'Case_2022-2023_012',
-    'Ash_01',
-    'tes-P_026',
-    '',
-    '',
-    '',
-    '2023-01-27 18:37:59',
-    '2023-01-27 18:37:59'
-  ),
-  (
-    14,
-    'Case_2022-2023_013',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-28 14:47:30',
-    '2023-01-28 14:47:30'
-  ),
-  (
-    15,
-    'Case_2022-2023_014',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-28 14:47:44',
-    '2023-01-28 14:47:44'
-  ),
-  (
-    16,
-    'Case_2022-2023_015',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-28 14:48:22',
-    '2023-01-28 14:48:22'
-  ),
-  (
-    17,
-    'Case_2022-2023_016',
-    'Ash_01',
-    'tes-P_010',
-    '',
-    '',
-    '',
-    '2023-02-02 18:31:41',
-    '2023-02-02 18:31:41'
-  );
-
--- --------------------------------------------------------
---
--- Table structure for table `history_vital_signs`
---
-CREATE TABLE `history_vital_signs` (
-  `id` int(10) NOT NULL,
-  `C_id` varchar(65) NOT NULL,
-  `temperature` varchar(5) NOT NULL,
-  `pulse` varchar(5) NOT NULL,
-  `blood_pressure` varchar(5) NOT NULL,
-  `rr` varchar(5) NOT NULL,
-  `spo2` varchar(5) NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
-  `updated_at` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
-
---
--- Dumping data for table `history_vital_signs`
---
-INSERT INTO
-  `history_vital_signs` (
-    `id`,
-    `C_id`,
-    `temperature`,
-    `pulse`,
-    `blood_pressure`,
-    `rr`,
-    `spo2`,
-    `created_at`,
-    `updated_at`
-  )
-VALUES
-  (
-    1,
-    'Case_2022-2023_01',
-    'Hello',
-    'Hello',
-    'Hello',
-    'Hello',
-    'Hello',
-    '2023-01-07 08:07:22',
-    '2023-01-07 12:37:22'
-  ),
-  (
-    3,
-    'Case_2022-2023_02',
-    '',
-    '',
-    '70',
-    '',
-    '',
-    '2023-01-09 07:51:32',
-    '2023-01-09 12:21:32'
-  ),
-  (
-    4,
-    'Case_2022-2023_03',
-    '',
-    '',
-    '70',
-    '',
-    '',
-    '2023-01-09 08:01:25',
-    '2023-01-09 12:31:25'
+    'Zai-P_013',
+    'FevFever',
+    'test',
+    'Maj-Noo-C_01',
+    '2023-02-15 12:45:03',
+    '2023-02-15 07:15:03'
   ),
   (
     5,
     'Case_2022-2023_04',
-    'tets',
-    'asdas',
+    'Ash_01',
+    'Zai-P_013',
+    'FevFever',
     'test',
-    'tasda',
-    'teast',
-    '2023-01-09 10:27:50',
-    '2023-01-09 14:57:50'
+    'Maj-Noo-C_01',
+    '2023-02-15 12:45:10',
+    '2023-02-15 07:15:10'
   ),
   (
     6,
     'Case_2022-2023_05',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-10 06:14:58',
-    '2023-01-10 06:14:58'
+    'Ash_01',
+    'Zai-P_013',
+    'FevFever',
+    'test',
+    'Maj-Noo-C_01',
+    '2023-02-15 12:45:13',
+    '2023-02-15 07:15:13'
   ),
   (
-    7,
+    27,
     'Case_2022-2023_06',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-10 06:16:05',
-    '2023-01-10 06:16:05'
+    'Ash_01',
+    'BIL-P_02',
+    'FevFever',
+    'test',
+    'Maj-Noo-C_01',
+    '2023-02-16 18:11:35',
+    '2023-02-16 12:41:35'
   ),
   (
-    8,
+    28,
     'Case_2022-2023_07',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-27 16:50:32',
-    '2023-01-27 16:50:32'
+    'Ash_01',
+    'BIL-P_02',
+    'FevFever',
+    'test',
+    'Maj-Noo-C_01',
+    '2023-02-16 18:11:35',
+    '2023-02-16 12:41:35'
   ),
   (
-    9,
+    29,
     'Case_2022-2023_08',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-27 17:01:37',
-    '2023-01-27 17:01:37'
+    'Ash_01',
+    'BIL-P_02',
+    'FevFever',
+    'test',
+    'Maj-Noo-C_01',
+    '2023-02-16 18:11:35',
+    '2023-02-16 12:41:35'
   ),
   (
-    10,
+    30,
     'Case_2022-2023_09',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-27 17:05:07',
-    '2023-01-27 17:05:07'
+    'Ash_01',
+    'BIL-P_02',
+    'FevFever',
+    'test',
+    'Maj-Noo-C_01',
+    '2023-02-16 18:11:35',
+    '2023-02-16 12:41:35'
   ),
   (
-    11,
+    31,
     'Case_2022-2023_010',
+    'Ash_01',
+    'BIL-P_02',
+    'abcd',
     '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-27 17:49:56',
-    '2023-01-27 17:49:56'
+    'Maa-Maj-A_01',
+    '2023-02-16 21:12:04',
+    '2023-02-16 15:42:04'
   ),
   (
-    12,
+    32,
     'Case_2022-2023_011',
+    'Ash_01',
+    'BIL-P_02',
+    'd',
     '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-27 18:19:34',
-    '2023-01-27 18:19:34'
+    'Maa-Maj-A_01',
+    '2023-02-17 10:31:29',
+    '2023-02-17 05:01:29'
   ),
   (
-    13,
+    33,
     'Case_2022-2023_012',
+    'Ash_01',
+    'BIL-P_02',
+    'Friday Test',
     '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-27 18:37:59',
-    '2023-01-27 18:37:59'
+    'Maa-Maj-A_01',
+    '2023-02-17 11:24:47',
+    '2023-02-17 05:54:47'
   ),
   (
-    14,
+    34,
     'Case_2022-2023_013',
+    'Ash_01',
+    'BIL-P_02',
+    'h',
     '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-28 14:47:30',
-    '2023-01-28 14:47:30'
-  ),
-  (
-    15,
-    'Case_2022-2023_014',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-28 14:47:44',
-    '2023-01-28 14:47:44'
-  ),
-  (
-    16,
-    'Case_2022-2023_015',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-28 14:48:22',
-    '2023-01-28 14:48:22'
-  ),
-  (
-    17,
-    'Case_2022-2023_016',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '2023-02-02 18:31:41',
-    '2023-02-02 18:31:42'
+    'Maj-Noo-C_01',
+    '2023-02-17 14:09:23',
+    '2023-02-17 08:39:23'
   );
 
 -- --------------------------------------------------------
@@ -2244,22 +1504,33 @@ VALUES
 
 -- --------------------------------------------------------
 --
+-- Table structure for table `old_reports`
+--
+CREATE TABLE `old_reports` (
+  `id` bigint(15) NOT NULL,
+  `pat_id` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `reports` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+--
 -- Table structure for table `organization`
 --
 CREATE TABLE `organization` (
   `id` int(10) NOT NULL,
   `org_id` varchar(100) NOT NULL,
   `org_logo` varchar(65) NOT NULL,
-  `org_name` varchar(10) NOT NULL,
-  `org_country` varchar(10) NOT NULL,
+  `org_name` varchar(50) NOT NULL,
+  `org_country` varchar(50) NOT NULL,
   `org_state` varchar(40) NOT NULL,
   `org_district` varchar(30) NOT NULL,
   `org_city` varchar(30) NOT NULL,
   `org_pincode` varchar(30) NOT NULL,
   `org_address` varchar(100) NOT NULL,
   `org_email` varchar(30) NOT NULL,
-  `org_No` varchar(100) NOT NULL,
-  `org_addedby` varchar(100) NOT NULL,
+  `org_No` varchar(20) NOT NULL,
+  `org_addedby` varchar(10) NOT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
@@ -2302,6 +1573,23 @@ VALUES
     'Maa-S_01',
     '2023-01-04 11:50:24',
     '2023-01-04 16:20:24'
+  ),
+  (
+    2,
+    'INC_02',
+    '',
+    'INCUBATION',
+    'India',
+    'Maharashtra',
+    'Raigad',
+    'Panvel',
+    '',
+    'Test',
+    'test@gmial.com',
+    '123456789',
+    'Maa-S_01',
+    '2023-01-09 12:52:22',
+    '2023-01-09 17:22:22'
   );
 
 -- --------------------------------------------------------
@@ -2312,6 +1600,7 @@ CREATE TABLE `patients` (
   `id` int(30) NOT NULL,
   `pat_id` varchar(55) CHARACTER SET utf8 NOT NULL,
   `org_id` varchar(55) CHARACTER SET utf8 NOT NULL,
+  `profile` varchar(128) NOT NULL,
   `first_name` varchar(100) NOT NULL,
   `middle_name` varchar(100) NOT NULL,
   `last_name` varchar(100) NOT NULL,
@@ -2335,7 +1624,6 @@ CREATE TABLE `patients` (
   `governmentid_type` varchar(100) NOT NULL,
   `governmentidno` varchar(100) NOT NULL,
   `img` varchar(100) NOT NULL,
-  `qr` varchar(55) NOT NULL,
   `blood_grp` varchar(100) NOT NULL,
   `maritail_status` varchar(100) NOT NULL,
   `disabled` varchar(100) NOT NULL,
@@ -2354,6 +1642,7 @@ INSERT INTO
     `id`,
     `pat_id`,
     `org_id`,
+    `profile`,
     `first_name`,
     `middle_name`,
     `last_name`,
@@ -2364,6 +1653,7 @@ INSERT INTO
     `DOB`,
     `years`,
     `months`,
+    `days`,
     `language`,
     `patienttype`,
     `address`,
@@ -2387,20 +1677,20 @@ INSERT INTO
   )
 VALUES
   (
-
     2,
     'BIL-P_02',
     'Ash_01',
-    'TESTname1',
-    'TESTmidname1',
-    'TESTsurname1',
+    'image.png',
+    'Noor',
+    '',
+    'Khan TEST',
     '+918898050464',
     '',
     'bilal.softdigit@gmail.com',
     'male',
     '27-03-2001',
-    '',
-    '',
+    '21',
+    '11',
     '',
     'Hindi',
     'VIP',
@@ -2413,8 +1703,7 @@ VALUES
     '',
     'Aadhar Card',
     '984807422721',
-    'image_picker90490953161931933024.jpg',
-    '',
+    'boss 1.jpg',
     'O',
     'Yes',
     'No',
@@ -2423,88 +1712,15 @@ VALUES
     '123456789',
     '2023-01-05 10:50:47.000000',
     '2023-01-05 15:20:47.820945'
-  ),
-  (
-    3,
-    'BIL-P_03',
-    'Ash_01',
-    'TESTname2',
-    'TESTmidname2',
-    'TESTsurnmae2',
-    '+918286012383',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    'Yes',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-05 10:59:02.000000',
-    '2023-01-05 15:29:02.381903'
-  ),
-  (
-    8,
-    'Saq-P_04',
-    'Ash_01',
-    'TESTname3',
-    'TESTmidname3',
-    'TESTsurname3',
-    '+918286012383',
-    '',
-    'saqib..softdigit@gmail.com',
-    'male',
-    '15-02-1998',
-    '',
-    '',
-    '',
-    'Hindi',
-    'VIP',
-    'Test',
-    'Maharashtra',
-    'Mumbai',
-    '400089',
-    'Developer',
-    '',
-    '',
-    'Aadhar Card',
-    '123456789',
-    '',
-    '',
-    'A+',
-    'Unmarried',
-    'No',
-    'Brother',
-    'Test',
-    '123456789',
-    '2023-01-10 07:08:20.000000',
-    '2023-01-10 07:08:20.598868'
   ),
   (
     9,
     'BIL-P_01',
     'Ash_01',
-    'TESTname4',
-    'TESTmidname4',
-    'TESTsurname4',
+    '',
+    'Saqib',
+    '',
+    'Ansari',
     '+918898050464',
     '',
     'bilal.softdigit@gmail.com',
@@ -2524,7 +1740,6 @@ VALUES
     '',
     'Aadhar Card',
     '984807422721',
-    'image_picker90490953161931933024.jpg',
     '',
     'O',
     'Yes',
@@ -2536,49 +1751,13 @@ VALUES
     '2023-01-05 15:20:47.820945'
   ),
   (
-    11,
-    'BIL-P_03',
-    'Ash_01',
-    'TESTname5',
-    'TESTmidname5',
-    'TESTsurname5',
-    '+918286012383',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    '',
-    'Yes',
-    '',
-    '',
-    '',
-    '',
-    '2023-01-05 10:59:02.000000',
-    '2023-01-05 15:29:02.381903'
-  ),
-  (
     13,
     'TES-P_05',
     'INC_02',
-    'TESTname6',
-    'TESTmidname6',
-    'TESTsurname5',
+    '',
+    'Bilal',
+    '',
+    'Shaikh',
     '+919870029314',
     '',
     'bilal.softdigit@gmail.com',
@@ -2598,7 +1777,6 @@ VALUES
     '',
     'Aadhar Card',
     '984807422721',
-    'image_picker90490953161931933022.jpg',
     '',
     'O',
     'Unmarried',
@@ -2610,87 +1788,14 @@ VALUES
     '2023-01-09 17:30:23.847281'
   ),
   (
-    14,
-    'BIL-P_06',
-    'Ash_01',
-    'TESTname7',
-    'TESTmidname7',
-    'TESTsurname6',
-    '8286012383',
-    '',
-    'saqib..softdigit@gmail.com',
-    'male',
-    '15-02-1998',
-    '21',
-    '10',
-    '',
-    'Hindi',
-    'VIP',
-    'Test',
-    'Maharashtra',
-    'Mumbai',
-    '400089',
-    'Developer',
-    '',
-    '',
-    'Aadhar Card',
-    '123456789',
-    'image_picker90490953161931933023.jpg',
-    'image_picker90490953161931933022.jpg',
-    'A+',
-    'Unmarried',
-    'No',
-    'Brother',
-    'Test',
-    '123456789',
-    '2023-01-18 06:57:33.000000',
-    '2023-01-18 11:27:33.389074'
-  ),
-  (
-    15,
-    'BIL-P_07',
-    'Ash_01',
-    'TESTname8',
-    'TESTmidname8',
-    'TESTsurname7',
-    '8286012383',
-    '',
-    'saqib..softdigit@gmail.com',
-    'male',
-    '15-02-1998',
-    '21',
-    '10',
-    '',
-    'Hindi',
-    'VIP',
-    'Test',
-    'Maharashtra',
-    'Mumbai',
-    '400089',
-    'Developer',
-    '',
-    '',
-    'Aadhar Card',
-    '123456789',
-    'image_picker90490953161931933025.jpg',
-    'image_picker90490953161931933024.jpg',
-    'A+',
-    'Unmarried',
-    'No',
-    'Brother',
-    'Test',
-    '123456789',
-    '2023-01-18 07:34:57.000000',
-    '2023-01-18 12:04:57.270732'
-  ),
-  (
     17,
     ' Zi-P_09',
     'Ash_01',
-    'TESTname9',
-    'TESTmidname9',
-    'TESTsurname9',
-    '7700066780',
+    '',
+    'Zaid',
+    '',
+    'Shaikh',
+    '+917700066780',
     '7700066780',
     'ZishanSorathiya111@gmail.com',
     'male',
@@ -2710,7 +1815,6 @@ VALUES
     'Adhaar Card',
     '1111222233334444',
     '',
-    '',
     'O+',
     'N',
     '',
@@ -2721,41 +1825,596 @@ VALUES
     '2023-01-26 11:47:28.332292'
   ),
   (
-    35,
-    'tes-P_010',
+    36,
+    'Maa-P_011',
     'Ash_01',
-    'test10',
-    'testmiddlename10',
-    'testsurname10',
-    '1234567890',
-    '12345678955',
-    'test10@email.com',
+    'Screen.png',
+    'Maaz',
+    'Mohammad',
+    'Siddique',
+    '+918433581551',
+    '',
+    'maazoly1@gmail.com',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    'boss.jpeg',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '2023-02-04 11:45:36.000000',
+    '2023-02-04 06:15:36.278833'
+  ),
+  (
+    37,
+    'Saq-P_012',
+    'Ash_01',
+    '',
+    'Saqib',
+    '',
+    'Ansari',
+    '',
+    '',
+    'ansarisaqib803@gmail.com',
     'male',
-    '16-02-2017',
+    '06-02-2002',
+    '',
+    '',
+    '',
+    'English',
+    'Option A',
+    'Chembur ',
+    'Maharashtra',
+    'Mumbai',
+    '400089',
+    'Self Service',
+    '',
+    '',
+    'Adhaar Card',
+    '1245789512',
+    'office boss.jpg',
+    'A+',
+    'S',
+    'N',
+    'Brother',
+    'Ansari',
+    '1234567898',
+    '2023-02-06 10:57:11.000000',
+    '2023-02-06 05:27:11.264893'
+  ),
+  (
+    38,
+    'Zai-P_013',
+    'Ash_01',
+    '',
+    'Zaid',
+    '',
+    'Ansari',
+    '+918369521271',
+    '',
+    'shaikhmohdzaid5@gmail.com',
+    'male',
+    '15-02-1998',
+    '',
+    '',
+    '',
+    'Hindi',
+    'VIP',
+    'Test',
+    'Maharashtra',
+    'Mumbai',
+    '400089',
+    'Developer',
+    '',
+    '',
+    'Aadhar Card',
+    '123456789',
+    'boss.jpeg',
+    'A+',
+    'Unmarried',
+    'No',
+    'Brother',
+    'Test',
+    '123456789',
+    '2023-02-09 13:58:01.000000',
+    '2023-02-09 08:28:01.007046'
+  ),
+  (
+    39,
+    'Ati-P_014',
+    'Ash_01',
+    '',
+    'Atif',
+    'Sorathiya',
+    'Sorathiya',
+    '7789456123',
+    '',
+    '',
+    'Male',
+    '17/2/22',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    '',
+    'Adhaar cad',
+    '123456',
+    'Screenshot (1)1.png',
+    '',
+    '',
+    'no',
+    '',
+    '',
+    '123456789',
+    '2023-02-12 13:44:45.000000',
+    '2023-02-12 08:14:45.292559'
+  ),
+  (
+    49,
+    'Sor-P_024',
+    'Ash_01',
+    '',
+    'Sorathiya',
+    'Mohamed',
+    'Zishan',
+    '7700006678',
+    '1234567897',
+    '20co62@aiktc.ac.in',
+    'male',
+    '01-02-2023',
+    '',
+    '',
+    '',
+    'Marathi',
+    'Option B',
+    'abcd ',
+    'Gujarat',
+    '123',
+    '12332',
+    'Self Service',
+    '123456789',
+    '12345678',
+    'Adhaar Card',
+    '123456789',
+    'fda5ade2-bad6-49c0-859c-170382722e8c9145573506081926093.jpg',
+    'O+',
+    'S',
+    'N',
+    'Sister',
+    'abcd',
+    '12346887',
+    '2023-02-13 19:57:32.000000',
+    '2023-02-13 14:27:32.571898'
+  ),
+  (
+    50,
+    'Sor-P_025',
+    'Ash_01',
+    '',
+    'Sorathiya',
+    'Mohmed',
+    'Atif',
+    '1234567890',
+    '9874561230',
+    'abc@gmail.com',
+    'male',
+    '06-02-2023',
+    '',
+    '',
+    '',
+    'English',
+    'Option A',
+    'ASCD VDFBFSD',
+    'Haryana',
+    '120255',
+    '123456',
+    'Self Service',
+    '',
+    '123456',
+    'Adhaar Card',
+    '123456789',
+    'c3a00484-ceab-4029-b9cd-9eaf38e8baf85853314118077501708.jpg',
+    'O+',
+    'S',
+    'N',
+    'Mother',
+    'xyszsc',
+    '123456789',
+    '2023-02-13 20:09:54.000000',
+    '2023-02-13 14:39:54.780901'
+  ),
+  (
+    51,
+    'Zee-P_026',
+    'Ash_01',
+    '',
+    'Zeeshan',
+    '',
+    'Khan',
+    '7894561230',
+    '1234567890',
+    '4dssvsv@gmail.com',
+    'male',
+    '06-02-2023',
+    '',
+    '',
+    '',
+    'English',
+    'Option B',
+    'abd ',
+    'Himachal Pradesh',
+    'erty',
+    '123456',
+    '',
+    '',
+    '',
+    'Adhaar Card',
+    '1234567',
+    'f468125b-ccf6-438d-b2e7-6c0d3ee1970b381242201699099495.jpg',
+    'O+',
+    'S',
+    'N',
+    'Brother',
+    'atf',
+    '123456788',
+    '2023-02-13 20:35:46.000000',
+    '2023-02-13 15:05:46.924080'
+  ),
+  (
+    52,
+    'Zis-P_027',
+    'Ash_01',
+    '',
+    'Zishan',
+    '',
+    'Sorathiya',
+    '+917700066780',
+    '1234569877',
+    '20co62@aiktc.ac.in',
+    'male',
+    '01-02-2023',
+    '',
+    '',
+    '',
+    'English',
+    'Option B',
+    'dsdvdv ',
+    'Haryana',
+    'jdnjsdbbid',
+    '1656454',
+    'Self Service',
+    '',
+    '',
+    'Adhaar Card',
+    '123465',
+    '2c26834d-ad8c-4933-a11f-98e2573fa1cd5842311397026990974.jpg',
+    'O+',
+    'S',
+    'N',
+    'Sister',
+    'abcd',
+    'sdchsdbshbd',
+    '2023-02-13 21:29:37.000000',
+    '2023-02-13 15:59:37.506904'
+  ),
+  (
+    54,
+    'End-P_028',
+    'Ash_01',
+    '',
+    'Endan',
+    '',
+    'Mollick',
+    '4484849444',
+    '',
+    'endan@gmail.com',
+    'male',
+    '02-02-2023',
+    '',
+    '',
+    '',
+    'Hindi',
+    '',
+    'vsgcvasgca ',
+    'Gujarat',
+    'csdvs',
+    '12655',
+    'Business Man',
+    '',
+    '',
+    'Adhaar Card',
+    'sdvsvv',
+    '3f816c4f-1179-43f6-9145-b1a45f1c8a098688091997333231749.jpg',
+    'O+',
+    'S',
+    'N',
+    'Sister',
+    'vfvs',
+    '11555555',
+    '2023-02-13 21:45:31.000000',
+    '2023-02-13 16:15:31.932893'
+  ),
+  (
+    56,
+    'ati-P_029',
+    'Ash_01',
+    'ati-P_029.png',
+    'atif',
+    '',
+    'sorathiya',
+    '1234567895',
+    '1234567899',
+    '',
+    'male',
+    '06-02-2014',
+    '',
+    '',
+    '',
+    'English',
+    'Option A',
+    'Kurla ',
+    'Maharashtra',
+    'Andheri',
+    '1236456',
+    'Business Man',
+    '',
+    'ddfggg',
+    'Adhaar Card',
+    '123555',
+    '4b2044ad-3b41-46aa-89b2-736082efb4e72663383130720510875.jpg',
+    'O+',
+    'S',
+    'N',
+    'Sister',
+    'Sister',
+    '12346587',
+    '2023-02-15 20:50:57.000000',
+    '2023-02-15 15:20:57.946181'
+  ),
+  (
+    57,
+    'Dan-P_030',
+    'Ash_01',
+    'Dan-P_030.png',
+    'Danish',
+    '',
+    'Nevrekar',
+    '1234567890',
+    '',
+    '',
+    'male',
+    '01-02-2023',
     '',
     '',
     '',
     'Hindi',
     'Option A',
-    'testaddr1-10 testaddr2-10',
-    'Gujarat',
-    'Mumbai',
-    '400058',
+    'abcd ',
+    'Maharashtra',
+    'Andheri',
+    '400052',
     'Business Man',
     '',
-    'abc123',
+    '',
     'Adhaar Card',
-    '1234567896',
-    '',
-    '',
+    '123456789',
+    '13648c8c-d005-4fc7-b306-7d7e6c4906343451926751361185078.jpg',
     'O+',
     'S',
     'Y',
+    'Sister',
+    'abcd',
+    '123456',
+    '2023-02-15 21:16:16.000000',
+    '2023-02-15 15:46:16.240818'
+  ),
+  (
+    58,
+    'Waq-P_031',
+    'Ash_01',
+    'Waq-P_031.png',
+    'Waqqas',
+    '',
+    'Malim',
+    '1234567891',
+    '',
+    '',
+    'male',
+    '02-02-2023',
+    '',
+    '',
+    '',
+    '',
+    '',
+    'abcd ',
+    '',
+    'city',
+    '123654',
+    'Self Service',
+    '',
+    '',
+    'Adhaar Card',
+    '1452662',
+    '980b1539-435c-4034-ba4f-2dda75e4bda97747414755269073168.jpg',
+    'O+',
+    'S',
+    'Y',
+    'Father',
+    'abcd',
+    'zishan',
+    '2023-02-15 21:24:24.000000',
+    '2023-02-15 15:54:24.884449'
+  ),
+  (
+    59,
+    'uma-P_032',
+    'Ash_01',
+    'uma-P_032.png',
+    'umar',
+    '',
+    'siddique',
+    '1234567899',
+    '',
+    '',
+    'male',
+    '01-02-2023',
+    '',
+    '',
+    '',
+    'English',
+    'Option A',
+    'abcd ',
+    'Jammu and Kashmir',
+    'abcd',
+    '401250',
+    'Business Man',
+    '',
+    '',
+    'Adhaar Card',
+    '1234567899',
+    '6d9b0426-b018-4da8-bd60-6e20b9295fd64204967520839671272.jpg',
+    'O+',
+    'S',
+    'N',
+    'Sister',
     'Mother',
-    'test10 mother',
-    '123456789',
-    '2023-02-02 18:31:41.000000',
-    '2023-02-02 18:31:41.545943'
+    '123654789',
+    '2023-02-15 21:43:12.000000',
+    '2023-02-15 16:13:12.592009'
+  ),
+  (
+    61,
+    'abc-P_034',
+    'Ash_01',
+    '',
+    'abcd',
+    '',
+    'efgh',
+    '1234569877',
+    '',
+    '',
+    'male',
+    '01-02-2023',
+    '',
+    '',
+    '',
+    'Marathi',
+    'Option A',
+    'Andheri ',
+    '',
+    'andheri',
+    '400058',
+    '',
+    '',
+    '',
+    'Adhaar Card',
+    'abch',
+    '19fb2c61-6763-4d52-8a37-bf6f099d6cd66822902432270452370.jpg',
+    'O+',
+    'M',
+    'N',
+    'Sister',
+    'Sister',
+    '12345678',
+    '2023-02-15 22:11:40.000000',
+    '2023-02-15 16:41:40.204329'
+  ),
+  (
+    62,
+    'Abd-P_035',
+    'Ash_01',
+    '',
+    'Abdul Gani',
+    '',
+    'Sorathiya',
+    '1234567897',
+    '',
+    '',
+    'male',
+    '01-02-2023',
+    '',
+    '',
+    '',
+    'English',
+    'Option A',
+    'andheri ',
+    '',
+    'Andheri',
+    '400058',
+    'Business Man',
+    '',
+    '',
+    'Adhaar Card',
+    '123456',
+    'f0c55ce6-f417-4418-8806-750cb5c0a8364819684764611020442.jpg',
+    'O+',
+    'S',
+    'Y',
+    'Sister',
+    '',
+    '12345678',
+    '2023-02-15 22:23:04.000000',
+    '2023-02-15 16:53:04.276844'
+  ),
+  (
+    63,
+    'Maa-P_036',
+    'Ash_01',
+    'Screen_(1).png',
+    'Maaz',
+    '',
+    'afg',
+    '1236548999',
+    '',
+    'shaikhbilal2732001@gmail.com',
+    'male',
+    '16-02-2023',
+    '',
+    '',
+    '',
+    '',
+    '',
+    'sdf ',
+    '',
+    'dfd',
+    '2',
+    '',
+    '',
+    '',
+    'Adhaar Card',
+    'g',
+    'IMG_20230203_1525406.jpg',
+    'A+',
+    'S',
+    'N',
+    'Sister',
+    'gh',
+    'fh6',
+    '2023-02-16 11:56:16.000000',
+    '2023-02-16 06:26:16.218307'
   );
 
 -- --------------------------------------------------------
@@ -2906,6 +2565,14 @@ VALUES
     '4',
     '2023-02-01 09:36:40',
     '2023-02-01 09:37:00'
+  ),
+  (
+    3,
+    'Maj-Zai-D_01asd',
+    'BIL-P_02',
+    '5',
+    '2023-02-10 05:41:34',
+    '0000-00-00 00:00:00'
   );
 
 -- --------------------------------------------------------
@@ -2967,12 +2634,13 @@ CREATE TABLE `staff` (
   `d_o_b` date NOT NULL,
   `age` int(22) NOT NULL,
   `address` text NOT NULL,
-  `mobile_no` int(22) NOT NULL,
+  `mobile` varchar(20) NOT NULL,
   `img` text NOT NULL,
   `qualification` text NOT NULL,
   `speciality` text NOT NULL,
   `ID_proof` text NOT NULL,
   `ID_img` text NOT NULL,
+  `about` varchar(256) NOT NULL,
   `join_date` date NOT NULL,
   `role_id` int(22) NOT NULL,
   `status` enum('Pending', 'Approved') NOT NULL,
@@ -2997,12 +2665,13 @@ INSERT INTO
     `d_o_b`,
     `age`,
     `address`,
-    `mobile_no`,
+    `mobile`,
     `img`,
     `qualification`,
     `speciality`,
     `ID_proof`,
     `ID_img`,
+    `about`,
     `join_date`,
     `role_id`,
     `status`,
@@ -3023,10 +2692,11 @@ VALUES
     '2001-10-02',
     21,
     'chdcfcgsdcghh',
-    2147483647,
+    '2147483647',
     '',
     '15',
     'Backend',
+    '',
     '',
     '',
     '0000-00-00',
@@ -3048,17 +2718,18 @@ VALUES
     '2001-10-02',
     21,
     'chdcfcgsdcghh',
-    2147483647,
+    '+918286012383',
     '',
     '15',
     'Backend',
+    '',
     '',
     '',
     '0000-00-00',
     2,
     'Approved',
     '2023-01-04 10:08:14',
-    '2023-01-20 06:38:44'
+    '2023-02-04 12:08:04'
   ),
   (
     4,
@@ -3073,17 +2744,18 @@ VALUES
     '2001-10-02',
     21,
     'chdcfcgsdcghh',
-    2147483647,
-    '',
+    '+918369521271',
+    'boss.jpeg',
     '15',
     'Backend',
+    '',
     '',
     '',
     '0000-00-00',
     3,
     'Approved',
     '2023-01-04 10:19:10',
-    '2023-02-01 09:37:00'
+    '2023-02-16 10:10:07'
   ),
   (
     7,
@@ -3098,67 +2770,70 @@ VALUES
     '2001-10-02',
     21,
     'chdcfcgsdcghh',
-    2147483647,
+    '+918898050464',
     '',
     '15',
     'Backend',
+    '',
     '',
     '',
     '0000-00-00',
     4,
     'Approved',
     '2023-01-04 10:56:44',
-    '2023-02-02 06:35:13'
+    '2023-02-04 12:08:01'
   ),
   (
-    20,
-    'TES-S_02',
+    22,
+    'Bil-TES-A_03',
     '',
     '',
-    'TEST',
-    'bilal.softdigit@gmail.com',
-    '5cccd787d78d3a982524a209d8c1e4ab7e26cd2d',
-    '0',
-    'male',
-    '2001-03-27',
-    21,
-    'chdcfcgsdcghh',
-    2147483647,
-    '',
-    'Graduate',
-    'Backend',
-    '',
-    '',
-    '0000-00-00',
-    1,
-    'Approved',
-    '2023-01-12 10:56:44',
-    '2023-01-20 06:38:55'
-  ),
-  (
-    21,
-    'Noo-TES-A_02',
-    'Maa-S_01',
-    '',
-    'Noor Alam',
-    'nooralam@gmail.com',
+    'Bilal Shaikh',
+    'bilal@gmail.com',
     '7c4a8d09ca3762af61e59520943dc26494f8941b',
     '',
     'male',
     '1999-10-02',
     23,
     'chdcfcgsdcghh',
-    2147483647,
+    '+919870029314',
+    '',
+    '15',
+    'BackendTESTETSTETSTETS',
+    '',
+    '',
+    '',
+    '0000-00-00',
+    1,
+    'Approved',
+    '2023-02-03 12:35:32',
+    '2023-02-06 10:23:41'
+  ),
+  (
+    26,
+    'Saq-Maj-D_02',
+    'Maa-Maj-A_01',
+    'Ash_01',
+    'Saqib Ansari',
+    'saqib@gmail.com',
+    '7c4a8d09ca3762af61e59520943dc26494f8941b',
+    '',
+    'male',
+    '0000-00-00',
+    23,
+    'chdcfcgsdcghh',
+    '8898050464',
     '',
     '15',
     'Flutter',
     '',
     '',
-    '0000-00-00',
-    2,
     '',
-    '2023-02-02 06:40:16',
-    '2023-02-02 06:40:16'
+    '0000-00-00',
+    3,
+    '',
+    '2023-02-06 10:25:03',
+    '2023-02-06 10:25:03'
   );
 
 -- --------------------------------------------------------
@@ -3238,7 +2913,7 @@ VALUES
 --
 CREATE TABLE `telemedicine` (
   `id` int(10) NOT NULL,
-  `case_id` varchar(65) NOT NULL,
+  `C_id` varchar(65) NOT NULL,
   `tele_id` varchar(55) NOT NULL,
   `pat_id` varchar(55) NOT NULL,
   `doc_id` varchar(55) NOT NULL,
@@ -3256,7 +2931,7 @@ CREATE TABLE `telemedicine` (
 INSERT INTO
   `telemedicine` (
     `id`,
-    `case_id`,
+    `C_id`,
     `tele_id`,
     `pat_id`,
     `doc_id`,
@@ -3357,6 +3032,71 @@ VALUES
     '6 Hours 32 Minutes',
     'incoming',
     '2023-01-11 07:20:52',
+    '0000-00-00 00:00:00'
+  ),
+  (
+    8,
+    'Case_2022-2023_04',
+    'Tele2022_08',
+    'Zai-P_013',
+    'Maj-Zai-D_01',
+    '11:04:00',
+    '12:04:00',
+    '1 Hours 0 Minutes',
+    '',
+    '2023-02-16 18:07:42',
+    '0000-00-00 00:00:00'
+  ),
+  (
+    9,
+    'Case_2022-2023_04',
+    'Tele2022_09',
+    'Zai-P_013',
+    'Maj-Zai-D_01',
+    '11:04:00',
+    '12:04:00',
+    '1 Hours 0 Minutes',
+    '',
+    '2023-02-16 18:07:50',
+    '0000-00-00 00:00:00'
+  ),
+  (
+    10,
+    'Case_2022-2023_04',
+    'Tele2022_010',
+    'Zai-P_013',
+    'Maj-Zai-D_01',
+    '11:04:00',
+    '12:04:00',
+    '1 Hours 0 Minutes',
+    '',
+    '2023-02-16 18:07:50',
+    '0000-00-00 00:00:00'
+  ),
+  (
+    11,
+    'Case_2022-2023_04',
+    'Tele2022_011',
+    'Zai-P_013',
+    'Maj-Zai-D_01',
+    '11:04:00',
+    '12:04:00',
+    '1 Hours 0 Minutes',
+    '',
+    '2023-02-16 18:07:50',
+    '0000-00-00 00:00:00'
+  ),
+  (
+    12,
+    'Case_2022-2023_04',
+    'Tele2022_012',
+    'Zai-P_013',
+    'Maj-Zai-D_01',
+    '10:04:00',
+    '12:04:00',
+    '2 Hours 0 Minutes',
+    '',
+    '2023-02-16 18:07:50',
     '0000-00-00 00:00:00'
   );
 
@@ -3502,127 +3242,123 @@ VALUES
 CREATE TABLE `test_cases` (
   `id` bigint(15) NOT NULL,
   `C_id` varchar(64) NOT NULL,
-  `pat_id` varchar(55) NOT NULL,
-  `problem` varchar(128) NOT NULL,
-  `description` varchar(256) NOT NULL,
   `test_id` varchar(64) NOT NULL,
   `title` varchar(128) NOT NULL,
   `reading` varchar(64) NOT NULL,
-  `doctor_id` varchar(64) NOT NULL,
+  `staff_id` varchar(64) NOT NULL,
   `status` varchar(64) NOT NULL,
+  `method` varchar(12) NOT NULL,
   `created_at` varchar(55) NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE = InnoDB DEFAULT CHARSET = latin1;
 
 --
--- Indexes for table `admin_org`
+-- Dumping data for table `test_cases`
 --
 INSERT INTO
   `test_cases` (
     `id`,
     `C_id`,
-    `pat_id`,
-    `problem`,
-    `description`,
     `test_id`,
     `title`,
     `reading`,
-    `doctor_id`,
+    `staff_id`,
     `status`,
+    `method`,
     `created_at`,
     `updated_at`
   )
 VALUES
   (
-    4,
-    'Case_2022-2023_04',
-    'BIL-P_06',
-    'Fever',
-    'This is a test',
-    '1',
-    '',
-    '100 F',
-    'Maj-Zai-D_01',
-    'Completed',
-    '',
-    '2023-01-21 10:23:06'
-  ),
-  (
-    5,
+    1,
     'Case_2022-2023_05',
-    'BIL-P_06',
-    'Fever',
-    'This is a test',
-    '1',
+    '6',
+    'BMI',
+    '40F',
+    'Maj-Noo-C_01',
+    'Pending',
     '',
-    '100 F',
-    'Maj-Zai-D_01',
-    'Completed',
-    '',
-    '2023-01-21 10:23:06'
+    '2023-02-15 17:03:39',
+    '2023-02-15 11:33:39'
   ),
   (
-    6,
-    'Case_2022-2023_06',
-    'BIL-P_06',
-    'Fever',
-    'This is a test',
-    '1',
+    2,
+    'Case_2022-2023_05',
+    '6',
+    'BMI',
+    '40F',
+    'Maj-Noo-C_01',
+    'Pending',
     '',
-    '100 F',
-    'Maj-Zai-D_01',
-    'Completed',
-    '',
-    '2023-01-21 10:23:06'
+    '2023-02-15 17:03:40',
+    '2023-02-15 11:33:40'
+  ),
+  (
+    3,
+    'Case_2022-2023_05',
+    '6',
+    'TEst2',
+    '100F',
+    'Maj-Noo-C_01',
+    'Pending',
+    'Manual',
+    '2023-02-15 17:03:40',
+    '2023-02-17 07:12:52'
+  ),
+  (
+    4,
+    'Case_2022-2023_05',
+    '6',
+    'TEst2',
+    '100F',
+    'Maj-Noo-C_01',
+    'Pending',
+    'Manual',
+    '2023-02-15 17:03:41',
+    '2023-02-17 07:12:33'
   ),
   (
     7,
-    'Case_2022-2023_07',
-    'TES-P_05',
-    'Fever',
-    'This is a test',
-    '1',
-    '',
-    '100 F',
+    'Case_2022-2023_01',
+    '6',
+    'BMI',
+    '50F',
     'Maj-Zai-D_01',
-    'Completed',
+    'Pending',
     '',
-    '2023-01-25 05:13:23'
+    '2023-02-17 16:39:42',
+    '2023-02-17 11:09:42'
   ),
   (
     8,
     'Case_2022-2023_01',
-    '',
-    'Fever',
-    'Too much',
-    '1',
-    '',
-    '',
+    '7',
+    'BMI',
+    '6F',
     'Maj-Zai-D_01',
     'Pending',
     '',
-    '2023-01-28 14:48:02'
+    '2023-02-17 16:39:42',
+    '2023-02-17 11:09:42'
   ),
   (
     9,
-    'Case_2022-2023_06',
-    '',
-    'Obesity',
-    'Too much',
-    '6',
+    'Case_2022-2023_01',
+    '7',
     'BMI',
-    '40F',
+    '6.2F',
     'Maj-Zai-D_01',
     'Pending',
     '',
-    '2023-01-30 06:56:24'
+    '2023-02-17 16:39:42',
+    '2023-02-17 11:09:42'
   );
 
 --
--- Indexes for table `api_keys`
+-- Indexes for dumped tables
 --
 --
--- Indexes for table `breaktime`
+-- Indexes for table `admin_org`
 --
 ALTER TABLE
   `admin_org`
@@ -3660,22 +3396,6 @@ ALTER TABLE
   `bills`
 ADD
   PRIMARY KEY (`id`);
-  
---
--- Indexes for table `history_anthropometry`
---
-ALTER TABLE
-  `history_anthropometry`
-ADD
-  PRIMARY KEY (`id`);
-
---
--- Indexes for table `history_chief_complaints`
---
-ALTER TABLE
-  `history_chief_complaints`
-ADD
-  PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `history_contact_allergies`
@@ -3702,6 +3422,30 @@ ADD
   PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `history_medical_history`
+--
+ALTER TABLE
+  `history_medical_history`
+ADD
+  PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `history_opthalmic_history`
+--
+ALTER TABLE
+  `history_opthalmic_history`
+ADD
+  PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `history_paediatric_history`
+--
+ALTER TABLE
+  `history_paediatric_history`
+ADD
+  PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `history_systemic_history`
 --
 ALTER TABLE
@@ -3718,14 +3462,6 @@ ADD
   PRIMARY KEY (`id`);
 
 --
--- Indexes for table `history_vital_signs`
---
-ALTER TABLE
-  `history_vital_signs`
-ADD
-  PRIMARY KEY (`id`);
-
---
 -- Indexes for table `instructions`
 --
 ALTER TABLE
@@ -3738,6 +3474,14 @@ ADD
 --
 ALTER TABLE
   `labtest`
+ADD
+  PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `old_reports`
+--
+ALTER TABLE
+  `old_reports`
 ADD
   PRIMARY KEY (`id`);
 
@@ -3866,7 +3610,7 @@ ALTER TABLE
   `appointments`
 MODIFY
   `id` int(55) NOT NULL AUTO_INCREMENT,
-  AUTO_INCREMENT = 8;
+  AUTO_INCREMENT = 9;
 
 --
 -- AUTO_INCREMENT for table `bills`
@@ -3878,31 +3622,13 @@ MODIFY
   AUTO_INCREMENT = 4;
 
 --
--- AUTO_INCREMENT for table `history_anthropometry`
---
-ALTER TABLE
-  `history_anthropometry`
-MODIFY
-  `id` int(10) NOT NULL AUTO_INCREMENT,
-  AUTO_INCREMENT = 18;
-
---
--- AUTO_INCREMENT for table `history_chief_complaints`
---
-ALTER TABLE
-  `history_chief_complaints`
-MODIFY
-  `id` int(10) NOT NULL AUTO_INCREMENT,
-  AUTO_INCREMENT = 18;
-
---
 -- AUTO_INCREMENT for table `history_contact_allergies`
 --
 ALTER TABLE
   `history_contact_allergies`
 MODIFY
   `id` int(10) NOT NULL AUTO_INCREMENT,
-  AUTO_INCREMENT = 18;
+  AUTO_INCREMENT = 2;
 
 --
 -- AUTO_INCREMENT for table `history_drug_allergies`
@@ -3911,17 +3637,43 @@ ALTER TABLE
   `history_drug_allergies`
 MODIFY
   `id` int(10) NOT NULL AUTO_INCREMENT,
-  AUTO_INCREMENT = 18;
+  AUTO_INCREMENT = 15;
 
 --
 -- AUTO_INCREMENT for table `history_food_allergies`
 --
-
 ALTER TABLE
   `history_food_allergies`
 MODIFY
   `id` int(10) NOT NULL AUTO_INCREMENT,
-  AUTO_INCREMENT = 18;
+  AUTO_INCREMENT = 2;
+
+--
+-- AUTO_INCREMENT for table `history_medical_history`
+--
+ALTER TABLE
+  `history_medical_history`
+MODIFY
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  AUTO_INCREMENT = 11;
+
+--
+-- AUTO_INCREMENT for table `history_opthalmic_history`
+--
+ALTER TABLE
+  `history_opthalmic_history`
+MODIFY
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  AUTO_INCREMENT = 29;
+
+--
+-- AUTO_INCREMENT for table `history_paediatric_history`
+--
+ALTER TABLE
+  `history_paediatric_history`
+MODIFY
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  AUTO_INCREMENT = 11;
 
 --
 -- AUTO_INCREMENT for table `history_systemic_history`
@@ -3930,7 +3682,7 @@ ALTER TABLE
   `history_systemic_history`
 MODIFY
   `id` int(10) NOT NULL AUTO_INCREMENT,
-  AUTO_INCREMENT = 18;
+  AUTO_INCREMENT = 28;
 
 --
 -- AUTO_INCREMENT for table `history_visit`
@@ -3939,16 +3691,7 @@ ALTER TABLE
   `history_visit`
 MODIFY
   `id` int(10) NOT NULL AUTO_INCREMENT,
-  AUTO_INCREMENT = 18;
-
---
--- AUTO_INCREMENT for table `history_vital_signs`
---
-ALTER TABLE
-  `history_vital_signs`
-MODIFY
-  `id` int(10) NOT NULL AUTO_INCREMENT,
-  AUTO_INCREMENT = 18;
+  AUTO_INCREMENT = 35;
 
 --
 -- AUTO_INCREMENT for table `instructions`
@@ -3969,13 +3712,21 @@ MODIFY
   AUTO_INCREMENT = 5;
 
 --
+-- AUTO_INCREMENT for table `old_reports`
+--
+ALTER TABLE
+  `old_reports`
+MODIFY
+  `id` bigint(15) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `organization`
 --
 ALTER TABLE
   `organization`
 MODIFY
   `id` int(10) NOT NULL AUTO_INCREMENT,
-  AUTO_INCREMENT = 6;
+  AUTO_INCREMENT = 7;
 
 --
 -- AUTO_INCREMENT for table `patients`
@@ -3984,7 +3735,7 @@ ALTER TABLE
   `patients`
 MODIFY
   `id` int(30) NOT NULL AUTO_INCREMENT,
-  AUTO_INCREMENT = 36;
+  AUTO_INCREMENT = 64;
 
 --
 -- AUTO_INCREMENT for table `prescription`
@@ -4002,7 +3753,7 @@ ALTER TABLE
   `ratings`
 MODIFY
   `id` bigint(15) NOT NULL AUTO_INCREMENT,
-  AUTO_INCREMENT = 3;
+  AUTO_INCREMENT = 4;
 
 --
 -- AUTO_INCREMENT for table `role`
@@ -4020,7 +3771,7 @@ ALTER TABLE
   `staff`
 MODIFY
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  AUTO_INCREMENT = 22;
+  AUTO_INCREMENT = 27;
 
 --
 -- AUTO_INCREMENT for table `taper`
@@ -4038,7 +3789,7 @@ ALTER TABLE
   `telemedicine`
 MODIFY
   `id` int(10) NOT NULL AUTO_INCREMENT,
-  AUTO_INCREMENT = 8;
+  AUTO_INCREMENT = 13;
 
 --
 -- AUTO_INCREMENT for table `tests`

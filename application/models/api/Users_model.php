@@ -92,7 +92,7 @@ class Users_model extends CI_Model
             }
         }
 
-        $is_admin = $this->db->select('u_id')->from($this->userTbl)->where(['email' => $params['conditions']['email'], 'password' => $params['conditions']['password'], 'role_id' => 2])->get()->row()->u_id ?? '';
+        $is_admin = $this->db->select('u_id,')->from($this->userTbl)->where(['email' => $params['conditions']['email'], 'password' => $params['conditions']['password'], 'role_id' => 2])->get()->row()->u_id ?? '';
 
         $role_id = $this->db->select('role_id')->from($this->userTbl)->where(['email' => $params['conditions']['email'], 'password' => $params['conditions']['password']])->get()->row()->role_id ?? '';
 
@@ -147,9 +147,9 @@ class Users_model extends CI_Model
             }
         }
 
-        $is_admin = $this->db->select('u_id')->from($this->userTbl)->where(['mobile' => $params['conditions']['mobile_no'],  'role_id' => 2])->get()->row()->u_id ?? '';
+        $is_admin = $this->db->select('u_id,')->from($this->userTbl)->where(['mobile' => $params['conditions']['mobile'],  'role_id' => 2])->get()->row()->u_id ?? '';
 
-        $role_id = $this->db->select('role_id')->from($this->userTbl)->where(['mobile' => $params['conditions']['mobile_no'],])->get()->row()->role_id ?? '';
+        $role_id = $this->db->select('role_id')->from($this->userTbl)->where(['mobile' => $params['conditions']['mobile'],])->get()->row()->role_id ?? '';
 
 
         if (!empty($role_id)) {
@@ -161,7 +161,6 @@ class Users_model extends CI_Model
 
             $result['org_id'] = $this->db->select('org_id')->from($this->org)->where(['admin_id' => $is_admin])->get()->row()->org_id ?? '';
         }
-
 
         //return fetched data
         return $result;
@@ -182,7 +181,7 @@ class Users_model extends CI_Model
         if (array_key_exists("id", $params)) {
             $this->db->where('u_id', $params['id']);
             $query = $this->db->get();
-            $result = $query->row_array();
+            $result = $query->result_array();
         } else {
             //set start and limit
             if (array_key_exists("start", $params) && array_key_exists("limit", $params)) {
@@ -195,7 +194,7 @@ class Users_model extends CI_Model
                 $result = $this->db->count_all_results();
             } elseif (array_key_exists("returnType", $params) && $params['returnType'] == 'single') {
                 $query = $this->db->get();
-                $result = ($query->num_rows() > 0) ? $query->row_array() : false;
+                $result = ($query->num_rows() > 0) ? $query->result_array() : false;
             } else {
                 $query = $this->db->get();
                 $result = ($query->num_rows() > 0) ? $query->result_array() : false;

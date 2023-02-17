@@ -72,12 +72,12 @@ class History_model extends CI_Model
         if (!empty($org_id)) {
             $data['history_visit'] = $this->db->select("history_visit.*,organization.*,patients.*")->from('history_visit')->join('organization', 'history_visit.org_id = organization.org_id')->join('patients', 'history_visit.pat_id = patients.pat_id')->where("history_visit.org_id = '$org_id'")->get()->result();
 
-            $case_id = $this->db->select('C_id')->from('history_visit')->get()->result();
+            $C_id = $this->db->select('C_id')->from('history_visit')->get()->result();
 
-            $length = count($case_id);
+            $length = count($C_id);
 
             for ($i = 0; $i < $length; ++$i) {
-                $c_id = $case_id[$i]->C_id;
+                $c_id = $C_id[$i]->C_id;
 
                 $data['history_visit'][$i]->history_chief_complaints = $this->db->select("*")->from('history_chief_complaints')->where("C_id = '$c_id'")->get()->row();
 
