@@ -183,7 +183,7 @@ class Organization extends REST_Controller
 
         $org_logo = $this->security->xss_clean($this->input->post("img"));
 
-        
+
         if (!empty($_FILES['img'])) {
             $fileName = $_FILES['img']['name'];
 
