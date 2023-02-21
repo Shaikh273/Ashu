@@ -16,8 +16,8 @@ class Staff extends REST_Controller
         $this->load->model('api/Staffregister_model', 'staff');
         $this->role = 'role';
         $this->staff = 'staff';
-        $this->org = 'admin_org';
-        $this->organization = 'organization';
+        $this->admin_org = 'admin_org';
+        $this->org = 'organization';
     }
 
     public function staff_profile_get()
@@ -38,11 +38,11 @@ class Staff extends REST_Controller
 
                         $data['admin'][$i] = $this->db->select('*')->from($this->staff)->where("admin = '$u_id' AND u_id = '$staff_id'")->get()->row();
 
-                        $org = $this->db->select('org_id')->from($this->org)->where("admin_id = '$staff_id'")->get()->result();
+                        $org = $this->db->select('org_id')->from($this->admin_org)->where("admin_id = '$staff_id'")->get()->result();
                         for ($j = 0; $j < count($org); ++$j) {
                             $org_id = $org[$j]->org_id;
 
-                            $data['admin'][$i]->org[$j] = $this->db->select('*')->from($this->organization)->where("org_id = '$org_id'")->get()->row();
+                            $data['admin'][$i]->org[$j] = $this->db->select('*')->from($this->org)->where("org_id = '$org_id'")->get()->row();
 
                             $data['admin'][$i]->org[$j]->staff = $this->db->select('*')->from($this->staff)->where("org_id = '$org_id'")->get()->result();
                         }
@@ -51,11 +51,11 @@ class Staff extends REST_Controller
             } else if ($role == 'Admin') {
                 $data['user_data'] = $this->db->select("*,$this->role.role")->from($this->staff)->join($this->role, "$this->staff.role_id = $this->role.id")->where("u_id = '$u_id'")->get()->row();
 
-                $org = $this->db->select('org_id')->from($this->org)->where("admin_id = '$u_id'")->get()->result();
+                $org = $this->db->select('org_id')->from($this->admin_org)->where("admin_id = '$u_id'")->get()->result();
                 for ($j = 0; $j < count($org); ++$j) {
                     $org_id = $org[$j]->org_id;
 
-                    $data['org'][$j] = $this->db->select('*')->from($this->organization)->where("org_id = '$org_id'")->get()->row();
+                    $data['org'][$j] = $this->db->select('*')->from($this->org)->where("org_id = '$org_id'")->get()->row();
 
                     $data['org'][$j]->staff = $this->db->select('*')->from($this->staff)->where("org_id = '$org_id'")->get()->result();
                 }
@@ -64,12 +64,12 @@ class Staff extends REST_Controller
 
                 $data['user_data'] = $this->db->select("*,$this->role.role")->from($this->staff)->join($this->role, "$this->staff.role_id = $this->role.id")->where("u_id = '$u_id'")->get()->row();
 
-                $data['org'] = $this->db->select('*')->from($this->organization)->where("org_id = '$org_id'")->get()->row();
+                $data['org'] = $this->db->select('*')->from($this->org)->where("org_id = '$org_id'")->get()->row();
             }
             $this->response([
                 'status' => true,
-                'staff_img' => 'https://www./Ashu/assets/uploads/staff/',
-                'staff_proof_img' => 'https://www./Ashu/assets/uploads/staff/',
+                'staff_img' => 'https://softdigit.in/Ashu/assets/uploads/staff/',
+                'staff_proof_img' => 'https://softdigit.in/Ashu/assets/uploads/staff/',
                 'data' => $data,
             ], REST_Controller::HTTP_OK);
         } else {
@@ -138,11 +138,12 @@ class Staff extends REST_Controller
         $org_id = $this->security->xss_clean($this->input->post('org_id'));
         $about = $this->security->xss_clean($this->input->post('about'));
         $status = $this->security->xss_clean($this->input->post('status'));
+        $exp = $this->security->xss_clean($this->input->post('exp'));
 
         //----------------------Verifying Exixtence of Admin and Organization-------------------//
 
         if (!empty($admin)) {
-            $admin_exist = $this->db->select('u_id')->from($this->staff)->where('u_id', $admin)->get()->row()->admin ?? '';
+            $admin_exist = $this->db->select('u_id')->from($this->staff)->where('u_id', $admin)->get()->row()->u_id ?? '';
             if (empty($admin_exist)) {
                 $this->response([
                     'status' => false,
@@ -152,7 +153,7 @@ class Staff extends REST_Controller
         }
 
         if (!empty($org_id)) {
-            $org_exist = $this->db->select('org_id')->from($this->organization)->where('org_id', $org_id)->get()->row()->admin ?? '';
+            $org_exist = $this->db->select('org_id')->from($this->org)->where('org_id', $org_id)->get()->row()->org_id ?? '';
             if (empty($org_exist)) {
                 $this->response([
                     'status' => false,
@@ -303,6 +304,7 @@ class Staff extends REST_Controller
                 'role_id' => $role_id ?? '',
                 'about' => $about ?? '',
                 'status' => $status ?? '',
+                'exp' => $exp ?? '',
             ];
 
             $result = $this->db->insert($this->staff, $data);
@@ -347,6 +349,7 @@ class Staff extends REST_Controller
         $org_id = $this->security->xss_clean($this->input->post('org_id'));
         $about = $this->security->xss_clean($this->input->post('about'));
         $status = $this->security->xss_clean($this->input->post('status'));
+        $exp = $this->security->xss_clean($this->input->post('exp'));
 
         if (!empty($_FILES['img'])) {
             $fileName = $_FILES['img']['name'];
@@ -403,7 +406,7 @@ class Staff extends REST_Controller
             $data['name'] = $name;
         }
         if (!empty($admin)) {
-            $admin_exist = $this->db->select('u_id')->from($this->staff)->where('u_id', $admin)->get()->row()->admin ?? '';
+            $admin_exist = $this->db->select('u_id')->from($this->staff)->where('u_id', $admin)->get()->row()->u_id ?? '';
             if (empty($admin_exist)) {
                 $this->response([
                     'status' => false,
@@ -431,7 +434,7 @@ class Staff extends REST_Controller
             $data['address'] = $address;
         }
         if (!empty($mobile_no)) {
-            $data['mobile_no'] = $mobile_no;
+            $data['mobile'] = $mobile_no;
         }
         if (!empty($img)) {
             $data['img'] = $img;
@@ -453,6 +456,9 @@ class Staff extends REST_Controller
         }
         if (!empty($about)) {
             $data['about'] = $about;
+        }
+        if (!empty($exp)) {
+            $data['exp'] = $exp;
         }
         if (!empty($role_id)) {
             $role_exist = $this->db->select('id')->from($this->role)->where('id', $role_id)->get()->row()->id ?? '';
